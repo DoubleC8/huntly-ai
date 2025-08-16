@@ -8,6 +8,12 @@ export default async function middleware(request: NextRequest) {
   const session = await auth();
   const pathname = request.nextUrl.pathname;
 
+  //if the user is logged in and authorized they should not
+  //be able to see the / page
+  if (pathname === "/" && session) {
+    return NextResponse.redirect(new URL("/jobs/dashboard", request.url));
+  }
+
   const isProtected = protectedRoutes.some((route) =>
     pathname.startsWith(route)
   );
