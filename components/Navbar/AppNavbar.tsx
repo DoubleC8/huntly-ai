@@ -1,10 +1,17 @@
 import { Session } from "next-auth";
-import NavbarBurgerButton from "./NavbarBurgerButton";
+import AppMobileNavar from "./Mobile Navbar/AppMobileNavbar";
+import AppSidebarNavbar from "./Desktop Navbar/AppSideNavbar";
 
 export function AppNavbar({ session }: { session: Session | null }) {
   return (
-    <nav className="flex sticky z-60 top-0 lg:hidden items-center h-14 px-3">
-      <NavbarBurgerButton />
-    </nav>
+    <>
+      {/* Mobile navbar: burger topbar */}
+      <div className="md:hidden">
+        <AppMobileNavar session={session} />
+      </div>
+      <aside className="hidden md:block">
+        <AppSidebarNavbar session={session} />
+      </aside>
+    </>
   );
 }

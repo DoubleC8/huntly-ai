@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Briefcase,
   FileText,
@@ -16,6 +16,14 @@ import { logout } from "@/lib/auth-actions";
 
 const NavbarBurgerButton = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const isDesktop = window.innerWidth >= 500; // Tailwind's `lg` breakpoint
+    if (isDesktop) {
+      setIsMenuOpen(true);
+    }
+  }, []);
+
   return (
     <>
       <button onClick={() => setIsMenuOpen((prev) => !prev)}>
@@ -24,9 +32,10 @@ const NavbarBurgerButton = () => {
       <div className={`offScreenMenu ${isMenuOpen ? "active" : ""}`}>
         <button
           onClick={() => setIsMenuOpen((prev) => !prev)}
-          className="w-full flex justify-end"
+          className="w-full flex items-center justify-between"
         >
-          <X size={25} />
+          <p className="font-bold text-[var(--ring)]">Huntly Ai</p>
+          <X size={16} />
         </button>
         <div className="w-full h-full flex flex-col justify-between font-semibold">
           <div className="h-3/4 flex flex-col justify-evenly">
@@ -43,7 +52,7 @@ const NavbarBurgerButton = () => {
               <p>Resume</p>
             </Link>
           </div>
-          <div className="h-1/4 flex flex-col justify-evenly">
+          <div className="h-1/4 flex flex-col justify-evenly border-t border-gray-100">
             <Link href={"/jobs/settings"} className="flex gap-1 items-center">
               <Settings size={16} />
               <p>Settings</p>

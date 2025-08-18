@@ -19,3 +19,14 @@
   .offScreenMenu.active {
     left: 0;
   }
+
+
+  /* Desktop override: always visible */
+@media only screen and (min-width: 992px) {
+  .offScreenMenu {
+    transform: translateX(0%) !important;
+    position: static;
+    max-width: 250px;
+    height: auto;
+  }
+  }
