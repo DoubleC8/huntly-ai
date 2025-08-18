@@ -1,41 +1,28 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar/Navbar";
-import { auth } from "@/auth";
+import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata } from "next";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
+const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
-  title: "Huntly Ai",
-  description:
-    "An AI-powered job application tracker" +
-    "that helps you import listings, summarize roles, extract" +
-    "key skills, and organize your applications into a clear," +
-    "visual pipeline — so you can focus on landing the right job faster.",
+  title: "Huntly AI",
+  description: "AI-powered job tracking to streamline your search.",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  const session = await auth();
-
+}) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen w-full bg-[var(--background)] text-[var(--foreground)]`}
       >
-        <Navbar session={session} />
         {children}
       </body>
     </html>

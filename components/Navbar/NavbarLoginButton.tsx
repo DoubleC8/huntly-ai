@@ -11,9 +11,14 @@ import { login } from "@/lib/auth-actions";
 export default function NavbarLoginButton() {
   return (
     <Dialog>
-      <DialogTrigger className="text-xl font-bold">Sign In</DialogTrigger>
+      <DialogTrigger
+        className="md:text-lg
+      text-md font-bold ease-in-out duration-200 hover:text-[var(--ring)] hover:cursor-pointer"
+      >
+        Sign In
+      </DialogTrigger>
       <DialogContent>
-        <DialogHeader className="w-full flex flex-col items-center">
+        <DialogHeader className="w-full flex flex-col gap-3 items-center">
           <DialogTitle className="font-medium text-2xl">
             Welcome to{" "}
             <span className="font-extrabold text-[#120acd]">Huntly Ai</span>
