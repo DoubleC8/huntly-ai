@@ -43,7 +43,8 @@
 
 :root {
   --radius: 0.625rem;
-  --card: oklch(0.997 0 0);
+  /* --card: oklch(0.997 0 0); */
+  --card:oklch(0.967 0.0029 264.54);
   --card-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.3211 0 0);
@@ -57,7 +58,8 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.3916 0.2599 266.17);
-  --background: oklch(0.967 0.0029 264.54);
+  /* --background: oklch(0.967 0.0029 264.54); */
+  --background: oklch(0.997 0 0);
   --foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);

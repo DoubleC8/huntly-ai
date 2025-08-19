@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { ChevronRight } from "lucide-react";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -13,5 +14,15 @@ export default async function DashboardPage() {
     );
   }
 
-  return <div className="space-y-6 container mx-auto px-4 py-8"></div>;
+  return (
+    <div className="p-3">
+      <div>
+        <div className="flex">
+          <h1>Jobs</h1>
+          <ChevronRight />
+        </div>
+        <h1>Recommended</h1>
+      </div>
+    </div>
+  );
 }

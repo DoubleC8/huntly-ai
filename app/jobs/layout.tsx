@@ -14,9 +14,12 @@ export default async function JobsLayout({
   }
 
   return (
-    <div className="min-h-screen w-full">
-      <AppNavbar session={session} />
-      <main>{children}</main>
+    <div
+      className="
+    min-h-screen w-full"
+    >
+      <AppNavbar />
+      <main className="md:pl-[20%]">{children}</main>
     </div>
   );
 }

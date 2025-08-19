@@ -13,7 +13,7 @@ export default function NavbarLoginButton() {
     <Dialog>
       <DialogTrigger
         className="md:text-lg
-      text-md font-bold ease-in-out duration-200 hover:text-[var(--ring)] hover:cursor-pointer"
+       font-bold ease-in-out duration-200 hover:text-[var(--ring)] hover:cursor-pointer"
       >
         Sign In
       </DialogTrigger>

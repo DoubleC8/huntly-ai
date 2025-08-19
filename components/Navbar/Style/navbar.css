@@ -14,19 +14,41 @@
     align-items: center;
     transition: 0.3s ease;
     z-index: 50;
+    border-color: var(--color-gray-200) /* oklch(92.8% 0.006 264.531) = #e5e7eb */;
+  
   }
   
-  .offScreenMenu.active {
+.offScreenMenu.active {
     left: 0;
-  }
+}
+
+.sidebarNavbarLink{
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 1) /* 0.25rem = 4px */;
+  align-items: center;
+  transition: ease-in-out;
+  transition-duration: 200ms;
+  border-radius: calc(var(--radius) /* 0.25rem = 4px */ - 2px);
+  padding-inline: calc(var(--spacing) * 2) /* 0.5rem = 8px */;
+  padding-block: calc(var(--spacing) * 1) /* 0.25rem = 4px */;
+  --tw-font-weight: var(--font-weight-semibold) /* 600 */;
+  font-weight: var(--font-weight-semibold) /* 600 */;
+}
+
+.sidebarNavbarLink:hover{
+  cursor: pointer;
+  background-color: color-mix(in oklab, #120acd 10%, transparent);
+}
 
 
-  /* Desktop override: always visible */
-@media only screen and (min-width: 992px) {
-  .offScreenMenu {
-    transform: translateX(0%) !important;
-    position: static;
-    max-width: 250px;
-    height: auto;
+@media (width >= 64rem /* 1024px */) {
+  .sidebarNavbarLink{
+    flex-direction: row;
+    gap: calc(var(--spacing) * 3) /* 0.75rem = 12px */;
+    font-size: var(--text-lg) /* 1.125rem = 18px */;
+    line-height: var(--tw-leading, var(--text-lg--line-height) /* calc(1.75 / 1.125) ≈ 1.5556 */);
+    --tw-font-weight: var(--font-weight-bold) /* 700 */;
+    font-weight: var(--font-weight-bold) /* 700 */;
   }
-  }
+}

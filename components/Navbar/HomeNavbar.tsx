@@ -14,7 +14,7 @@ export default function HomeNavbar({ session }: { session: Session | null }) {
           <Image src={"/logo.png"} alt="logo" width={50} height={50} />
           <span
             className="md:text-lg
-          text-md font-extrabold"
+         font-extrabold"
           >
             Huntly Ai
           </span>

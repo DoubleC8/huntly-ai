@@ -15,7 +15,7 @@ export default async function Home() {
               DO IT WITH HUNTLY AI.
             </span>
           </h1>
-          <h2 className="text-md font-semibold">
+          <h2 className="font-semibold">
             Huntly AI scans, summarizes, and tracks job listings, so you can
             focus on applying, not organizing.
           </h2>
