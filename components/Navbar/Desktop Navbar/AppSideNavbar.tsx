@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   Briefcase,
   FileText,
+  LayoutDashboardIcon,
   LogOut,
   Menu,
   Send,
@@ -33,13 +34,17 @@ export default function AppSidebarNavbar() {
             <Briefcase size={20} />
             <p>Jobs</p>
           </Link>
-          <Link href={"/jobs/profile"} className="sidebarNavbarLink">
-            <UserRoundPen size={20} />
-            <p>Profile</p>
+          <Link href={"/jobs/app-tracker"} className="sidebarNavbarLink">
+            <LayoutDashboardIcon size={20} />
+            <p>App Tracker</p>
           </Link>
           <Link href={"/jobs/resume"} className="sidebarNavbarLink">
             <FileText size={20} />
             <p>Resume</p>
+          </Link>
+          <Link href={"/jobs/profile"} className="sidebarNavbarLink">
+            <UserRoundPen size={20} />
+            <p>Profile</p>
           </Link>
         </div>
         <div className="h-1/4 flex flex-col justify-evenly border-t border-gray-100">

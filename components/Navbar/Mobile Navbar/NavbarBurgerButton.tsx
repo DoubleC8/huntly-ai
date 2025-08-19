@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import {
   Briefcase,
   FileText,
+  LayoutDashboardIcon,
   LogOut,
   Menu,
   Send,
@@ -43,16 +44,20 @@ const NavbarBurgerButton = () => {
               <Briefcase size={16} />
               <p>Jobs</p>
             </Link>
-            <Link href={"/jobs/profile"} className="flex gap-1 items-center">
-              <UserRoundPen size={16} />
-              <p>Profile</p>
+            <Link href={"/jobs/dashboard"} className="flex gap-1 items-center">
+              <LayoutDashboardIcon size={16} />
+              <p>App Tracker</p>
             </Link>
             <Link href={"/jobs/resume"} className="flex gap-1 items-center">
               <FileText size={16} />
               <p>Resume</p>
             </Link>
+            <Link href={"/jobs/profile"} className="flex gap-1 items-center">
+              <UserRoundPen size={16} />
+              <p>Profile</p>
+            </Link>
           </div>
-          <div className="h-1/4 flex flex-col justify-evenly border-t border-gray-100">
+          <div className="h-1/4 flex flex-col justify-evenly border-t border-gray-200">
             <Link href={"/jobs/settings"} className="flex gap-1 items-center">
               <Settings size={16} />
               <p>Settings</p>
