@@ -25,11 +25,8 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <div className="flex flex-col">
-        <div
-          className="md:hidden
-          flex justify-end p-3"
-        >
+      <div className="page">
+        <div className="mobileAppPageNav">
           <Select>
             <SelectTrigger className="bg-[var(--background)] min-w-[50%]">
               <SelectValue placeholder="Select Category" />
@@ -53,10 +50,8 @@ export default async function DashboardPage() {
           </Select>
         </div>
 
-        <div className="hidden md:flex flex-col w-full p-3 justify-center h-[5%]">
-          <h1 className="text-3xl font-extrabold tracking-wider">
-            Recommended Jobs
-          </h1>
+        <div className="pageTitleContainer">
+          <h1 className="pageTitle">Recommended Jobs</h1>
         </div>
 
         {/**This code below will hold the recommended jobs */}

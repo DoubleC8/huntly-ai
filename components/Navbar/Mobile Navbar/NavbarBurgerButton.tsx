@@ -44,7 +44,10 @@ const NavbarBurgerButton = () => {
               <Briefcase size={16} />
               <p>Jobs</p>
             </Link>
-            <Link href={"/jobs/dashboard"} className="flex gap-1 items-center">
+            <Link
+              href={"/jobs/app-tracker"}
+              className="flex gap-1 items-center"
+            >
               <LayoutDashboardIcon size={16} />
               <p>App Tracker</p>
             </Link>

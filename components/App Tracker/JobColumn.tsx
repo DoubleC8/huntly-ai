@@ -15,7 +15,7 @@ export default function JobColumn({
 
   return (
     <div
-      className="lg:w-[32%] lg:h-[82vh] lg:max-h-[90vh]
+      className="lg:w-[24%] lg:h-[82vh] lg:max-h-[90vh]
      h-1/2 bg-[var(--background)] rounded-lg shadow-md flex 
      flex-col gap-3 text-[var(--background)] overflow-y-auto"
     >

@@ -6,8 +6,12 @@ import {
   CircleCheck,
   CircleUserRound,
   ListFilter,
+  PartyPopper,
   Plus,
   Star,
+  Trash,
+  Trash2,
+  Trophy,
 } from "lucide-react";
 
 export default async function ApplicationTrackerPage() {
@@ -24,21 +28,13 @@ export default async function ApplicationTrackerPage() {
   }
   return (
     <>
-      <div
-        className="md:gap-0
-      flex flex-col gap-5"
-      >
+      <div className="page">
         {/**Hidden on mobile */}
-        <div className="hidden md:flex flex-col w-full p-3 justify-center h-[5%]">
-          <h1 className="text-3xl font-extrabold tracking-wider">
-            Application Tracker
-          </h1>
+        <div className="pageTitleContainer">
+          <h1 className="pageTitle">Application Tracker</h1>
         </div>
 
-        <div
-          className="md:hidden
-          flex w-full justify-between px-3 pt-5"
-        >
+        <div className="mobileAppPageNav">
           <div
             className="
           w-9/10 flex gap-2"
@@ -58,34 +54,37 @@ export default async function ApplicationTrackerPage() {
         </div>
 
         {/**This code below will hold the recommended jobs */}
-        <div
-          className="md:rounded-tl-4xl md:rounded-tr-none md:px-4 md:py-5 md:gap-5
-        bg-[var(--card)] min-h-screen rounded-t-xl flex flex-col p-3"
-        >
+        <div className="pageContainer">
           {/**Hidden on mobile */}
           <div
-            className="md:flex
-          w-full justify-between hidden"
+            className="md:flex 
+          w-full justify-between gap-5 hidden"
           >
-            <div className="w-3/4 flex gap-3">
+            <div className="w-[75%] flex gap-5">
               <Input
                 type="url"
                 placeholder="Add External Job Link"
-                className="bg-[var(--background)] w-1/2 h-9"
+                className="bg-[var(--background)]  h-9"
               />
               <Button>
                 Add Job
                 <Plus />
               </Button>
             </div>
-            <Button>
-              Filter
-              <ListFilter />
-            </Button>
+            <div className="flex gap-5">
+              <Button>
+                Filter
+                <ListFilter />
+              </Button>
+              <Button variant="destructive">
+                Trash
+                <Trash2 />
+              </Button>
+            </div>
           </div>
 
           <div
-            className="lg:flex-row lg:justify-between lg:gap-0
+            className="lg:flex-row lg:justify-between lg:gap-0 lg:h-fit
           w-full h-screen flex flex-col gap-5"
           >
             <JobColumn
@@ -108,6 +107,13 @@ export default async function ApplicationTrackerPage() {
               icon={CircleUserRound}
               total_jobs={0}
               description="Once you’ve landed an interview, it will show up here. Keep pushing!"
+            />
+            <JobColumn
+              title="Offered"
+              color="--app-light-blue"
+              icon={PartyPopper}
+              total_jobs={0}
+              description="Congrats! Copmpanies that have offered you a job will appear here. Time to celebrate!"
             />
           </div>
         </div>

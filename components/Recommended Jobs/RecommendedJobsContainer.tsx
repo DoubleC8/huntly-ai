@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardFooter,
 } from "@/components/ui/card";
-import { Frown } from "lucide-react";
+import { Frown, ListFilter, Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 
@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { BadgeCheck, Clock, ThumbsUp } from "lucide-react";
+import { Input } from "../ui/input";
 
 export interface JobPosting {
   id: String;
@@ -36,16 +37,68 @@ export interface JobPosting {
 }
 
 export default function RecommendedJobsContainer() {
-  let jobs: JobPosting[] = [];
+  const jobs: JobPosting[] = [
+    {
+      id: "1",
+      sourceUrl: "https://jobs.lever.co/openai/123",
+      title: "Frontend Engineer",
+      company: "OpenAI",
+      location: "San Francisco, CA",
+      employment: "Full-time",
+      remoteType: "Hybrid",
+      salaryMin: 140000,
+      salaryMax: 180000,
+      currency: "USD",
+      description:
+        "We are looking for a frontend engineer to build and optimize user-facing applications that interact with AI models.",
+      aiSummary:
+        "OpenAI is seeking a frontend engineer to improve user interfaces for AI applications. Hybrid role based in SF.",
+      skills: ["React", "TypeScript", "TailwindCSS", "Next.js", "UX Design"],
+      createdAt: new Date("2025-08-16T12:00:00Z"),
+    },
+    {
+      id: "2",
+      sourceUrl: "https://jobs.atlassian.com/456",
+      title: "Product Designer",
+      company: "Atlassian",
+      location: "Remote - US",
+      employment: "Contract",
+      remoteType: "Remote",
+      salaryMin: 80000,
+      salaryMax: 120000,
+      currency: "USD",
+      description:
+        "Work closely with PMs and engineers to design collaborative tools that empower millions of users.",
+      aiSummary:
+        "Contract design role at Atlassian to improve collaboration tools. Remote within the US.",
+      skills: ["Figma", "UI Design", "User Research", "Accessibility"],
+      createdAt: new Date("2025-08-17T09:30:00Z"),
+    },
+    {
+      id: "3",
+      sourceUrl: "https://jobs.airbnb.com/789",
+      title: "Data Analyst",
+      company: "Airbnb",
+      location: "New York, NY",
+      employment: "Full-time",
+      remoteType: "On-site",
+      salaryMin: 95000,
+      salaryMax: 115000,
+      currency: "USD",
+      description:
+        "Help shape data-driven decisions across product and marketing teams through dashboards and reporting.",
+      aiSummary:
+        "Airbnb is hiring a data analyst to support decision-making with data insights. On-site in NYC.",
+      skills: ["SQL", "Python", "Looker", "Statistics", "A/B Testing"],
+      createdAt: new Date("2025-08-14T15:45:00Z"),
+    },
+  ];
 
   if (jobs.length === 0) {
     return (
-      <div
-        className="bg-[var(--card)] min-h-screen md:rounded-tl-4xl md:rounded-tr-none
-          rounded-t-xl flex flex-col items-center justify-center"
-      >
+      <div className="pageContainer justify-center">
         <Card
-          className="md:w-1/2
+          className="lg:w-6/10
           bg-[var(--background)] w-[95%] mx-auto"
         >
           <CardContent className="flex flex-col items-center gap-3">
@@ -65,32 +118,68 @@ export default function RecommendedJobsContainer() {
     );
   }
   return (
-    <div
-      className="bg-[var(--card)] min-h-screen md:rounded-tl-4xl md:rounded-tr-none
-         px-4 py-5 rounded-t-xl"
-    >
-      <div className="hidden w-full md:flex justify-end">
-        <Select>
-          <SelectTrigger className="bg-[var(--background)] min-w-2/10">
-            <SelectValue placeholder="Select Category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="recommended">
-                <ThumbsUp />
-                Recommended
-              </SelectItem>
-              <SelectItem value="top matched">
-                <BadgeCheck />
-                Top Matched
-              </SelectItem>
-              <SelectItem value="most recent">
-                <Clock />
-                Most Recent
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+    <div className="pageContainer">
+      <div
+        className="md:flex 
+          w-full justify-between hidden"
+      >
+        <div className="w-[50%] flex gap-2">
+          <Input
+            type="url"
+            placeholder="Search for Job"
+            className="bg-[var(--background)]  h-9"
+          />
+          <Button>Search</Button>
+        </div>
+        <div className="hidden w-[50%] md:flex justify-end gap-2">
+          <Select>
+            <SelectTrigger className="bg-[var(--background)] h-9">
+              <SelectValue placeholder="Select Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="recommended">
+                  <ThumbsUp />
+                  Recommended
+                </SelectItem>
+                <SelectItem value="top matched">
+                  <BadgeCheck />
+                  Top Matched
+                </SelectItem>
+                <SelectItem value="most recent">
+                  <Clock />
+                  Most Recent
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button>
+            Filter
+            <ListFilter />
+          </Button>
+        </div>
+      </div>
+      <div className="flex flex-col gap-5">
+        {jobs.map((job) => (
+          <Card key={job.id} className="bg-[var(--background)]">
+            <CardContent>
+              <h2 className="text-xl font-bold">{job.title}</h2>
+              <p className="text-sm text-muted-foreground">
+                {job.company} — {job.location}
+              </p>
+              <p className="mt-2 text-sm">{job.aiSummary}</p>
+            </CardContent>
+            <CardFooter className="justify-between text-sm text-muted-foreground">
+              <span>
+                ${job.salaryMin.toLocaleString()} - $
+                {job.salaryMax.toLocaleString()} {job.currency}
+              </span>
+              <Link href={job.sourceUrl} target="_blank">
+                <Button>View</Button>
+              </Link>
+            </CardFooter>
+          </Card>
+        ))}
       </div>
     </div>
   );
