@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import RecommendedJobsContainer from "@/components/Recommended Jobs/RecommendedJobsContainer";
 import {
   Select,
   SelectContent,
@@ -23,37 +24,44 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="p-3 h-screen bg-[var(--card)] md:bg-[var(--background)]">
-      <div
-        className="md:hidden
-      flex justify-start"
-      >
-        <Select>
-          <SelectTrigger className="bg-[var(--background)] min-w-[50%]">
-            <SelectValue placeholder="Select Category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="recommended">
-                <ThumbsUp />
-                Recommended
-              </SelectItem>
-              <SelectItem value="top matched">
-                <BadgeCheck />
-                Top Matched
-              </SelectItem>
-              <SelectItem value="most recent">
-                <Clock />
-                Most Recent
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
+    <>
+      <div className="flex flex-col">
+        <div
+          className="md:hidden
+          flex justify-end p-3"
+        >
+          <Select>
+            <SelectTrigger className="bg-[var(--background)] min-w-[50%]">
+              <SelectValue placeholder="Select Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="recommended">
+                  <ThumbsUp />
+                  Recommended
+                </SelectItem>
+                <SelectItem value="top matched">
+                  <BadgeCheck />
+                  Top Matched
+                </SelectItem>
+                <SelectItem value="most recent">
+                  <Clock />
+                  Most Recent
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
 
-      <div className="hidden md:flex flex-col gap-6">
-        <h1 className="text-3xl font-extrabold tracking-wider">Jobs</h1>
+        <div className="hidden md:flex flex-col w-full p-3 justify-center h-[5%]">
+          <h1 className="text-3xl font-extrabold tracking-wider">
+            Recommended Jobs
+          </h1>
+        </div>
+
+        {/**This code below will hold the recommended jobs */}
+        <RecommendedJobsContainer />
       </div>
-    </div>
+    </>
   );
 }

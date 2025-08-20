@@ -57,7 +57,7 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.3916 0.2599 266.17);
+  --ring: oklch(0.531 0.2605 265.04);
   /* --background: oklch(0.967 0.0029 264.54); */
   --background: oklch(0.997 0 0);
   --foreground: oklch(0.145 0 0);
@@ -76,6 +76,9 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --app-purple: #CE68F0;
+  --app-blue: #1F51FF;
+  --app-dark-purple: #5246ba;
 }
 
 .dark {

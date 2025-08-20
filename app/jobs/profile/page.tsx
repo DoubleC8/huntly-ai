@@ -13,10 +13,12 @@ export default async function ProfilePage() {
     );
   }
   return (
-    <div className="p-3 h-screen bg-[var(--card)] md:bg-[var(--background)]">
-      <div className="hidden md:flex flex-col gap-6">
-        <h1 className="text-3xl font-extrabold tracking-wider">Profile</h1>
+    <>
+      <div className="flex flex-col">
+        <div className="hidden md:flex flex-col w-full p-3 justify-center h-[5%]">
+          <h1 className="text-3xl font-extrabold tracking-wider">Profile</h1>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

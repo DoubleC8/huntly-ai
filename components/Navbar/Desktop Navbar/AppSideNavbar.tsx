@@ -14,7 +14,7 @@ import { logout } from "@/lib/auth-actions";
 
 export default function AppSidebarNavbar() {
   return (
-    <aside className="fixed top-0 left-0 h-screen w-2/10 p-5 flex flex-col gap-8 z-50 border-r shadow-md">
+    <aside className="fixed top-0 left-0 h-screen w-2/10 p-5 flex flex-col gap-8 z-50">
       <Link
         href={"/jobs/dashboard"}
         className="lg:flex-row lg:gap-2
