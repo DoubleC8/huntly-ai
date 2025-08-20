@@ -54,7 +54,7 @@ export default async function ApplicationTrackerPage() {
         </div>
 
         {/**This code below will hold the recommended jobs */}
-        <div className="pageContainer">
+        <div className="pageContainer !min-h-fit">
           {/**Hidden on mobile */}
           <div
             className="md:flex 

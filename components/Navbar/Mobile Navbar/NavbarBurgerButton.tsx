@@ -18,13 +18,6 @@ import { logout } from "@/lib/auth-actions";
 const NavbarBurgerButton = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const isDesktop = window.innerWidth >= 500; // Tailwind's `lg` breakpoint
-    if (isDesktop) {
-      setIsMenuOpen(true);
-    }
-  }, []);
-
   return (
     <>
       <button onClick={() => setIsMenuOpen((prev) => !prev)}>
