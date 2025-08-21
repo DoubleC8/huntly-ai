@@ -29,36 +29,29 @@ export default async function ApplicationTrackerPage() {
     <>
       <div className="page">
         {/**Hidden on mobile */}
-        <div className="pageTitleContainer">
-          <h1 className="pageTitle">Application Tracker</h1>
-        </div>
-
         <div className="mobileAppPageNav">
-          <div
-            className="
-          w-9/10 flex gap-2"
-          >
+          <div className="flex gap-1">
             <Input
               type="url"
-              placeholder="Add External Job Link"
-              className="bg-[var(--background)] h-9 w-8/10"
+              placeholder="Search for Job"
+              className="bg-[var(--background)] h-9"
             />
             <Button>
               <Plus />
             </Button>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <Button>
               <ListFilter />
             </Button>
-            <Button variant="destructive">
-              <Trash2 />
-            </Button>
           </div>
+        </div>
+        <div className="pageTitleContainer">
+          <h1 className="pageTitle">Application Tracker</h1>
         </div>
 
         {/**This code below will hold the recommended jobs */}
-        <div className="pageContainer">
+        <div className="pageContainer ">
           {/**Hidden on mobile */}
           <div
             className="md:flex 
@@ -89,7 +82,7 @@ export default async function ApplicationTrackerPage() {
 
           <div
             className="lg:flex-row lg:justify-between lg:gap-0 lg:h-fit
-          w-full h-screen flex flex-col gap-5"
+          w-full h-screen flex flex-col gap-3"
           >
             <JobColumn
               title="Wishlist"

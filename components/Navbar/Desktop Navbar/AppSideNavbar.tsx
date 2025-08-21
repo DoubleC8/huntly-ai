@@ -4,7 +4,6 @@ import {
   FileText,
   LayoutDashboardIcon,
   LogOut,
-  Menu,
   Send,
   Settings,
   UserRoundPen,

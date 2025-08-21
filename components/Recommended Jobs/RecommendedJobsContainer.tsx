@@ -4,9 +4,10 @@ import {
   CardDescription,
   CardFooter,
 } from "@/components/ui/card";
-import { Frown, ListFilter, Plus, Search, Trash2 } from "lucide-react";
+import { Frown, ListFilter, Search } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import Image from "next/image";
 
 import {
   Select,
@@ -92,6 +93,60 @@ export default function RecommendedJobsContainer() {
       skills: ["SQL", "Python", "Looker", "Statistics", "A/B Testing"],
       createdAt: new Date("2025-08-14T15:45:00Z"),
     },
+    {
+      id: "4",
+      sourceUrl: "https://jobs.lever.co/openai/123",
+      title: "Frontend Engineer",
+      company: "OpenAI",
+      location: "San Francisco, CA",
+      employment: "Full-time",
+      remoteType: "Hybrid",
+      salaryMin: 140000,
+      salaryMax: 180000,
+      currency: "USD",
+      description:
+        "We are looking for a frontend engineer to build and optimize user-facing applications that interact with AI models.",
+      aiSummary:
+        "OpenAI is seeking a frontend engineer to improve user interfaces for AI applications. Hybrid role based in SF.",
+      skills: ["React", "TypeScript", "TailwindCSS", "Next.js", "UX Design"],
+      createdAt: new Date("2025-08-16T12:00:00Z"),
+    },
+    {
+      id: "5",
+      sourceUrl: "https://jobs.atlassian.com/456",
+      title: "Product Designer",
+      company: "Atlassian",
+      location: "Remote - US",
+      employment: "Contract",
+      remoteType: "Remote",
+      salaryMin: 80000,
+      salaryMax: 120000,
+      currency: "USD",
+      description:
+        "Work closely with PMs and engineers to design collaborative tools that empower millions of users.",
+      aiSummary:
+        "Contract design role at Atlassian to improve collaboration tools. Remote within the US.",
+      skills: ["Figma", "UI Design", "User Research", "Accessibility"],
+      createdAt: new Date("2025-08-17T09:30:00Z"),
+    },
+    {
+      id: "6",
+      sourceUrl: "https://jobs.airbnb.com/789",
+      title: "Data Analyst",
+      company: "Airbnb",
+      location: "New York, NY",
+      employment: "Full-time",
+      remoteType: "On-site",
+      salaryMin: 95000,
+      salaryMax: 115000,
+      currency: "USD",
+      description:
+        "Help shape data-driven decisions across product and marketing teams through dashboards and reporting.",
+      aiSummary:
+        "Airbnb is hiring a data analyst to support decision-making with data insights. On-site in NYC.",
+      skills: ["SQL", "Python", "Looker", "Statistics", "A/B Testing"],
+      createdAt: new Date("2025-08-14T15:45:00Z"),
+    },
   ];
 
   if (jobs.length === 0) {
@@ -119,7 +174,6 @@ export default function RecommendedJobsContainer() {
   }
   return (
     <div className="pageContainer">
-      {/**Holds the add */}
       <div
         className="md:flex
         w-full justify-between hidden"
@@ -169,14 +223,31 @@ export default function RecommendedJobsContainer() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-3">
         {jobs.map((job) => (
           <Card key={job?.id} className="bg-[var(--background)]">
-            <CardContent>
-              <h2 className="text-xl font-bold">{job.title}</h2>
-              <p className="text-sm text-muted-foreground">
-                {job.company} — {job.location}
-              </p>
+            <CardContent className="flex flex-col gap-2">
+              <div className="flex gap-3">
+                <a
+                  target="_blank"
+                  href="https://logo.dev"
+                  rel="noopener noreferrer"
+                >
+                  <Image
+                    src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
+                    width={50}
+                    height={50}
+                    alt="Logo API"
+                    className="rounded-lg"
+                  />
+                </a>
+                <div>
+                  <h2 className="text-xl font-bold">{job.title}</h2>
+                  <p className="text-sm text-muted-foreground">
+                    {job.company} — {job.location}
+                  </p>
+                </div>
+              </div>
               <p className="mt-2 text-sm">{job.aiSummary}</p>
             </CardContent>
             <CardFooter className="justify-between text-sm text-muted-foreground">

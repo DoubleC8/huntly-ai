@@ -36,18 +36,17 @@ export default async function DashboardPage() {
     <>
       <div className="page">
         <div className="mobileAppPageNav">
-          <div className="flex gap-1 w-3/4">
+          <div className="flex gap-1">
             <Input
               type="url"
               placeholder="Search for Job"
-              className="bg-[var(--background)]  h-9"
+              className="bg-[var(--background)] h-9"
             />
             <Button>
               <Search />
             </Button>
           </div>
-
-          <div className="w-1/4 flex justify-end gap-2">
+          <div className="flex gap-1">
             <Select>
               <SelectTrigger className="bg-[var(--background)] h-9">
                 <SelectValue placeholder={<Ellipsis />} />

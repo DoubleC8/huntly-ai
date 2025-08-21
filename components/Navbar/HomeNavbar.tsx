@@ -1,11 +1,10 @@
 "use client";
 
-import { Session } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 import NavbarLoginButton from "./NavbarLoginButton";
 
-export default function HomeNavbar({ session }: { session: Session | null }) {
+export default function HomeNavbar() {
   return (
     <nav className="shadow-md py-4 border-b border-gray-200">
       {""}

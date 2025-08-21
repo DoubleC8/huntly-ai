@@ -1,12 +1,10 @@
-import { auth } from "@/auth";
 import HomeNavbar from "@/components/Navbar/HomeNavbar";
 import { Button } from "@/components/ui/button";
 
 export default async function Home() {
-  const session = await auth();
   return (
     <>
-      <HomeNavbar session={session} />
+      <HomeNavbar />
       <main className="w-full h-screen flex flex-col bg-gradient-to-tr from-[#ffffff] from-60% to-[#12ABCD]">
         <div className="container w-3/4 h-3/4 flex flex-col gap-5 text-center my-auto mx-auto">
           <h1 className="text-lg font-semibold">

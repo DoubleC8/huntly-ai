@@ -1,3 +1,12 @@
+.mobileAppPageNav {
+  width: 100%;
+  height: calc(var(--spacing) * 14) /* 3.5rem = 56px */;
+  padding-inline: calc(var(--spacing) * 3) /* 0.75rem = 12px */;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .offScreenMenu {
     background-color: var(--background);
     height: 100vh;
@@ -40,6 +49,12 @@
 .sidebarNavbarLink:hover{
   cursor: pointer;
   background-color: color-mix(in oklab, #1F51FF 10%, transparent);
+}
+
+@media (width >= 48rem /* 768px */) {
+  .mobileAppPageNav{
+      display: none;
+    }
 }
 
 
