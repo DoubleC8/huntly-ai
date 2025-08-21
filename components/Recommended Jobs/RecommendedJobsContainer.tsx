@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardFooter,
 } from "@/components/ui/card";
-import { Frown, ListFilter, Plus } from "lucide-react";
+import { Frown, ListFilter, Plus, Search, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 
@@ -20,19 +20,19 @@ import { BadgeCheck, Clock, ThumbsUp } from "lucide-react";
 import { Input } from "../ui/input";
 
 export interface JobPosting {
-  id: String;
-  sourceUrl: String;
-  title: String;
-  company: String;
-  location: String;
-  employment: String;
-  remoteType: String;
-  salaryMin: Number;
-  salaryMax: Number;
-  currency: String;
-  description: String;
-  aiSummary: String;
-  skills: String[];
+  id: string;
+  sourceUrl: string;
+  title: string;
+  company: string;
+  location: string;
+  employment: string;
+  remoteType: string;
+  salaryMin: number;
+  salaryMax: number;
+  currency: string;
+  description: string;
+  aiSummary: string;
+  skills: string[];
   createdAt: Date;
 }
 
@@ -119,49 +119,59 @@ export default function RecommendedJobsContainer() {
   }
   return (
     <div className="pageContainer">
+      {/**Holds the add */}
       <div
-        className="md:flex 
-          w-full justify-between hidden"
+        className="md:flex
+        w-full justify-between hidden"
       >
-        <div className="w-[50%] flex gap-2">
-          <Input
-            type="url"
-            placeholder="Search for Job"
-            className="bg-[var(--background)]  h-9"
-          />
-          <Button>Search</Button>
-        </div>
-        <div className="hidden w-[50%] md:flex justify-end gap-2">
-          <Select>
-            <SelectTrigger className="bg-[var(--background)] h-9">
-              <SelectValue placeholder="Select Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="recommended">
-                  <ThumbsUp />
-                  Recommended
-                </SelectItem>
-                <SelectItem value="top matched">
-                  <BadgeCheck />
-                  Top Matched
-                </SelectItem>
-                <SelectItem value="most recent">
-                  <Clock />
-                  Most Recent
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button>
-            Filter
-            <ListFilter />
-          </Button>
+        <div
+          className="md:flex 
+          w-full justify-between gap-5 hidden"
+        >
+          <div className="w-[75%] flex gap-2">
+            <Input
+              type="url"
+              placeholder="Add External Job Link"
+              className="bg-[var(--background)]  h-9"
+            />
+            <Button>
+              Search
+              <Search />
+            </Button>
+          </div>
+          <div className="flex gap-5">
+            <Select>
+              <SelectTrigger className="bg-[var(--background)] h-9">
+                <SelectValue placeholder="Select Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="recommended">
+                    <ThumbsUp />
+                    Recommended
+                  </SelectItem>
+                  <SelectItem value="top matched">
+                    <BadgeCheck />
+                    Top Matched
+                  </SelectItem>
+                  <SelectItem value="most recent">
+                    <Clock />
+                    Most Recent
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Button>
+              Filter
+              <ListFilter />
+            </Button>
+          </div>
         </div>
       </div>
+
       <div className="flex flex-col gap-5">
         {jobs.map((job) => (
-          <Card key={job.id} className="bg-[var(--background)]">
+          <Card key={job?.id} className="bg-[var(--background)]">
             <CardContent>
               <h2 className="text-xl font-bold">{job.title}</h2>
               <p className="text-sm text-muted-foreground">

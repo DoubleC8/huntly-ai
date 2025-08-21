@@ -1,5 +1,7 @@
 import { auth } from "@/auth";
 import RecommendedJobsContainer from "@/components/Recommended Jobs/RecommendedJobsContainer";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -8,7 +10,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BadgeCheck, Clock, ThumbsUp } from "lucide-react";
+import {
+  BadgeCheck,
+  Clock,
+  Ellipsis,
+  ListFilter,
+  Search,
+  ThumbsUp,
+} from "lucide-react";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -27,27 +36,43 @@ export default async function DashboardPage() {
     <>
       <div className="page">
         <div className="mobileAppPageNav">
-          <Select>
-            <SelectTrigger className="bg-[var(--background)] min-w-[50%]">
-              <SelectValue placeholder="Select Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="recommended">
-                  <ThumbsUp />
-                  Recommended
-                </SelectItem>
-                <SelectItem value="top matched">
-                  <BadgeCheck />
-                  Top Matched
-                </SelectItem>
-                <SelectItem value="most recent">
-                  <Clock />
-                  Most Recent
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <div className="flex gap-1 w-3/4">
+            <Input
+              type="url"
+              placeholder="Search for Job"
+              className="bg-[var(--background)]  h-9"
+            />
+            <Button>
+              <Search />
+            </Button>
+          </div>
+
+          <div className="w-1/4 flex justify-end gap-2">
+            <Select>
+              <SelectTrigger className="bg-[var(--background)] h-9">
+                <SelectValue placeholder={<Ellipsis />} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="recommended">
+                    <ThumbsUp />
+                    Recommended
+                  </SelectItem>
+                  <SelectItem value="top matched">
+                    <BadgeCheck />
+                    Top Matched
+                  </SelectItem>
+                  <SelectItem value="most recent">
+                    <Clock />
+                    Most Recent
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Button>
+              <ListFilter />
+            </Button>
+          </div>
         </div>
 
         <div className="pageTitleContainer">

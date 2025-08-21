@@ -9,9 +9,7 @@ import {
   PartyPopper,
   Plus,
   Star,
-  Trash,
   Trash2,
-  Trophy,
 } from "lucide-react";
 
 export default async function ApplicationTrackerPage() {
@@ -26,6 +24,7 @@ export default async function ApplicationTrackerPage() {
       </div>
     );
   }
+
   return (
     <>
       <div className="page">
@@ -48,19 +47,24 @@ export default async function ApplicationTrackerPage() {
               <Plus />
             </Button>
           </div>
-          <Button>
-            <ListFilter />
-          </Button>
+          <div className="flex gap-2">
+            <Button>
+              <ListFilter />
+            </Button>
+            <Button variant="destructive">
+              <Trash2 />
+            </Button>
+          </div>
         </div>
 
         {/**This code below will hold the recommended jobs */}
-        <div className="pageContainer !min-h-fit">
+        <div className="pageContainer">
           {/**Hidden on mobile */}
           <div
             className="md:flex 
           w-full justify-between gap-5 hidden"
           >
-            <div className="w-[75%] flex gap-5">
+            <div className="w-[75%] flex gap-2">
               <Input
                 type="url"
                 placeholder="Add External Job Link"

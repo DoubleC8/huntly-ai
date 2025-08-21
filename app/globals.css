@@ -144,10 +144,10 @@
 .mobileAppPageNav {
   display: flex;
   width: 100%;
+  align-items: center;
   justify-content: space-between;
   padding-inline: calc(var(--spacing) * 3) /* 0.75rem = 12px */;
   padding-top: calc(var(--spacing) * 5) /* 1.25rem = 20px */;
-  
 }
 
 .pageContainer{

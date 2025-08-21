@@ -39,7 +39,7 @@
 
 .sidebarNavbarLink:hover{
   cursor: pointer;
-  background-color: color-mix(in oklab, #120acd 10%, transparent);
+  background-color: color-mix(in oklab, #1F51FF 10%, transparent);
 }
 
 
