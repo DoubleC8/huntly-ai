@@ -23,6 +23,9 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
+  //setting relation for user and jobs array
+  jobs Job[] @relation("UserJobs")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -65,4 +68,36 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+model Job {
+  id          String    @id @default(cuid())
+  sourceUrl   String
+  title       String
+  company     String
+  location    String
+  employment  String
+  remoteType  String
+  salaryMin   Int
+  salaryMax   Int
+  currency    String
+  description String
+  aiSummary   String
+  skills      String[]
+  createdAt   DateTime  @default(now())
+  postedAt    DateTime?
+
+  stage  JobStage?
+  userId String
+  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserJobs")
+
+  @@unique([userId, title, company, sourceUrl])
+}
+
+enum JobStage {
+  WISHLIST
+  APPLIED
+  INTERVIEW
+  OFFER
+  REJECTED
 }

@@ -17,7 +17,7 @@ export default function JobColumn({
     <div
       className="lg:w-[24%] lg:h-[83vh] lg:max-h-[83vh]
      h-1/2 bg-[var(--background)] rounded-lg shadow-md flex 
-     flex-col gap-3 text-[var(--background)] overflow-y-auto"
+     flex-col text-[var(--background)] overflow-y-auto"
     >
       <div
         className="w-full py-2 px-3 flex rounded-t-lg text-lg font-bold justify-between"
@@ -31,9 +31,14 @@ export default function JobColumn({
       </div>
 
       {total_jobs === 0 && (
-        <div className="flex-1 flex flex-col gap-3 items-center justify-center text-center text-[var(--foreground)] px-4">
-          <Icon size={30} />
-          <p className="text-sm opacity-70">{description}</p>
+        <div className="flex-1 flex  flex-col my-auto justify-center text-center text-[var(--foreground)] px-4">
+          <div
+            className="lg:h-1/4
+          h-1/2 flex flex-col gap-3 items-center "
+          >
+            <Icon size={30} />
+            <p className="text-sm opacity-70">{description}</p>
+          </div>
         </div>
       )}
     </div>

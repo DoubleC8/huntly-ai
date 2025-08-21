@@ -180,20 +180,20 @@ export default function RecommendedJobsContainer() {
       >
         <div
           className="md:flex 
-          w-full justify-between gap-5 hidden"
+          w-full justify-between gap-3 hidden"
         >
           <div className="w-[75%] flex gap-2">
             <Input
               type="url"
               placeholder="Add External Job Link"
-              className="bg-[var(--background)]  h-9"
+              className="bg-[var(--background)] h-9"
             />
             <Button>
               Search
               <Search />
             </Button>
           </div>
-          <div className="flex gap-5">
+          <div className="flex gap-2">
             <Select>
               <SelectTrigger className="bg-[var(--background)] h-9">
                 <SelectValue placeholder="Select Category" />
@@ -201,15 +201,15 @@ export default function RecommendedJobsContainer() {
               <SelectContent>
                 <SelectGroup>
                   <SelectItem value="recommended">
-                    <ThumbsUp />
+                    <ThumbsUp color="#1F51FF" />
                     Recommended
                   </SelectItem>
                   <SelectItem value="top matched">
-                    <BadgeCheck />
+                    <BadgeCheck color="#1F51FF" />
                     Top Matched
                   </SelectItem>
                   <SelectItem value="most recent">
-                    <Clock />
+                    <Clock color="#1F51FF" />
                     Most Recent
                   </SelectItem>
                 </SelectGroup>

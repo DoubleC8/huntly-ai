@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import JobColumn from "@/components/App Tracker/JobColumn";
+import { JobPosting } from "@/components/Recommended Jobs/RecommendedJobsContainer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -55,7 +56,7 @@ export default async function ApplicationTrackerPage() {
           {/**Hidden on mobile */}
           <div
             className="md:flex 
-          w-full justify-between gap-5 hidden"
+          w-full justify-between gap-3 hidden"
           >
             <div className="w-[75%] flex gap-2">
               <Input
@@ -68,7 +69,7 @@ export default async function ApplicationTrackerPage() {
                 <Plus />
               </Button>
             </div>
-            <div className="flex gap-5">
+            <div className="flex gap-2">
               <Button>
                 Filter
                 <ListFilter />
@@ -110,7 +111,7 @@ export default async function ApplicationTrackerPage() {
               color="--app-light-blue"
               icon={PartyPopper}
               total_jobs={0}
-              description="Congrats! Copmpanies that have offered you a job will appear here. Time to celebrate!"
+              description="Congrats! Copmpanies that have offered you a position will appear here. Time to celebrate!"
             />
           </div>
         </div>
