@@ -3,12 +3,13 @@ import {
   CardContent,
   CardDescription,
   CardFooter,
+  CardHeader,
 } from "@/components/ui/card";
-import { Frown, ListFilter, Search } from "lucide-react";
+import { Frown, ListFilter, Search, Star } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import Image from "next/image";
-
+import { formatDistanceToNow, formatDistanceToNow as formatFn } from "date-fns";
 import {
   Dialog,
   DialogContent,
@@ -29,26 +30,10 @@ import {
 } from "@/components/ui/select";
 import { BadgeCheck, Clock, ThumbsUp } from "lucide-react";
 import { Input } from "../ui/input";
-
-export interface JobPosting {
-  id: string;
-  sourceUrl: string;
-  title: string;
-  company: string;
-  location: string;
-  employment: string;
-  remoteType: string;
-  salaryMin: number;
-  salaryMax: number;
-  currency: string;
-  description: string;
-  aiSummary: string;
-  skills: string[];
-  createdAt: Date;
-}
+import { Job } from "@/app/generated/prisma";
 
 export default function RecommendedJobsContainer() {
-  const jobs: JobPosting[] = [
+  const jobs: (Job & { skills: string[] })[] = [
     {
       id: "1",
       sourceUrl: "https://jobs.lever.co/openai/123",
@@ -65,107 +50,107 @@ export default function RecommendedJobsContainer() {
       aiSummary:
         "OpenAI is seeking a frontend engineer to improve user interfaces for AI applications. Hybrid role based in SF.",
       skills: ["React", "TypeScript", "TailwindCSS", "Next.js", "UX Design"],
+      stage: null,
+      userId: "dev_user_id",
       createdAt: new Date("2025-08-16T12:00:00Z"),
+      postedAt: new Date("2025-08-15T12:00:00Z"),
     },
     {
-      id: "2",
-      sourceUrl: "https://jobs.atlassian.com/456",
-      title: "Product Designer",
-      company: "Atlassian",
-      location: "Remote - US",
-      employment: "Contract",
-      remoteType: "Remote",
-      salaryMin: 80000,
-      salaryMax: 120000,
-      currency: "USD",
-      description:
-        "Work closely with PMs and engineers to design collaborative tools that empower millions of users.",
-      aiSummary:
-        "Contract design role at Atlassian to improve collaboration tools. Remote within the US.",
-      skills: ["Figma", "UI Design", "User Research", "Accessibility"],
-      createdAt: new Date("2025-08-17T09:30:00Z"),
-    },
-    {
-      id: "3",
-      sourceUrl: "https://jobs.airbnb.com/789",
-      title: "Data Analyst",
-      company: "Airbnb",
-      location: "New York, NY",
+      id: "7",
+      sourceUrl: "https://jobs.spotify.com/777",
+      title: "Mobile Engineer",
+      company: "Spotify",
+      location: "Boston, MA",
       employment: "Full-time",
-      remoteType: "On-site",
-      salaryMin: 95000,
-      salaryMax: 115000,
+      remoteType: "Remote",
+      salaryMin: 120000,
+      salaryMax: 150000,
       currency: "USD",
       description:
-        "Help shape data-driven decisions across product and marketing teams through dashboards and reporting.",
+        "Join Spotify’s mobile team to deliver music to millions of users through native iOS and Android apps.",
       aiSummary:
-        "Airbnb is hiring a data analyst to support decision-making with data insights. On-site in NYC.",
-      skills: ["SQL", "Python", "Looker", "Statistics", "A/B Testing"],
-      createdAt: new Date("2025-08-14T15:45:00Z"),
+        "Spotify is hiring a mobile engineer for its music app team. Fully remote position.",
+      skills: ["Swift", "Kotlin", "React Native", "CI/CD", "Agile"],
+      stage: null,
+      userId: "dev_user_id",
+      createdAt: new Date("2025-08-18T10:00:00Z"),
+      postedAt: new Date("2025-08-17T10:00:00Z"),
     },
     {
-      id: "4",
-      sourceUrl: "https://jobs.lever.co/openai/123",
-      title: "Frontend Engineer",
-      company: "OpenAI",
-      location: "San Francisco, CA",
+      id: "8",
+      sourceUrl: "https://jobs.meta.com/888",
+      title: "Machine Learning Engineer",
+      company: "Meta",
+      location: "Menlo Park, CA",
       employment: "Full-time",
       remoteType: "Hybrid",
-      salaryMin: 140000,
-      salaryMax: 180000,
+      salaryMin: 160000,
+      salaryMax: 210000,
       currency: "USD",
       description:
-        "We are looking for a frontend engineer to build and optimize user-facing applications that interact with AI models.",
+        "Build intelligent systems that power Facebook and Instagram recommendation algorithms.",
       aiSummary:
-        "OpenAI is seeking a frontend engineer to improve user interfaces for AI applications. Hybrid role based in SF.",
-      skills: ["React", "TypeScript", "TailwindCSS", "Next.js", "UX Design"],
-      createdAt: new Date("2025-08-16T12:00:00Z"),
+        "Meta seeks an ML engineer for recommendation systems across its products. Hybrid in Menlo Park.",
+      skills: ["Python", "PyTorch", "TensorFlow", "Data Engineering", "ML Ops"],
+      stage: null,
+      userId: "dev_user_id",
+      createdAt: new Date("2025-08-19T09:15:00Z"),
+      postedAt: new Date("2025-08-18T09:00:00Z"),
     },
     {
-      id: "5",
-      sourceUrl: "https://jobs.atlassian.com/456",
-      title: "Product Designer",
-      company: "Atlassian",
-      location: "Remote - US",
-      employment: "Contract",
-      remoteType: "Remote",
-      salaryMin: 80000,
-      salaryMax: 120000,
-      currency: "USD",
-      description:
-        "Work closely with PMs and engineers to design collaborative tools that empower millions of users.",
-      aiSummary:
-        "Contract design role at Atlassian to improve collaboration tools. Remote within the US.",
-      skills: ["Figma", "UI Design", "User Research", "Accessibility"],
-      createdAt: new Date("2025-08-17T09:30:00Z"),
-    },
-    {
-      id: "6",
-      sourceUrl: "https://jobs.airbnb.com/789",
-      title: "Data Analyst",
-      company: "Airbnb",
-      location: "New York, NY",
+      id: "9",
+      sourceUrl: "https://jobs.doordash.com/999",
+      title: "DevOps Engineer",
+      company: "DoorDash",
+      location: "Austin, TX",
       employment: "Full-time",
       remoteType: "On-site",
-      salaryMin: 95000,
-      salaryMax: 115000,
+      salaryMin: 110000,
+      salaryMax: 130000,
       currency: "USD",
       description:
-        "Help shape data-driven decisions across product and marketing teams through dashboards and reporting.",
+        "Manage cloud infrastructure and CI/CD pipelines for a fast-moving logistics platform.",
       aiSummary:
-        "Airbnb is hiring a data analyst to support decision-making with data insights. On-site in NYC.",
-      skills: ["SQL", "Python", "Looker", "Statistics", "A/B Testing"],
-      createdAt: new Date("2025-08-14T15:45:00Z"),
+        "On-site DevOps position at DoorDash managing AWS and CI/CD systems.",
+      skills: ["AWS", "Terraform", "Kubernetes", "Jenkins", "Monitoring"],
+      stage: null,
+      userId: "dev_user_id",
+      createdAt: new Date("2025-08-20T14:00:00Z"),
+      postedAt: new Date("2025-08-19T14:00:00Z"),
+    },
+    {
+      id: "10",
+      sourceUrl: "https://jobs.nvidia.com/1010",
+      title: "Graphics Software Engineer",
+      company: "NVIDIA",
+      location: "Santa Clara, CA",
+      employment: "Full-time",
+      remoteType: "Hybrid",
+      salaryMin: 135000,
+      salaryMax: 160000,
+      currency: "USD",
+      description:
+        "Work on cutting-edge real-time graphics tools and APIs used in gaming and AI simulations.",
+      aiSummary:
+        "NVIDIA is hiring a graphics engineer for real-time rendering. Hybrid in Santa Clara.",
+      skills: [
+        "C++",
+        "DirectX",
+        "Vulkan",
+        "Shader Programming",
+        "Real-Time Graphics",
+      ],
+      stage: null,
+      userId: "dev_user_id",
+      createdAt: new Date("2025-08-21T11:30:00Z"),
+      postedAt: new Date("2025-08-20T11:30:00Z"),
     },
   ];
 
   if (jobs.length === 0) {
     return (
       <div className="pageContainer justify-center">
-        <Card
-          className="lg:w-6/10
-          bg-[var(--background)] w-[95%] mx-auto"
-        >
+        <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
           <CardContent className="flex flex-col items-center gap-3">
             <Frown />
             <p>No Recommended Jobs Yet?</p>
@@ -174,7 +159,7 @@ export default function RecommendedJobsContainer() {
             </CardDescription>
           </CardContent>
           <CardFooter>
-            <Link href={"/jobs/resume"} className="w-1/2 mx-auto">
+            <Link href="/jobs/resume" className="w-1/2 mx-auto">
               <Button className="w-full">Add Resume</Button>
             </Link>
           </CardFooter>
@@ -182,17 +167,11 @@ export default function RecommendedJobsContainer() {
       </div>
     );
   }
+
   return (
     <div className="pageContainer">
-      {/**Desktop navbar */}
-      <div
-        className="md:flex
-        w-full justify-between hidden"
-      >
-        <div
-          className="md:flex 
-          w-full justify-between gap-3 hidden"
-        >
+      <div className="md:flex w-full justify-between hidden">
+        <div className="md:flex w-full justify-between gap-3 hidden">
           <div className="w-[75%] flex gap-2">
             <Input
               type="url"
@@ -212,16 +191,13 @@ export default function RecommendedJobsContainer() {
               <SelectContent>
                 <SelectGroup>
                   <SelectItem value="recommended">
-                    <ThumbsUp color="#1F51FF" />
-                    Recommended
+                    <ThumbsUp color="#1F51FF" /> Recommended
                   </SelectItem>
                   <SelectItem value="top matched">
-                    <BadgeCheck color="#1F51FF" />
-                    Top Matched
+                    <BadgeCheck color="#1F51FF" /> Top Matched
                   </SelectItem>
                   <SelectItem value="most recent">
-                    <Clock color="#1F51FF" />
-                    Most Recent
+                    <Clock color="#1F51FF" /> Most Recent
                   </SelectItem>
                 </SelectGroup>
               </SelectContent>
@@ -234,32 +210,42 @@ export default function RecommendedJobsContainer() {
         </div>
       </div>
 
-      {/**recommended jobs container */}
       <div className="flex flex-col gap-3">
         {jobs.map((job) => (
-          <Card key={job?.id} className="bg-[var(--background)]">
-            <CardContent className="flex flex-col gap-2">
-              <div className="flex gap-3">
-                <a
-                  target="_blank"
-                  href="https://logo.dev"
-                  rel="noopener noreferrer"
-                >
-                  <Image
-                    src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
-                    width={50}
-                    height={50}
-                    alt="Logo API"
-                    className="rounded-lg"
-                  />
-                </a>
-                <div>
-                  <h2 className="text-xl font-bold">{job.title}</h2>
-                  <p className="text-sm text-muted-foreground">
-                    {job.company} — {job.location}
-                  </p>
+          <Card key={job.id} className="bg-[var(--background)]">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex gap-3 items-center">
+                  <a
+                    target="_blank"
+                    href="https://logo.dev"
+                    rel="noopener noreferrer"
+                  >
+                    <Image
+                      src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
+                      width={50}
+                      height={50}
+                      alt="Logo API"
+                      className="rounded-lg"
+                    />
+                  </a>
+                  <div>
+                    <h2 className="text-xl font-bold">{job.title}</h2>
+                    <p className="text-sm text-muted-foreground">
+                      {job.company} — {job.location}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Posted{" "}
+                      {formatDistanceToNow(new Date(job.createdAt), {
+                        addSuffix: true,
+                      })}
+                    </p>
+                  </div>
                 </div>
+                <Star className="hover:text-yellow-400 ease-in-out duration-200" />
               </div>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-2">
               <p className="mt-2 text-sm">{job.aiSummary}</p>
             </CardContent>
             <CardFooter className="justify-between text-sm text-muted-foreground">
@@ -308,7 +294,7 @@ export default function RecommendedJobsContainer() {
                           <p>
                             <strong>Salary:</strong> $
                             {job.salaryMin.toLocaleString()} - $
-                            {job.salaryMax.toLocaleString()}
+                            {job.salaryMax.toLocaleString()} {job.currency}
                           </p>
                         </div>
                         <div className="flex flex-col gap-1">
@@ -330,7 +316,7 @@ export default function RecommendedJobsContainer() {
                   <DialogFooter>
                     <a
                       target="_blank"
-                      href={`${job.sourceUrl}`}
+                      href={job.sourceUrl}
                       rel="noopener noreferrer"
                       className="mx-auto"
                     >
