@@ -25,7 +25,7 @@ export default function JobColumn({
      flex-col text-[var(--background)] overflow-y-auto "
     >
       <div
-        className="w-full py-2 px-3 flex rounded-t-lg text-lg font-bold justify-between"
+        className="w-full py-2 px-3 flex rounded-t-lg text-lg font-bold justify-between sticky top-0 z-10"
         style={{ backgroundColor: `var(${color})` }}
       >
         <div className="flex items-center gap-1">

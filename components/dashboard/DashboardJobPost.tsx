@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useTransition } from "react";
 import {
   Card,
   CardContent,
@@ -16,11 +19,34 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
 import { Button } from "@/components/ui/button";
 import { Job } from "@/app/generated/prisma";
+import { toast } from "sonner";
+import { toggleWishlist } from "@/app/actions/toggleWishlist";
 
 export default function DashboardJobPost({ job }: { job: Job }) {
+  const [isPending, startTransition] = useTransition();
+  const [isWishlisted, setIsWishlisted] = useState(job.stage === "WISHLIST");
+
+  const handleStarClick = () => {
+    setIsWishlisted((prev) => !prev);
+
+    startTransition(async () => {
+      try {
+        const updatedJob = await toggleWishlist(job.id);
+        setIsWishlisted(updatedJob.stage === "WISHLIST");
+        toast.success(
+          updatedJob.stage === "WISHLIST"
+            ? "Job added to Wishlist!"
+            : "Job removed from Wishlist."
+        );
+      } catch (error) {
+        setIsWishlisted(job.stage === "WISHLIST"); // revert back if failed
+        toast.error("Failed to toggle wishlist.");
+      }
+    });
+  };
+
   return (
     <Card key={job.id} className="bg-[var(--background)]">
       <CardHeader>
@@ -52,7 +78,17 @@ export default function DashboardJobPost({ job }: { job: Job }) {
               </p>
             </div>
           </div>
-          <Star className="hover:text-yellow-400 ease-in-out duration-200" />
+          <button
+            onClick={handleStarClick}
+            disabled={isPending}
+            className="hover:cursor-pointer"
+          >
+            {isWishlisted ? (
+              <Star fill="yellow" className="text-[var(--app-yellow)]" />
+            ) : (
+              <Star className="hover:text-[var(--app-yellow)]" />
+            )}
+          </button>
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">

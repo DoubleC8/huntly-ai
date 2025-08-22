@@ -1,46 +1,77 @@
-import { Job } from "@/app/generated/prisma";
 import { auth } from "@/auth";
 import AppTrackerColumnContainer from "@/components/app-tracker/AppTrackerColumnContainer";
 import AppTrackerDesktopNavbar from "@/components/app-tracker/AppTrackerDesktopNavbar";
 import AppTrackerMobileNavbar from "@/components/app-tracker/AppTrackerMobileNavabar";
 import AppTrackerTitle from "@/components/app-tracker/AppTrackerTitle";
-import { fakeJobs } from "@/mockJobsData";
+import { prisma } from "@/lib/prisma";
 
 export default async function ApplicationTrackerPage() {
   const session = await auth();
-  const jobs: Job[] = fakeJobs;
 
-  //extra security, we have middleware but this is just incase it doesnt work for some reason
+  // extra security check
   if (!session) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
-        {" "}
         Please Sign In.
       </div>
     );
   }
 
-  return (
-    <>
-      <div className="page">
-        {/**Hidden on mobile */}
-        <AppTrackerMobileNavbar />
+  // get the logged-in user
+  const user = await prisma.user.findUnique({
+    where: { email: session?.user?.email! },
+  });
 
-        <AppTrackerTitle />
-
-        <div className="pageContainer">
-          {/**Hidden on mobile */}
-          <AppTrackerDesktopNavbar />
-
-          {/**This code below will hold the job columns */}
-          <AppTrackerColumnContainer
-            wishlist={jobs}
-            applied={jobs}
-            interview={jobs}
-            offered={jobs}
-          />
-        </div>
+  if (!user) {
+    return (
+      <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
+        User not found.
       </div>
-    </>
+    );
+  }
+
+  // fetch jobs for each stage
+  const [wishlistJobs, appliedJobs, interviewJobs, offeredJobs] =
+    await Promise.all([
+      prisma.job.findMany({
+        where: {
+          userId: user.id,
+          stage: "WISHLIST",
+        },
+      }),
+      prisma.job.findMany({
+        where: {
+          userId: user.id,
+          stage: "APPLIED",
+        },
+      }),
+      prisma.job.findMany({
+        where: {
+          userId: user.id,
+          stage: "INTERVIEW",
+        },
+      }),
+      prisma.job.findMany({
+        where: {
+          userId: user.id,
+          stage: "OFFER",
+        },
+      }),
+    ]);
+
+  return (
+    <div className="page">
+      <AppTrackerMobileNavbar />
+      <AppTrackerTitle />
+      <div className="pageContainer">
+        <AppTrackerDesktopNavbar />
+        <AppTrackerColumnContainer
+          wishlist={wishlistJobs}
+          applied={appliedJobs}
+          interview={interviewJobs}
+          offered={offeredJobs}
+        />
+      </div>
+    </div>
   );
 }
