@@ -3,34 +3,13 @@ import {
   CardContent,
   CardDescription,
   CardFooter,
-  CardHeader,
 } from "@/components/ui/card";
-import { Frown, ListFilter, Search, Star } from "lucide-react";
+import { Frown } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import Image from "next/image";
-import { formatDistanceToNow, formatDistanceToNow as formatFn } from "date-fns";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { BadgeCheck, Clock, ThumbsUp } from "lucide-react";
-import { Input } from "../ui/input";
 import { Job } from "@/app/generated/prisma";
+import DashboardJobPost from "../dashboard/DashboardJobPost";
 
 export default function RecommendedJobsContainer() {
   const jobs: (Job & { skills: string[] })[] = [
@@ -169,166 +148,10 @@ export default function RecommendedJobsContainer() {
   }
 
   return (
-    <div className="pageContainer">
-      <div className="md:flex w-full justify-between hidden">
-        <div className="md:flex w-full justify-between gap-3 hidden">
-          <div className="w-[75%] flex gap-2">
-            <Input
-              type="url"
-              placeholder="Add External Job Link"
-              className="bg-[var(--background)] h-9"
-            />
-            <Button>
-              Search
-              <Search />
-            </Button>
-          </div>
-          <div className="flex gap-2">
-            <Select>
-              <SelectTrigger className="bg-[var(--background)] h-9">
-                <SelectValue placeholder="Select Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="recommended">
-                    <ThumbsUp color="#1F51FF" /> Recommended
-                  </SelectItem>
-                  <SelectItem value="top matched">
-                    <BadgeCheck color="#1F51FF" /> Top Matched
-                  </SelectItem>
-                  <SelectItem value="most recent">
-                    <Clock color="#1F51FF" /> Most Recent
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <Button>
-              Filter
-              <ListFilter />
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        {jobs.map((job) => (
-          <Card key={job.id} className="bg-[var(--background)]">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex gap-3 items-center">
-                  <a
-                    target="_blank"
-                    href="https://logo.dev"
-                    rel="noopener noreferrer"
-                  >
-                    <Image
-                      src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
-                      width={50}
-                      height={50}
-                      alt="Logo API"
-                      className="rounded-lg"
-                    />
-                  </a>
-                  <div>
-                    <h2 className="text-xl font-bold">{job.title}</h2>
-                    <p className="text-sm text-muted-foreground">
-                      {job.company} — {job.location}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Posted{" "}
-                      {formatDistanceToNow(new Date(job.createdAt), {
-                        addSuffix: true,
-                      })}
-                    </p>
-                  </div>
-                </div>
-                <Star className="hover:text-yellow-400 ease-in-out duration-200" />
-              </div>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-2">
-              <p className="mt-2 text-sm">{job.aiSummary}</p>
-            </CardContent>
-            <CardFooter className="justify-between text-sm text-muted-foreground">
-              <span>
-                ${job.salaryMin.toLocaleString()} - $
-                {job.salaryMax.toLocaleString()} {job.currency}
-              </span>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button>View</Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>
-                      <div className="flex gap-3">
-                        <a
-                          target="_blank"
-                          href="https://logo.dev"
-                          rel="noopener noreferrer"
-                        >
-                          <Image
-                            src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
-                            width={50}
-                            height={50}
-                            alt="Logo API"
-                            className="rounded-lg"
-                          />
-                        </a>
-                        <div>
-                          <h2 className="text-xl font-bold">{job.title}</h2>
-                          <p className="text-sm text-muted-foreground">
-                            {job.company} — {job.location}
-                          </p>
-                        </div>
-                      </div>
-                    </DialogTitle>
-                    <DialogDescription asChild>
-                      <div className="flex flex-col gap-3">
-                        <div>
-                          <p>
-                            <strong>Employment Type:</strong> {job.employment}
-                          </p>
-                          <p>
-                            <strong>Remote Type:</strong> {job.remoteType}
-                          </p>
-                          <p>
-                            <strong>Salary:</strong> $
-                            {job.salaryMin.toLocaleString()} - $
-                            {job.salaryMax.toLocaleString()} {job.currency}
-                          </p>
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          <p>
-                            <strong>Description:</strong>
-                            <br />
-                            {job.description}
-                          </p>
-                          <p>
-                            <strong>Skills:</strong>
-                          </p>
-                          {job.skills.map((skill) => (
-                            <p key={skill}>• {skill}</p>
-                          ))}
-                        </div>
-                      </div>
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <a
-                      target="_blank"
-                      href={job.sourceUrl}
-                      rel="noopener noreferrer"
-                      className="mx-auto"
-                    >
-                      <Button>Apply</Button>
-                    </a>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+    <div className="flex flex-col gap-3">
+      {jobs.map((job) => (
+        <DashboardJobPost job={job} key={job.id} />
+      ))}
     </div>
   );
 }

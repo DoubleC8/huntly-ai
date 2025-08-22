@@ -1,17 +1,8 @@
 import { auth } from "@/auth";
-import JobColumn from "@/components/App Tracker/JobColumn";
-import { JobPosting } from "@/components/Recommended Jobs/RecommendedJobsContainer";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  CircleCheck,
-  CircleUserRound,
-  ListFilter,
-  PartyPopper,
-  Plus,
-  Star,
-  Trash2,
-} from "lucide-react";
+import AppTrackerColumnContainer from "@/components/app-tracker/AppTrackerColumnContainer";
+import AppTrackerDesktopNavbar from "@/components/app-tracker/AppTrackerDesktopNavbar";
+import AppTrackerMobileNavbar from "@/components/app-tracker/AppTrackerMobileNavabar";
+import AppTrackerTitle from "@/components/app-tracker/AppTrackerTitle";
 
 export default async function ApplicationTrackerPage() {
   const session = await auth();
@@ -30,90 +21,16 @@ export default async function ApplicationTrackerPage() {
     <>
       <div className="page">
         {/**Hidden on mobile */}
-        <div className="mobileAppPageNav">
-          <div className="flex gap-1">
-            <Input
-              type="url"
-              placeholder="Search for Job"
-              className="bg-[var(--background)] h-9"
-            />
-            <Button>
-              <Plus />
-            </Button>
-          </div>
-          <div className="flex gap-1">
-            <Button>
-              <ListFilter />
-            </Button>
-          </div>
-        </div>
-        <div className="pageTitleContainer">
-          <h1 className="pageTitle">Application Tracker</h1>
-        </div>
+        <AppTrackerMobileNavbar />
 
-        {/**This code below will hold the recommended jobs */}
-        <div className="pageContainer ">
+        <AppTrackerTitle />
+
+        <div className="pageContainer">
           {/**Hidden on mobile */}
-          <div
-            className="md:flex 
-          w-full justify-between gap-3 hidden"
-          >
-            <div className="w-[75%] flex gap-2">
-              <Input
-                type="url"
-                placeholder="Add External Job Link"
-                className="bg-[var(--background)]  h-9"
-              />
-              <Button>
-                Add Job
-                <Plus />
-              </Button>
-            </div>
-            <div className="flex gap-2">
-              <Button>
-                Filter
-                <ListFilter />
-              </Button>
-              <Button variant="destructive">
-                Trash
-                <Trash2 />
-              </Button>
-            </div>
-          </div>
+          <AppTrackerDesktopNavbar />
 
-          <div
-            className="lg:flex-row lg:justify-between lg:gap-0 lg:h-fit
-          w-full h-screen flex flex-col gap-3"
-          >
-            <JobColumn
-              title="Wishlist"
-              color="--app-purple"
-              icon={Star}
-              total_jobs={0}
-              description="Jobs you’re interested in but haven’t applied to yet. Start building your wishlist!"
-            />
-            <JobColumn
-              title="Applied"
-              color="--app-dark-purple"
-              icon={CircleCheck}
-              total_jobs={0}
-              description="Track jobs you've submitted an application to. Try applying to one today!"
-            />
-            <JobColumn
-              title="Interviewed"
-              color="--app-blue"
-              icon={CircleUserRound}
-              total_jobs={0}
-              description="Once you’ve landed an interview, it will show up here. Keep pushing!"
-            />
-            <JobColumn
-              title="Offered"
-              color="--app-light-blue"
-              icon={PartyPopper}
-              total_jobs={0}
-              description="Congrats! Copmpanies that have offered you a position will appear here. Time to celebrate!"
-            />
-          </div>
+          {/**This code below will hold the job columns */}
+          <AppTrackerColumnContainer />
         </div>
       </div>
     </>
