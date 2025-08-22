@@ -10,6 +10,16 @@ import Link from "next/link";
 import Image from "next/image";
 
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import {
   Select,
   SelectContent,
   SelectGroup,
@@ -174,6 +184,7 @@ export default function RecommendedJobsContainer() {
   }
   return (
     <div className="pageContainer">
+      {/**Desktop navbar */}
       <div
         className="md:flex
         w-full justify-between hidden"
@@ -223,6 +234,7 @@ export default function RecommendedJobsContainer() {
         </div>
       </div>
 
+      {/**recommended jobs container */}
       <div className="flex flex-col gap-3">
         {jobs.map((job) => (
           <Card key={job?.id} className="bg-[var(--background)]">
@@ -255,9 +267,49 @@ export default function RecommendedJobsContainer() {
                 ${job.salaryMin.toLocaleString()} - $
                 {job.salaryMax.toLocaleString()} {job.currency}
               </span>
-              <Link href={job.sourceUrl} target="_blank">
-                <Button>View</Button>
-              </Link>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>View</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>
+                      <div className="flex gap-3">
+                        <a
+                          target="_blank"
+                          href="https://logo.dev"
+                          rel="noopener noreferrer"
+                        >
+                          <Image
+                            src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
+                            width={50}
+                            height={50}
+                            alt="Logo API"
+                            className="rounded-lg"
+                          />
+                        </a>
+                        <div>
+                          <h2 className="text-xl font-bold">{job.title}</h2>
+                          <p className="text-sm text-muted-foreground">
+                            {job.company} — {job.location}
+                          </p>
+                        </div>
+                      </div>
+                    </DialogTitle>
+                    <DialogDescription></DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <a
+                      target="_blank"
+                      href={`${job.sourceUrl}`}
+                      rel="noopener noreferrer"
+                      className="mx-auto"
+                    >
+                      <Button>Apply</Button>
+                    </a>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </CardFooter>
           </Card>
         ))}

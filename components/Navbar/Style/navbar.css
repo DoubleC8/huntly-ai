@@ -7,31 +7,6 @@
   align-items: center;
 }
 
-.offScreenMenu {
-    background-color: var(--background);
-    height: 100vh;
-    width: 100%;
-    max-width: 75%;
-    position: fixed;
-    top: 0;
-    left: -75%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    justify-content: space-between;
-    padding: calc(var(--spacing) * 5) /* 1.25rem = 20px */;
-    align-items: center;
-    transition: 0.3s ease;
-    z-index: 50;
-    border-color: var(--color-gray-200) /* oklch(92.8% 0.006 264.531) = #e5e7eb */;
-    border-right-style: var(--tw-border-style);
-    border-right-width: 1px;
-  }
-  
-.offScreenMenu.active {
-    left: 0;
-}
-
 .sidebarNavbarLink{
   display: flex;
   flex-direction: column;
