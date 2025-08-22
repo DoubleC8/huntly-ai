@@ -296,7 +296,36 @@ export default function RecommendedJobsContainer() {
                         </div>
                       </div>
                     </DialogTitle>
-                    <DialogDescription></DialogDescription>
+                    <DialogDescription asChild>
+                      <div className="flex flex-col gap-3">
+                        <div>
+                          <p>
+                            <strong>Employment Type:</strong> {job.employment}
+                          </p>
+                          <p>
+                            <strong>Remote Type:</strong> {job.remoteType}
+                          </p>
+                          <p>
+                            <strong>Salary:</strong> $
+                            {job.salaryMin.toLocaleString()} - $
+                            {job.salaryMax.toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <p>
+                            <strong>Description:</strong>
+                            <br />
+                            {job.description}
+                          </p>
+                          <p>
+                            <strong>Skills:</strong>
+                          </p>
+                          {job.skills.map((skill) => (
+                            <p key={skill}>• {skill}</p>
+                          ))}
+                        </div>
+                      </div>
+                    </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
                     <a

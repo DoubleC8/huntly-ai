@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -23,8 +22,6 @@ import Link from "next/link";
 import { logout } from "@/lib/auth-actions";
 
 const NavbarBurgerButton = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   return (
     <Sheet>
       <SheetTrigger>
