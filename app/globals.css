@@ -139,14 +139,6 @@
   letter-spacing: var(--tracking-wider) /* 0.05em */;
 }
 
-
-/*
-if we wan to round both top edges when on mobile view
-
-border-top-left-radius: calc(var(--radius) + 4px);
-border-top-right-radius: calc(var(--radius) + 4px);
-*/
-
 .pageContainer{
   background-color: var(--card);
   min-height: 93vh;

@@ -1,12 +1,14 @@
-import { Job } from "@/app/generated/prisma";
 import DashboardMobileNavbar from "@/components/dashboard/DashboardMobileNavbar";
 import DashboardTitle from "@/components/dashboard/DashboardTitle";
 import { auth } from "@/auth";
 import DashboardDesktopNavbar from "@/components/dashboard/DashboardDesktopNavabar";
-import RecommendedJobsContainer from "@/components/Recommended Jobs/RecommendedJobsContainer";
+import RecommendedJobsContainer from "@/components/dashboard/RecommendedJobsContainer";
+import { Job } from "@/app/generated/prisma";
+import { fakeJobs } from "@/mockJobsData";
 
 export default async function DashboardPage() {
   const session = await auth();
+  const jobs: Job[] = fakeJobs;
 
   //extra security, we have middleware but this is just incase it doesnt work for some reason
   if (!session) {
@@ -29,7 +31,7 @@ export default async function DashboardPage() {
         <div className="pageContainer">
           <DashboardDesktopNavbar />
 
-          <RecommendedJobsContainer />
+          <RecommendedJobsContainer jobs={jobs} />
         </div>
       </div>
     </>

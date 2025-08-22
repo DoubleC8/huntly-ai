@@ -1,10 +1,15 @@
+import { Job } from "@/app/generated/prisma";
+import JobColumnJobPost from "./JobColumnJobPost";
+
 export default function JobColumn({
+  jobs,
   title,
   color,
   icon,
   total_jobs,
   description,
 }: {
+  jobs: Job[];
   title: string;
   color: string;
   icon: React.ElementType;
@@ -17,7 +22,7 @@ export default function JobColumn({
     <div
       className="lg:w-[24%] lg:h-[83vh] lg:max-h-[83vh]
      h-1/2 bg-[var(--background)] rounded-lg shadow-md flex 
-     flex-col text-[var(--background)] overflow-y-auto"
+     flex-col text-[var(--background)] overflow-y-auto "
     >
       <div
         className="w-full py-2 px-3 flex rounded-t-lg text-lg font-bold justify-between"
@@ -41,6 +46,12 @@ export default function JobColumn({
           </div>
         </div>
       )}
+
+      <div className="flex flex-col gap-3 p-2">
+        {jobs.map((job) => (
+          <JobColumnJobPost job={job} key={job.id} />
+        ))}
+      </div>
     </div>
   );
 }

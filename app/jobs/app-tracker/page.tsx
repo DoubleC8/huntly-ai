@@ -1,11 +1,14 @@
+import { Job } from "@/app/generated/prisma";
 import { auth } from "@/auth";
 import AppTrackerColumnContainer from "@/components/app-tracker/AppTrackerColumnContainer";
 import AppTrackerDesktopNavbar from "@/components/app-tracker/AppTrackerDesktopNavbar";
 import AppTrackerMobileNavbar from "@/components/app-tracker/AppTrackerMobileNavabar";
 import AppTrackerTitle from "@/components/app-tracker/AppTrackerTitle";
+import { fakeJobs } from "@/mockJobsData";
 
 export default async function ApplicationTrackerPage() {
   const session = await auth();
+  const jobs: Job[] = fakeJobs;
 
   //extra security, we have middleware but this is just incase it doesnt work for some reason
   if (!session) {
@@ -30,7 +33,12 @@ export default async function ApplicationTrackerPage() {
           <AppTrackerDesktopNavbar />
 
           {/**This code below will hold the job columns */}
-          <AppTrackerColumnContainer />
+          <AppTrackerColumnContainer
+            wishlist={jobs}
+            applied={jobs}
+            interview={jobs}
+            offered={jobs}
+          />
         </div>
       </div>
     </>
