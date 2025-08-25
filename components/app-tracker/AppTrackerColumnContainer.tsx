@@ -8,6 +8,7 @@ import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { toast } from "sonner";
 import { updateJobStage } from "@/app/actions/updateJobStage";
 import { useState } from "react";
+import useIsLargeScreen from "@/hooks/useIsLargeScreen";
 
 export default function AppTrackerColumnContainer({
   wishlist,
@@ -20,6 +21,8 @@ export default function AppTrackerColumnContainer({
   interview: Job[];
   offered: Job[];
 }) {
+  const isLargeScreen = useIsLargeScreen();
+
   const [columns, setColumns] = useState<Record<JobStage, Job[]>>({
     WISHLIST: wishlist,
     APPLIED: applied,
@@ -28,6 +31,9 @@ export default function AppTrackerColumnContainer({
     REJECTED: [],
   });
 
+  //handles the drag and drop event
+  //uses toast to notify the user if the change was successful
+  //only calls the function if the job moves columns
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over) return;
@@ -77,50 +83,58 @@ export default function AppTrackerColumnContainer({
     }
   };
 
-  return (
+  return isLargeScreen ? (
     <DndContext
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
       modifiers={[restrictToWindowEdges]}
     >
-      <div className="relative lg:flex-row lg:justify-between lg:gap-0 lg:h-fit w-full h-screen flex flex-col gap-3">
-        <JobColumn
-          id="WISHLIST"
-          jobs={columns.WISHLIST}
-          title="Wishlist"
-          color="--app-purple"
-          icon={Star}
-          total_jobs={columns.WISHLIST.length}
-          description="Jobs you’re interested in but haven’t applied to yet. Start building your wishlist!"
-        />
-        <JobColumn
-          id="APPLIED"
-          jobs={columns.APPLIED}
-          title="Applied"
-          color="--app-dark-purple"
-          icon={CircleCheck}
-          total_jobs={columns.APPLIED.length}
-          description="Track jobs you've submitted an application to. Try applying to one today!"
-        />
-        <JobColumn
-          id="INTERVIEW"
-          jobs={columns.INTERVIEW}
-          title="Interview"
-          color="--app-blue"
-          icon={CircleUserRound}
-          total_jobs={columns.INTERVIEW.length}
-          description="Once you’ve landed an interview, it will show up here. Keep pushing!"
-        />
-        <JobColumn
-          id="OFFER"
-          jobs={columns.OFFER}
-          title="Offer"
-          color="--app-light-blue"
-          icon={PartyPopper}
-          total_jobs={columns.OFFER.length}
-          description="Congrats! Companies that have offered you a position will appear here. Time to celebrate!"
-        />
-      </div>
+      <Layout columns={columns} />
     </DndContext>
+  ) : (
+    <Layout columns={columns} />
+  );
+}
+
+function Layout({ columns }: { columns: Record<JobStage, Job[]> }) {
+  return (
+    <div className="relative lg:flex-row lg:justify-between lg:gap-0 lg:h-fit w-full h-screen flex flex-col gap-3">
+      <JobColumn
+        id="WISHLIST"
+        jobs={columns.WISHLIST}
+        title="Wishlist"
+        color="--app-purple"
+        icon={Star}
+        total_jobs={columns.WISHLIST.length}
+        description="Jobs you’re interested in but haven’t applied to yet. Start building your wishlist!"
+      />
+      <JobColumn
+        id="APPLIED"
+        jobs={columns.APPLIED}
+        title="Applied"
+        color="--app-dark-purple"
+        icon={CircleCheck}
+        total_jobs={columns.APPLIED.length}
+        description="Track jobs you've submitted an application to. Try applying to one today!"
+      />
+      <JobColumn
+        id="INTERVIEW"
+        jobs={columns.INTERVIEW}
+        title="Interview"
+        color="--app-blue"
+        icon={CircleUserRound}
+        total_jobs={columns.INTERVIEW.length}
+        description="Once you’ve landed an interview, it will show up here. Keep pushing!"
+      />
+      <JobColumn
+        id="OFFER"
+        jobs={columns.OFFER}
+        title="Offer"
+        color="--app-light-blue"
+        icon={PartyPopper}
+        total_jobs={columns.OFFER.length}
+        description="Congrats! Companies that have offered you a position will appear here. Time to celebrate!"
+      />
+    </div>
   );
 }

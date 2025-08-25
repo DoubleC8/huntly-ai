@@ -7,7 +7,6 @@ import {
 import Image from "next/image";
 import { Job } from "@/app/generated/prisma";
 import { Button } from "../ui/button";
-import { Trash2 } from "lucide-react";
 import { useDraggable } from "@dnd-kit/core";
 
 export default function JobColumnJobPost({ job }: { job: Job }) {
@@ -28,12 +27,13 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
         transform: transform
           ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
           : undefined,
+        opacity: isDragging ? 0.6 : 1,
         zIndex: isDragging ? 50 : 0,
         position: isDragging ? "absolute" : "relative",
         width: isDragging ? "24%" : "",
       }}
-      className="lg:min-h-75 lg:max-h-fit
-      bg-[var(--card)] cursor-grab flex felx-col justify-between"
+      className="lg:min-h-75 lg:max-h-fit lg:cursor-grab
+      bg-[var(--card)] flex felx-col justify-between"
     >
       <CardHeader>
         <div className="flex items-center justify-between">
@@ -62,7 +62,6 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
               </span>
             </div>
           </div>
-          <Trash2 className="text-[var(--app-red)] md:hidden" />
         </div>
       </CardHeader>
       <CardContent className="justify-between text-sm text-muted-foreground">

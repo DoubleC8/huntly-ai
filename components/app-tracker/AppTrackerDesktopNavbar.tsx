@@ -19,16 +19,11 @@ export default function AppTrackerDesktopNavbar() {
           <Plus />
         </Button>
       </div>
-      <div className="flex gap-2">
-        <Button>
-          Filter
-          <ListFilter />
-        </Button>
-        <Button variant="destructive">
-          Trash
-          <Trash2 />
-        </Button>
-      </div>
+
+      <Button>
+        Filter
+        <ListFilter />
+      </Button>
     </div>
   );
 }
