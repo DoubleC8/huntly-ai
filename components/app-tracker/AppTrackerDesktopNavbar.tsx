@@ -4,10 +4,7 @@ import { Input } from "../ui/input";
 
 export default function AppTrackerDesktopNavbar() {
   return (
-    <div
-      className="md:flex 
-          w-full justify-between gap-3 hidden"
-    >
+    <div className="desktopAppPageNav">
       <div className="w-[75%] flex gap-2">
         <Input
           type="url"

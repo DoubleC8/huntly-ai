@@ -26,9 +26,19 @@
   background-color: color-mix(in oklab, #1F51FF 10%, transparent);
 }
 
+.desktopAppPageNav{
+  width: 100%;
+   justify-content: space-between;
+   gap: calc(var(--spacing) * 3) /* 0.75rem = 12px */;
+   display: none;
+}
+
 @media (width >= 48rem /* 768px */) {
   .mobileAppPageNav{
       display: none;
+    }
+    .desktopAppPageNav{
+      display: flex;
     }
 }
 

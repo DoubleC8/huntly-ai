@@ -1,7 +1,5 @@
-import DashboardMobileNavbar from "@/components/dashboard/DashboardMobileNavbar";
 import DashboardTitle from "@/components/dashboard/DashboardTitle";
 import { auth } from "@/auth";
-//import DashboardDesktopNavbar from "@/components/dashboard/DashboardDesktopNavabar";
 import RecommendedJobsContainer from "@/components/dashboard/RecommendedJobsContainer";
 import { Ellipsis, Frown, ListFilter, Search } from "lucide-react";
 import {
@@ -73,6 +71,7 @@ export default async function DashboardPage({
   return (
     <>
       <div className="page">
+        {/**mobile navbar for dashboard page */}
         <form className="mobileAppPageNav">
           <div className="flex gap-1">
             <Input
@@ -118,8 +117,8 @@ export default async function DashboardPage({
 
         {/**This code below will hold the recommended jobs */}
         <div className="pageContainer">
-          {/* <DashboardDesktopNavbar /> */}
-          <div className="md:flex w-full justify-between hidden">
+          {/**desktop navbar for dashboard page */}
+          <div className="desktopAppPageNav">
             <form className="md:flex w-full justify-between gap-3 hidden">
               <div className="w-[75%] flex gap-2">
                 <Input
@@ -159,6 +158,7 @@ export default async function DashboardPage({
               </div>
             </form>
           </div>
+
           {jobs.length === 0 ? (
             <div className="flex flex-col gap-3 justify-center items-center my-auto">
               <Frown />
