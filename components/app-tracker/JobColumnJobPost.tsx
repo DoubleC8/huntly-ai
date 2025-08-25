@@ -5,9 +5,15 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import Image from "next/image";
-import { Job } from "@/app/generated/prisma";
+import { Job, JobStage } from "@/app/generated/prisma";
 import { Button } from "../ui/button";
 import { useDraggable } from "@dnd-kit/core";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { updateJobStage } from "@/app/actions/updateJobStage";
+import { toast } from "sonner";
+
+//this tells us the order of job stages
+const STAGE_ORDER: JobStage[] = ["WISHLIST", "APPLIED", "INTERVIEW", "OFFER"];
 
 export default function JobColumnJobPost({ job }: { job: Job }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
@@ -17,6 +23,30 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
         job,
       },
     });
+
+  const moveJobStage = async (direction: "up" | "down") => {
+    const currentIndex = STAGE_ORDER.indexOf(job.stage as JobStage);
+    let newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+
+    if (newIndex < 0 || newIndex >= STAGE_ORDER.length) return;
+
+    const newStage = STAGE_ORDER[newIndex];
+
+    try {
+      await updateJobStage(job.id, newStage);
+      toast.success(
+        `Moved job to the ${
+          newStage.charAt(0).toUpperCase() + newStage.slice(1).toLowerCase()
+        } column.`,
+        {
+          description: "Congrats!",
+        }
+      );
+    } catch (err) {
+      toast.error("Failed to update job stage.");
+    }
+  };
+
   return (
     <Card
       key={job.id}
@@ -67,10 +97,16 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
       <CardContent className="justify-between text-sm text-muted-foreground">
         {job.aiSummary}
       </CardContent>
-      <CardFooter className="mx-auto">
+      <CardFooter className="flex gap-3 mx-auto">
+        <Button className="lg:hidden" onClick={() => moveJobStage("up")}>
+          <ChevronUp />
+        </Button>
         <a href={job.sourceUrl} target="_blank" rel="noopener noreferrer">
           <Button>View Job Posting</Button>
         </a>
+        <Button className="lg:hidden" onClick={() => moveJobStage("down")}>
+          <ChevronDown />
+        </Button>
       </CardFooter>
     </Card>
   );

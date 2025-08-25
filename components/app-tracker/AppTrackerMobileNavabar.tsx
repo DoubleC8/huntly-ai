@@ -8,7 +8,7 @@ export default function AppTrackerMobileNavbar() {
       <div className="flex gap-1">
         <Input
           type="url"
-          placeholder="Search for Job"
+          placeholder="Add Job"
           className="bg-[var(--background)] h-9"
         />
         <Button>

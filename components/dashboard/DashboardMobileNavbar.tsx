@@ -23,7 +23,7 @@ export default function DashboardMobileNavbar() {
       <div className="flex gap-1">
         <Input
           type="url"
-          placeholder="Search for Job"
+          placeholder="Search for a Job"
           className="bg-[var(--background)] h-9"
         />
         <Button>

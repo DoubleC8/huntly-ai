@@ -18,7 +18,7 @@ export default function DashboardDesktopNavbar() {
         <div className="w-[75%] flex gap-2">
           <Input
             type="url"
-            placeholder="Add External Job Link"
+            placeholder="Search for a Job"
             className="bg-[var(--background)] h-9"
           />
           <Button>

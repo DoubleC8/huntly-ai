@@ -48,7 +48,11 @@ export default function DashboardJobPost({ job }: { job: Job }) {
   };
 
   return (
-    <Card key={job.id} className="bg-[var(--background)]">
+    <Card
+      key={job.id}
+      className="
+    bg-[var(--background)]"
+    >
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex gap-3 items-center justify-center">
@@ -70,12 +74,22 @@ export default function DashboardJobPost({ job }: { job: Job }) {
               <p className="text-sm text-muted-foreground">
                 {job.company} — {job.location}
               </p>
-              <p className="text-sm text-muted-foreground">
-                Posted{" "}
-                {formatFn(new Date(job.createdAt), {
-                  addSuffix: true,
-                })}
-              </p>
+
+              {job.postedAt ? (
+                <p className="text-sm text-muted-foreground">
+                  Posted{" "}
+                  {formatFn(new Date(job.postedAt), {
+                    addSuffix: true,
+                  })}
+                </p>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  We found this job for you{" "}
+                  {formatFn(new Date(job.createdAt), {
+                    addSuffix: true,
+                  })}
+                </p>
+              )}
             </div>
           </div>
           <button
