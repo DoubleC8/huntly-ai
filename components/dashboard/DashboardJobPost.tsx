@@ -23,7 +23,11 @@ import { Button } from "@/components/ui/button";
 import { Job } from "@/app/generated/prisma";
 import { toast } from "sonner";
 import { toggleWishlist } from "@/app/actions/toggleWishlist";
-import { STAGE_COLORS, STAGE_LABELS } from "@/app/constants/jobStage";
+import {
+  STAGE_COLORS,
+  STAGE_LABELS,
+  STAGE_ORDER,
+} from "@/app/constants/jobStage";
 
 export default function DashboardJobPost({ job }: { job: Job }) {
   const [isPending, startTransition] = useTransition();
@@ -102,17 +106,20 @@ export default function DashboardJobPost({ job }: { job: Job }) {
               )}
             </div>
           </div>
-          <button
-            onClick={handleStarClick}
-            disabled={isPending}
-            className="hover:cursor-pointer"
-          >
-            {isWishlisted ? (
-              <Star fill="yellow" className="text-[var(--app-yellow)]" />
-            ) : (
-              <Star className="hover:text-[var(--app-yellow)]" />
-            )}
-          </button>
+          {job.stage === null ||
+          STAGE_ORDER.indexOf(job.stage) < STAGE_ORDER.indexOf("APPLIED") ? (
+            <button
+              onClick={handleStarClick}
+              disabled={isPending}
+              className="hover:cursor-pointer"
+            >
+              {isWishlisted ? (
+                <Star fill="yellow" className="text-[var(--app-yellow)]" />
+              ) : (
+                <Star className="hover:text-[var(--app-yellow)]" />
+              )}
+            </button>
+          ) : null}
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
@@ -183,11 +190,9 @@ export default function DashboardJobPost({ job }: { job: Job }) {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              {job.stage === "APPLIED" ? (
-                <Button className="mx-auto" disabled>
-                  Applied
-                </Button>
-              ) : (
+              {job.stage === null ||
+              STAGE_ORDER.indexOf(job.stage) <
+                STAGE_ORDER.indexOf("APPLIED") ? (
                 <a
                   target="_blank"
                   href={job.sourceUrl}
@@ -196,6 +201,10 @@ export default function DashboardJobPost({ job }: { job: Job }) {
                 >
                   <Button>Apply</Button>
                 </a>
+              ) : (
+                <Button className="mx-auto" disabled>
+                  {STAGE_LABELS[job.stage]}
+                </Button>
               )}
             </DialogFooter>
           </DialogContent>
