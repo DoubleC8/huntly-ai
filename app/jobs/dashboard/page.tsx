@@ -151,10 +151,6 @@ export default async function DashboardPage({
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-                <Button>
-                  Filter
-                  <ListFilter />
-                </Button>
               </div>
             </form>
           </div>

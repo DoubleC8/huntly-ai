@@ -11,9 +11,7 @@ import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { updateJobStage } from "@/app/actions/updateJobStage";
 import { toast } from "sonner";
-
-//this tells us the order of job stages
-const STAGE_ORDER: JobStage[] = ["WISHLIST", "APPLIED", "INTERVIEW", "OFFER"];
+import { STAGE_ORDER } from "@/app/constants/jobStage";
 
 export default function JobColumnJobPost({ job }: { job: Job }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =

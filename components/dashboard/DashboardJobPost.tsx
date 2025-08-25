@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Job } from "@/app/generated/prisma";
 import { toast } from "sonner";
 import { toggleWishlist } from "@/app/actions/toggleWishlist";
+import { STAGE_COLORS, STAGE_LABELS } from "@/app/constants/jobStage";
 
 export default function DashboardJobPost({ job }: { job: Job }) {
   const [isPending, startTransition] = useTransition();
@@ -50,9 +51,18 @@ export default function DashboardJobPost({ job }: { job: Job }) {
   return (
     <Card
       key={job.id}
-      className="
-    bg-[var(--background)]"
+      className={`bg-[var(--background)] flex ${job.stage ? "pt-0" : ""}`}
     >
+      {job.stage && (
+        <div
+          className="w-full h-1/10 rounded-t-xl px-6 py-1"
+          style={{ backgroundColor: `var(${STAGE_COLORS[job.stage]})` }}
+        >
+          <p className="text-[var(--background)] font-bold">
+            {STAGE_LABELS[job.stage]}
+          </p>
+        </div>
+      )}
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex gap-3 items-center justify-center">
@@ -173,14 +183,20 @@ export default function DashboardJobPost({ job }: { job: Job }) {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <a
-                target="_blank"
-                href={job.sourceUrl}
-                rel="noopener noreferrer"
-                className="mx-auto"
-              >
-                <Button>Apply</Button>
-              </a>
+              {job.stage === "APPLIED" ? (
+                <Button className="mx-auto" disabled>
+                  Applied
+                </Button>
+              ) : (
+                <a
+                  target="_blank"
+                  href={job.sourceUrl}
+                  rel="noopener noreferrer"
+                  className="mx-auto"
+                >
+                  <Button>Apply</Button>
+                </a>
+              )}
             </DialogFooter>
           </DialogContent>
         </Dialog>
