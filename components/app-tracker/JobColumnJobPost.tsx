@@ -8,10 +8,33 @@ import Image from "next/image";
 import { Job } from "@/app/generated/prisma";
 import { Button } from "../ui/button";
 import { Trash2 } from "lucide-react";
+import { useDraggable } from "@dnd-kit/core";
 
 export default function JobColumnJobPost({ job }: { job: Job }) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: job.id,
+      data: {
+        job,
+      },
+    });
   return (
-    <Card key={job.id} className="bg-[var(--card)] cursor-grab">
+    <Card
+      key={job.id}
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      style={{
+        transform: transform
+          ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+          : undefined,
+        zIndex: isDragging ? 50 : 0,
+        position: isDragging ? "absolute" : "relative",
+        width: isDragging ? "24%" : "",
+      }}
+      className="lg:min-h-75 lg:max-h-fit
+      bg-[var(--card)] cursor-grab flex felx-col justify-between"
+    >
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex gap-3 items-center justify-center">

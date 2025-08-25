@@ -41,7 +41,7 @@ export default function DashboardJobPost({ job }: { job: Job }) {
             : "Job removed from Wishlist."
         );
       } catch (error) {
-        setIsWishlisted(job.stage === "WISHLIST"); // revert back if failed
+        setIsWishlisted(job.stage === "WISHLIST");
         toast.error("Failed to toggle wishlist.");
       }
     });

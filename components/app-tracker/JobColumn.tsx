@@ -1,7 +1,10 @@
 import { Job } from "@/app/generated/prisma";
 import JobColumnJobPost from "./JobColumnJobPost";
+import { useDroppable } from "@dnd-kit/core";
+import { cn } from "@/lib/utils";
 
 export default function JobColumn({
+  id,
   jobs,
   title,
   color,
@@ -9,6 +12,7 @@ export default function JobColumn({
   total_jobs,
   description,
 }: {
+  id: string;
   jobs: Job[];
   title: string;
   color: string;
@@ -18,11 +22,19 @@ export default function JobColumn({
 }) {
   const Icon = icon;
 
+  const { setNodeRef, isOver } = useDroppable({
+    id: id.toUpperCase(),
+  });
+
   return (
     <div
-      className="lg:w-[24%] lg:h-[83vh] lg:max-h-[83vh]
-     h-1/2 bg-[var(--background)] rounded-lg shadow-md flex 
-     flex-col text-[var(--background)] overflow-y-auto "
+      ref={setNodeRef}
+      className={cn(
+        "lg:w-[24%] lg:h-[83vh] lg:max-h-[83vh] h-1/2 bg-[var(--background)] rounded-lg shadow-md flex flex-col text-[var(--background)] overflow-y-auto",
+        {
+          "ring-2 ring-[var(--app-blue)]": isOver,
+        }
+      )}
     >
       <div
         className="w-full py-2 px-3 flex rounded-t-lg text-lg font-bold justify-between sticky top-0 z-10"
