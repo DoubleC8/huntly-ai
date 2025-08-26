@@ -28,9 +28,9 @@
 
 .desktopAppPageNav{
   width: 100%;
-   justify-content: space-between;
-   gap: calc(var(--spacing) * 3) /* 0.75rem = 12px */;
-   display: none;
+  justify-content: space-between;
+  gap: calc(var(--spacing) * 3) /* 0.75rem = 12px */;
+  display: flex;
 }
 
 @media (width >= 48rem /* 768px */) {
