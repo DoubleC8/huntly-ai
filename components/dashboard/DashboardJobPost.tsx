@@ -122,16 +122,23 @@ export default function DashboardJobPost({ job }: { job: Job }) {
           ) : null}
         </div>
       </CardHeader>
-      <CardContent className="flex flex-col gap-2">
-        <p className="mt-2 text-sm">{job.aiSummary}</p>
-      </CardContent>
-      <CardFooter className="justify-between text-sm text-muted-foreground">
-        <span>
+      <CardContent className="flex flex-col gap-1">
+        <p className="text-muted-foreground text-sm">
           ${job.salaryMin.toLocaleString()} - ${job.salaryMax.toLocaleString()}{" "}
           {job.currency}
-        </span>
+        </p>
+        <p>{job.aiSummary}</p>
+      </CardContent>
+      <CardFooter
+        className="lg:flex-row lg:gap-0
+      flex-col gap-3 justify-end text-sm text-muted-foreground"
+      >
         <Dialog>
-          <DialogTrigger asChild>
+          <DialogTrigger
+            asChild
+            className="md:block
+          hidden"
+          >
             <Button>View</Button>
           </DialogTrigger>
           <DialogContent>
@@ -209,6 +216,15 @@ export default function DashboardJobPost({ job }: { job: Job }) {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        <a
+          className="md:hidden flex w-3/4"
+          target="_blank"
+          rel="noopener noreferrer"
+          href={job.sourceUrl}
+        >
+          <Button className="w-full">Apply</Button>
+        </a>
       </CardFooter>
     </Card>
   );
