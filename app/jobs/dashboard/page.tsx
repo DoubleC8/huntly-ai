@@ -57,23 +57,21 @@ export default async function DashboardPage({
   });
 
   return (
-    <>
-      <div className="desktopAppPageNav">
-        <form className="flex w-full justify-between gap-3">
-          <div className="w-full flex gap-2">
-            <Input
-              type="text"
-              name="q"
-              placeholder="Search for a Job"
-              className="bg-[var(--background)] h-9"
-            />
-            <Button type="submit">
-              Search
-              <Search />
-            </Button>
-          </div>
-        </form>
-      </div>
+    <div className="pageContainer">
+      <form className="flex w-full justify-between gap-3">
+        <div className="w-full flex gap-2">
+          <Input
+            type="text"
+            name="q"
+            placeholder="Search for a Job"
+            className="bg-[var(--background)] h-9"
+          />
+          <Button type="submit">
+            Search
+            <Search />
+          </Button>
+        </div>
+      </form>
       {jobs.length === 0 ? (
         <div className="flex flex-col gap-3 justify-center items-center my-auto">
           <Frown />
@@ -84,6 +82,6 @@ export default async function DashboardPage({
       ) : (
         <RecommendedJobsContainer jobs={jobs} />
       )}
-    </>
+    </div>
   );
 }

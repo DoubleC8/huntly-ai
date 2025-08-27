@@ -1,11 +1,11 @@
-import { ListFilter, Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 export default function AppTrackerDesktopNavbar() {
   return (
     <div className="desktopAppPageNav">
-      <div className="w-[75%] flex gap-2">
+      <div className="w-full flex gap-2">
         <Input
           type="url"
           placeholder="Add External Job Link"
@@ -16,11 +16,6 @@ export default function AppTrackerDesktopNavbar() {
           <Plus />
         </Button>
       </div>
-
-      <Button>
-        Filter
-        <ListFilter />
-      </Button>
     </div>
   );
 }

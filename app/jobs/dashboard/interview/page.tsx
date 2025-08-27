@@ -40,7 +40,7 @@ export default async function interviewedJobsPage() {
   });
 
   return (
-    <>
+    <div className="pageContainer">
       {jobs.length === 0 ? (
         <div className="flex flex-col gap-3 justify-center items-center my-auto">
           <Frown />
@@ -53,6 +53,6 @@ export default async function interviewedJobsPage() {
       ) : (
         <RecommendedJobsContainer jobs={jobs} />
       )}
-    </>
+    </div>
   );
 }
