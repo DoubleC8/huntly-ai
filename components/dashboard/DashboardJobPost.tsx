@@ -7,7 +7,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Star } from "lucide-react";
+import { Building, Clock, MapPin, Pin, Star } from "lucide-react";
 import Image from "next/image";
 import { formatDistanceToNow as formatFn } from "date-fns";
 import {
@@ -77,17 +77,17 @@ export default function DashboardJobPost({ job }: { job: Job }) {
             >
               <Image
                 src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
-                width={60}
-                height={60}
+                width={65}
+                height={65}
                 alt="Logo API"
                 className="rounded-lg"
               />
             </a>
             <div>
               <h2 className="text-xl font-bold">{job.title}</h2>
-              <p className="text-sm text-muted-foreground">
-                {job.company} — {job.location}
-              </p>
+              <div className="flex items-center text-sm text-muted-foreground">
+                {job.company}
+              </div>
 
               {job.postedAt ? (
                 <p className="text-sm text-muted-foreground">
@@ -131,8 +131,25 @@ export default function DashboardJobPost({ job }: { job: Job }) {
       </CardContent>
       <CardFooter
         className="lg:flex-row lg:gap-0
-      flex-col gap-3 justify-end text-sm text-muted-foreground"
+      flex-col gap-3 justify-between text-sm text-muted-foreground"
       >
+        <div className="flex gap-3">
+          {/**TODO: Add feature to when the user clicks on the location, it gives me a rough
+           * estimate of their commute
+           */}
+          <div className="flex items-center gap-1">
+            <MapPin size={14} />
+            <p>{job.location}</p>
+          </div>
+          <div className="flex items-center gap-1">
+            <Clock size={14} />
+            <p>{job.employment}</p>
+          </div>
+          <div className="flex items-center gap-1">
+            <Building size={14} />
+            <p>{job.remoteType}</p>
+          </div>
+        </div>
         <Dialog>
           <DialogTrigger
             asChild
@@ -216,7 +233,6 @@ export default function DashboardJobPost({ job }: { job: Job }) {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-
         <a
           className="md:hidden flex w-3/4"
           target="_blank"
