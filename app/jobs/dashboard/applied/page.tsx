@@ -3,6 +3,7 @@ import RecommendedJobsContainer from "@/components/dashboard/RecommendedJobsCont
 import { Frown } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { JobStage } from "@/app/generated/prisma";
+import DashboardCard from "@/components/dashboard/DashboardCard";
 
 export default async function appliedJobsPage() {
   const session = await auth();
@@ -42,14 +43,10 @@ export default async function appliedJobsPage() {
   return (
     <div className="pageContainer">
       {jobs.length === 0 ? (
-        <div className="flex flex-col gap-3 justify-center items-center my-auto">
-          <Frown />
-          <p className="text-muted-foreground text-center">
-            You haven’t applied to any jobs yet.
-            <br />
-            Once you apply, they’ll show up here to help track your progress.
-          </p>
-        </div>
+        <DashboardCard
+          message="You haven’t applied to any jobs yet."
+          description="Once you apply, they’ll show up here to help track your progress."
+        />
       ) : (
         <RecommendedJobsContainer jobs={jobs} />
       )}

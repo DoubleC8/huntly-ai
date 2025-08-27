@@ -26,7 +26,7 @@ export default function DashboardTitle() {
             href={link.href}
             className={
               pathname === link.href
-                ? "bg-[var(--app-blue)] text-[var(--background)] px-3 rounded-md"
+                ? "text-[var(--app-blue)] underline underline-offset-4"
                 : ""
             }
           >
