@@ -4,7 +4,6 @@ import { Frown, Search } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 export default async function DashboardPage({
   searchParams,
@@ -55,6 +54,9 @@ export default async function DashboardPage({
       postedAt: "desc",
     },
   });
+
+  // border-top-left-radius: calc(var(--radius) + 4px);
+  //border-top-right-radius: calc(var(--radius) + 4px);
 
   return (
     <div className="pageContainer">

@@ -24,7 +24,8 @@ model User {
   sessions      Session[]
 
   //setting relation for user and jobs array
-  jobs Job[] @relation("UserJobs")
+  resumeUrl String?
+  jobs      Job[]   @relation("UserJobs")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -87,9 +88,10 @@ model Job {
   createdAt   DateTime  @default(now())
   postedAt    DateTime?
 
-  stage  JobStage?
-  userId String
-  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserJobs")
+  stage     JobStage?
+  userId    String
+  resumeUrl String?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserJobs")
 
   @@unique([userId, title, company, sourceUrl])
 }

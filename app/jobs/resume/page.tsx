@@ -1,7 +1,6 @@
 import { auth } from "@/auth";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ListFilter, Plus } from "lucide-react";
+import ResumeUploadClient from "@/components/resume/ResumeUploadClient";
+import { prisma } from "@/lib/prisma";
 
 export default async function ResumePage() {
   const session = await auth();
@@ -15,34 +14,30 @@ export default async function ResumePage() {
       </div>
     );
   }
+
+  // get the logged-in user
+  const user = await prisma.user.findUnique({
+    where: { email: session?.user?.email! },
+  });
+
+  if (!user) {
+    return (
+      <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
+        User not found.
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="page">
         <div className="pageTitleContainer">
           <h1 className="pageTitle">Resume</h1>
         </div>
-
-        <div className="mobileAppPageNav">
-          <div
-            className="
-          w-9/10 flex gap-2"
-          >
-            <Input
-              type="url"
-              placeholder="Add External Job Link"
-              className="bg-[var(--background)] h-9 w-8/10"
-            />
-            <Button>
-              <Plus />
-            </Button>
-          </div>
-          <Button>
-            <ListFilter />
-          </Button>
-        </div>
-
         {/**This code below will hold the drag and drop feature for resumes jobs */}
-        <div className="pageContainer"></div>
+        <div className="pageContainer">
+          <ResumeUploadClient email={user.email} />
+        </div>
       </div>
     </>
   );
