@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import ResumeTable from "@/components/resume/ResumeTable";
 import ResumeUploadClient from "@/components/resume/ResumeUploadClient";
 import { prisma } from "@/lib/prisma";
 
@@ -37,6 +38,7 @@ export default async function ResumePage() {
         {/**This code below will hold the drag and drop feature for resumes jobs */}
         <div className="pageContainer">
           <ResumeUploadClient email={user.email} />
+          <ResumeTable />
         </div>
       </div>
     </>

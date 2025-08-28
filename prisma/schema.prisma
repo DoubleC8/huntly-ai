@@ -24,11 +24,11 @@ model User {
   sessions      Session[]
 
   //setting relation for user and jobs array
-  resumeUrl String?
-  jobs      Job[]   @relation("UserJobs")
+  jobs Job[] @relation("UserJobs")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Resume    Resume[]
 }
 
 model Account {
@@ -102,4 +102,14 @@ enum JobStage {
   INTERVIEW
   OFFER
   REJECTED
+}
+
+model Resume {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fileName  String   @default("Resume")
+  publicUrl String
+  isDefault Boolean
+  createdAt DateTime @default(now())
 }

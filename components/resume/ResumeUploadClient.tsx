@@ -16,7 +16,7 @@ export default function ResumeUploadClient({ email }: { email: string }) {
     setUploading(true);
 
     const fileExt = file.name.split(".").pop();
-    const filePath = `${email}/resume.${fileExt}`;
+    const filePath = `${email}/resume-${Date.now()}.${fileExt}`;
 
     const supabase = createClient();
 
@@ -36,7 +36,7 @@ export default function ResumeUploadClient({ email }: { email: string }) {
 
     await fetch("/api/resume/update", {
       method: "POST",
-      body: JSON.stringify({ resumeUrl: publicUrl }),
+      body: JSON.stringify({ resumeUrl: publicUrl, fileName: file.name }),
     });
 
     setUploading(false);
@@ -44,8 +44,6 @@ export default function ResumeUploadClient({ email }: { email: string }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <h2 className="text-xl font-bold">Upload Your Resume</h2>
-
       <Input
         type="file"
         accept="application/pdf"
