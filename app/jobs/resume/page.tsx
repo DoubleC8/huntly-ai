@@ -19,6 +19,7 @@ export default async function ResumePage() {
   // get the logged-in user
   const user = await prisma.user.findUnique({
     where: { email: session?.user?.email! },
+    include: { resumes: true },
   });
 
   if (!user) {
@@ -37,8 +38,14 @@ export default async function ResumePage() {
         </div>
         {/**This code below will hold the drag and drop feature for resumes jobs */}
         <div className="pageContainer">
-          <ResumeUploadClient email={user.email} />
-          <ResumeTable />
+          <div className="flex items-center justify-between">
+            <p className="font-semibold text-muted-foreground">
+              {user.resumes.length}
+              <span className="text-[var(--app-blue)]"> / 5 Resumes Left</span>
+            </p>
+            <ResumeUploadClient email={user.email} />
+          </div>
+          <ResumeTable resumes={user.resumes} />
         </div>
       </div>
     </>

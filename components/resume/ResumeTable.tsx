@@ -1,3 +1,4 @@
+import { Resume } from "@/app/generated/prisma";
 import {
   Table,
   TableBody,
@@ -6,25 +7,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Link from "next/link";
 
-export default function ResumeTable() {
+export default function ResumeTable({ resumes }: { resumes: Resume[] }) {
   return (
-    <Table className="bg-[var(--background)]">
+    <Table className="bg-[var(--background)] rounded-2xl">
       <TableHeader>
-        <TableRow>
+        <TableRow className="border-red-500 py-5">
           <TableHead>Resume</TableHead>
           <TableHead>Link</TableHead>
-          <TableHead>Last Updated</TableHead>
-          <TableHead>Created</TableHead>
+          <TableHead>Uploaded</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow>
-          <TableCell>INV001</TableCell>
-          <TableCell>Paid</TableCell>
-          <TableCell>Credit Card</TableCell>
-          <TableCell>$250.00</TableCell>
-        </TableRow>
+        {resumes.map((resume) => (
+          <TableRow key={resume.id}>
+            <TableCell>{resume.fileName.split(".")[0]}</TableCell>
+            <TableCell className="hover:text-[var(--blue)]">
+              <Link href={resume.publicUrl}>Link</Link>
+            </TableCell>
+            <TableCell>{resume.createdAt.toLocaleDateString()}</TableCell>
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
   );
