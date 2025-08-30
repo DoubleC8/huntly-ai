@@ -7,7 +7,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Building, Clock, MapPin, Pin, Star } from "lucide-react";
+import { Building, Clock, MapPin, Star } from "lucide-react";
 import Image from "next/image";
 import { formatDistanceToNow as formatFn } from "date-fns";
 import {

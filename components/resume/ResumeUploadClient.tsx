@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -22,43 +21,74 @@ import {
   Upload,
   WandSparkles,
 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function ResumeUploadClient({ email }: { email: string }) {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
-  const [open, setOpen] = useState(false); // ⬅️ Dialog state
+  const [open, setOpen] = useState(false);
 
   const handleUpload = async () => {
     if (!file || !email) return;
     setUploading(true);
 
-    const fileExt = file.name.split(".").pop();
-    const filePath = `${email}/resume-${Date.now()}.${fileExt}`;
-    const supabase = createClient();
+    try {
+      const fileExt = file.name.split(".").pop();
+      const filePath = `${email}/resume-${Date.now()}.${fileExt}`;
+      const supabase = createClient();
 
-    const { error: uploadError } = await supabase.storage
-      .from("resumes")
-      .upload(filePath, file, { upsert: true });
+      //this uploads our resume to supabase
+      const { error: uploadError } = await supabase.storage
+        .from("resumes")
+        .upload(filePath, file, { upsert: true });
 
-    if (uploadError) {
-      console.error(uploadError);
+      if (uploadError) {
+        console.error("Upload failed:", uploadError.message);
+        toast.error("Upload failed", {
+          description: "Please try again.",
+        });
+        return;
+      }
+
+      //getting the public url to apply it to our prisma
+      const { data } = supabase.storage.from("resumes").getPublicUrl(filePath);
+      const publicUrl = data?.publicUrl;
+
+      if (!publicUrl) {
+        console.error("No public URL found.");
+        alert("Could not generate file URL. Please try again.");
+        return;
+      }
+
+      setResumeUrl(publicUrl);
+
+      // Save in database
+      const res = await fetch("/api/resume/update", {
+        method: "POST",
+        body: JSON.stringify({ resumeUrl: publicUrl, fileName: file.name }),
+      });
+
+      if (!res.ok) {
+        console.error("⚠️ Failed to save resume metadata:", await res.text());
+        alert("Upload succeeded but failed to save in database.");
+        return;
+      }
+
+      // Success
+      setOpen(false);
+      setFile(null);
+      toast.success("Resume successfully uploaded.", {
+        description: "Sit back and watch the magic happen.",
+      });
+    } catch (error) {
+      console.error("💥 Unexpected error in handleUpload:", error);
+      toast.error("Upload failed", {
+        description: "Please try again.",
+      });
+    } finally {
       setUploading(false);
-      return;
     }
-
-    const { data } = supabase.storage.from("resumes").getPublicUrl(filePath);
-    const publicUrl = data.publicUrl;
-    setResumeUrl(publicUrl);
-
-    await fetch("/api/resume/update", {
-      method: "POST",
-      body: JSON.stringify({ resumeUrl: publicUrl, fileName: file.name }),
-    });
-
-    setUploading(false);
-    setOpen(false); // ✅ Close dialog after successful upload
-    setFile(null); // Optional: clear file after upload
   };
 
   return (
@@ -102,7 +132,8 @@ export default function ResumeUploadClient({ email }: { email: string }) {
           <Button
             onClick={handleUpload}
             disabled={!file || uploading}
-            className="w-full"
+            className="md:w-1/2 md:mx-auto
+            w-full"
           >
             {uploading ? (
               <LoaderCircle className="animate-spin mr-2" size={18} />

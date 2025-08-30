@@ -41,7 +41,7 @@ export default async function ResumePage() {
           <div className="flex items-center justify-between">
             <p className="font-semibold text-muted-foreground">
               {user.resumes.length}
-              <span className="text-[var(--app-blue)]"> / 5 Resumes Left</span>
+              <span className="text-[var(--app-blue)]"> / 5 </span>Resumes Left
             </p>
             <ResumeUploadClient email={user.email} />
           </div>

@@ -4,11 +4,9 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
-  console.log("🔥 /api/resume/update hit");
 
   const session = await auth();
   if (!session) {
-    console.error("❌ Unauthorized access attempt.");
     return new Response("Unauthorized", { status: 401 });
   }
 
