@@ -23,7 +23,13 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-export default function ResumeUploadClient({ email }: { email: string }) {
+export default function ResumeUploadClient({
+  email,
+  onUploadSuccess,
+}: {
+  email: string;
+  onUploadSuccess?: () => void;
+}) {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
@@ -70,7 +76,7 @@ export default function ResumeUploadClient({ email }: { email: string }) {
       });
 
       if (!res.ok) {
-        console.error("⚠️ Failed to save resume metadata:", await res.text());
+        console.error("Failed to save resume metadata:", await res.text());
         alert("Upload succeeded but failed to save in database.");
         return;
       }
@@ -81,8 +87,9 @@ export default function ResumeUploadClient({ email }: { email: string }) {
       toast.success("Resume successfully uploaded.", {
         description: "Sit back and watch the magic happen.",
       });
+      onUploadSuccess?.();
     } catch (error) {
-      console.error("💥 Unexpected error in handleUpload:", error);
+      console.error("Unexpected error in handleUpload:", error);
       toast.error("Upload failed", {
         description: "Please try again.",
       });

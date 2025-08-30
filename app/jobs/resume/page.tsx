@@ -1,7 +1,16 @@
 import { auth } from "@/auth";
+import ResumeDashboardClient from "@/components/resume/ResumeDashboardClient";
 import ResumeTable from "@/components/resume/ResumeTable";
 import ResumeUploadClient from "@/components/resume/ResumeUploadClient";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
+import { HeartCrack } from "lucide-react";
 
 export default async function ResumePage() {
   const session = await auth();
@@ -31,23 +40,11 @@ export default async function ResumePage() {
   }
 
   return (
-    <>
-      <div className="page">
-        <div className="pageTitleContainer">
-          <h1 className="pageTitle">Resume</h1>
-        </div>
-        {/**This code below will hold the drag and drop feature for resumes jobs */}
-        <div className="pageContainer">
-          <div className="flex items-center justify-between">
-            <p className="font-semibold text-muted-foreground">
-              {user.resumes.length}
-              <span className="text-[var(--app-blue)]"> / 5 </span>Resumes Left
-            </p>
-            <ResumeUploadClient email={user.email} />
-          </div>
-          <ResumeTable resumes={user.resumes} />
-        </div>
+    <div className="page">
+      <div className="pageTitleContainer">
+        <h1 className="pageTitle">Resume</h1>
       </div>
-    </>
+      <ResumeDashboardClient email={session?.user?.email!} />
+    </div>
   );
 }

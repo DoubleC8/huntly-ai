@@ -7,11 +7,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Link from "next/link";
 import { formatDistanceToNow as formatFn } from "date-fns";
 import DeleteResumeButton from "./DeleteResumeButton";
 
-export default function ResumeTable({ resumes }: { resumes: Resume[] }) {
+export default function ResumeTable({
+  resumes,
+  refresh,
+}: {
+  resumes: Resume[];
+  refresh?: () => void;
+}) {
   return (
     <Table
       className="
@@ -29,13 +34,19 @@ export default function ResumeTable({ resumes }: { resumes: Resume[] }) {
           <TableRow key={resume.id} className="font-semibold">
             <TableCell>{resume.fileName.split(".")[0]}</TableCell>
             <TableCell className="hover:text-[var(--app-blue)]">
-              <Link href={resume.publicUrl}>Go to Resume</Link>
+              <a
+                target="_blank"
+                href={resume.publicUrl}
+                rel="noopener noreferrer"
+              >
+                Go to Resume
+              </a>
             </TableCell>
             <TableCell className="text-muted-foreground">
               {formatFn(resume.createdAt, { addSuffix: true })}
             </TableCell>
             <TableCell>
-              <DeleteResumeButton resume={resume} />
+              <DeleteResumeButton resume={resume} refresh={refresh} />
             </TableCell>
           </TableRow>
         ))}

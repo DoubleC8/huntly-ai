@@ -14,7 +14,13 @@ import { useState } from "react";
 import { Resume } from "@/app/generated/prisma";
 import { toast } from "sonner";
 
-export default function DeleteResumeButton({ resume }: { resume: Resume }) {
+export default function DeleteResumeButton({
+  resume,
+  refresh,
+}: {
+  resume: Resume;
+  refresh?: () => void;
+}) {
   const { id, publicUrl } = resume;
   const [deleting, setDeleting] = useState(false);
   const [open, setOpen] = useState(false);
@@ -39,6 +45,7 @@ export default function DeleteResumeButton({ resume }: { resume: Resume }) {
     if (response.ok) {
       setOpen(false);
       toast.success("Resume successfully deleted.");
+      refresh?.();
     } else {
       toast.error("Unable to delete resume.", {
         description: "Please try again later.",
@@ -87,28 +94,4 @@ export default function DeleteResumeButton({ resume }: { resume: Resume }) {
       </DialogContent>
     </Dialog>
   );
-}
-
-{
-  /**
-    <Dialog>
-      <DialogTrigger>
-        <Trash2 className="text-muted-foreground ease-in-out duration-200 hover:text-[var(--app-red)] hover:cursor-pointer" />
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader className="flex flex-col items-center gap-4">
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <FileX2 size={55} />
-          <DialogDescription className="text-center">
-            This action will permanently delete your resume. This cannot be
-            undone.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button className="w-full" variant={"destructive"}>
-            Delete
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog> */
 }
