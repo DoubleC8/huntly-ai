@@ -64,7 +64,7 @@ export default function DeleteResumeButton({
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center">
-            Upload Your Resume
+            Are you sure you want to delete this resume?
           </DialogTitle>
         </DialogHeader>
 
@@ -72,8 +72,7 @@ export default function DeleteResumeButton({
           <FileX2 size={55} />
         </div>
         <p className="text-xs text-muted-foreground text-center">
-          Files should be in PDF or Word format and must not exceed 10MB in
-          size.
+          This action cannot be undone.
         </p>
         <DialogFooter>
           <Button

@@ -20,7 +20,10 @@ export default function ResumeTable({
   return (
     <Table
       className="
-    bg-[var(--app-blue)] rounded-2xl"
+    mx-auto
+    bg-[var(--app-blue)] 
+    rounded-2xl 
+  "
     >
       <TableHeader>
         <TableRow className="hover:!bg-transparent">

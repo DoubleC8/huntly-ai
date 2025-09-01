@@ -22,12 +22,15 @@ import {
   WandSparkles,
 } from "lucide-react";
 import { toast } from "sonner";
+import { resumeFileSchema } from "@/lib/validations/resume";
 
 export default function ResumeUploadClient({
   email,
+  resumeCount,
   onUploadSuccess,
 }: {
   email: string;
+  resumeCount: number;
   onUploadSuccess?: () => void;
 }) {
   const [file, setFile] = useState<File | null>(null);
@@ -37,6 +40,22 @@ export default function ResumeUploadClient({
 
   const handleUpload = async () => {
     if (!file || !email) return;
+
+    const result = resumeFileSchema.safeParse(file);
+    if (!result.success) {
+      toast.error("Invalid File", {
+        description: result.error.issues[0]?.message || "File is not valid.",
+      });
+      return;
+    }
+
+    if (resumeCount >= 5) {
+      toast.error("Upload limit reached", {
+        description: "You can only upload up to 5 resumes.",
+      });
+      return;
+    }
+
     setUploading(true);
 
     try {
@@ -44,7 +63,6 @@ export default function ResumeUploadClient({
       const filePath = `${email}/resume-${Date.now()}.${fileExt}`;
       const supabase = createClient();
 
-      //this uploads our resume to supabase
       const { error: uploadError } = await supabase.storage
         .from("resumes")
         .upload(filePath, file, { upsert: true });
@@ -57,19 +75,17 @@ export default function ResumeUploadClient({
         return;
       }
 
-      //getting the public url to apply it to our prisma
       const { data } = supabase.storage.from("resumes").getPublicUrl(filePath);
       const publicUrl = data?.publicUrl;
 
       if (!publicUrl) {
         console.error("No public URL found.");
-        alert("Could not generate file URL. Please try again.");
+        toast.error("URL generation failed");
         return;
       }
 
       setResumeUrl(publicUrl);
 
-      // Save in database
       const res = await fetch("/api/resume/update", {
         method: "POST",
         body: JSON.stringify({ resumeUrl: publicUrl, fileName: file.name }),
@@ -77,16 +93,16 @@ export default function ResumeUploadClient({
 
       if (!res.ok) {
         console.error("Failed to save resume metadata:", await res.text());
-        alert("Upload succeeded but failed to save in database.");
+        toast.error("Upload succeeded but saving failed.");
         return;
       }
 
-      // Success
-      setOpen(false);
-      setFile(null);
-      toast.success("Resume successfully uploaded.", {
+      toast.success("Resume uploaded.", {
         description: "Sit back and watch the magic happen.",
       });
+
+      setOpen(false);
+      setFile(null);
       onUploadSuccess?.();
     } catch (error) {
       console.error("Unexpected error in handleUpload:", error);
@@ -99,16 +115,29 @@ export default function ResumeUploadClient({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        if (resumeCount >= 5 && val) {
+          toast.error("Upload limit reached", {
+            description: "You can only upload up to 5 resumes.",
+          });
+          return;
+        }
+        setOpen(val);
+      }}
+    >
       <DialogTrigger asChild>
-        <Button variant="default" className="flex items-center gap-2">
+        <Button
+          variant="default"
+          className="flex items-center gap-2"
+          disabled={resumeCount >= 5}
+        >
           Add Resume <Plus size={16} />
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className="md:min-w-1/2
-      sm:max-w-md rounded-xl shadow-lg flex flex-col justify-between"
-      >
+
+      <DialogContent className="md:min-w-1/2 sm:max-w-md rounded-xl shadow-lg flex flex-col justify-between">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center">
             Upload Your Resume
@@ -132,15 +161,13 @@ export default function ResumeUploadClient({
           </div>
         </div>
         <p className="text-xs text-muted-foreground text-center">
-          Files should be in PDF or Word format and must not exceed 10MB in
-          size.
+          Files should be in PDF format and must not exceed 10MB in size.
         </p>
         <DialogFooter>
           <Button
             onClick={handleUpload}
             disabled={!file || uploading}
-            className="md:w-1/2 md:mx-auto
-            w-full"
+            className="md:w-1/2 md:mx-auto w-full"
           >
             {uploading ? (
               <LoaderCircle className="animate-spin mr-2" size={18} />

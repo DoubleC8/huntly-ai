@@ -1,16 +1,6 @@
 import { auth } from "@/auth";
 import ResumeDashboardClient from "@/components/resume/ResumeDashboardClient";
-import ResumeTable from "@/components/resume/ResumeTable";
-import ResumeUploadClient from "@/components/resume/ResumeUploadClient";
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-} from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
-import { HeartCrack } from "lucide-react";
 
 export default async function ResumePage() {
   const session = await auth();

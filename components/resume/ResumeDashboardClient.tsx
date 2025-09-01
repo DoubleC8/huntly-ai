@@ -36,10 +36,14 @@ export default function ResumeDashboardClient({ email }: { email: string }) {
           {resumes.length}
           <span className="text-[var(--app-blue)]"> / 5 </span>Resumes Left
         </p>
-        <ResumeUploadClient email={email} onUploadSuccess={fetchResumes} />
+        <ResumeUploadClient
+          email={email}
+          onUploadSuccess={fetchResumes}
+          resumeCount={resumes.length}
+        />
       </div>
 
-      {resumes.length === 0 && !loading ? (
+      {resumes.length === 0 ? (
         <div className="my-auto">
           <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
             <CardContent className="flex flex-col items-center gap-3">
@@ -54,6 +58,7 @@ export default function ResumeDashboardClient({ email }: { email: string }) {
               <ResumeUploadClient
                 email={email}
                 onUploadSuccess={fetchResumes}
+                resumeCount={resumes.length}
               />
             </CardFooter>
           </Card>

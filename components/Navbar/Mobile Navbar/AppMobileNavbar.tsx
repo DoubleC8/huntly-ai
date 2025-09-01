@@ -11,7 +11,7 @@ export default function AppMobileNavar() {
       >
         <span
           className="text-xl tracking-wide
-         font-extrabold text-[var(--ring)]"
+         font-extrabold text-[var(--app-blue)]"
         >
           Huntly Ai
         </span>

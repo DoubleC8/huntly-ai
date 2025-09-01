@@ -147,8 +147,16 @@
   flex-direction: column;
   gap: calc(var(--spacing) * 3) /* 0.75rem = 12px */;
   padding: calc(var(--spacing) * 3) /* 0.75rem = 12px */;
-
 }
+
+.landingPage{
+  background-color: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 3) /* 0.75rem = 12px */;
+  padding: calc(var(--spacing) * 3) /* 0.75rem = 12px */;
+}
+
 
 @media (width >= 48rem /* 768px */) {
     .page{
