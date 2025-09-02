@@ -7,21 +7,34 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { login } from "@/lib/auth-actions";
+import { Button } from "../ui/button";
 
-export default function NavbarLoginButton() {
+export default function LoginButton({ isButton }: { isButton: boolean }) {
   return (
     <Dialog>
       <DialogTrigger
-        className="md:text-lg
+        className="
        font-bold ease-in-out duration-200 hover:text-[var(--ring)] hover:cursor-pointer"
+        asChild
       >
-        Sign In
+        {isButton ? (
+          <Button
+            className="md:w-2/10
+          w-1/2 mx-auto"
+          >
+            Get Started for Free
+          </Button>
+        ) : (
+          <p>Sign In</p>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="w-full flex flex-col gap-3 items-center">
           <DialogTitle className="font-medium text-2xl">
             Welcome to{" "}
-            <span className="font-extrabold text-[#120acd]">Huntly Ai</span>
+            <span className="font-extrabold text-[var(--app-blue)]">
+              Huntly Ai
+            </span>
           </DialogTitle>
           <DialogDescription className="flex flex-col items-center text-center">
             Sign in to track jobs, manage applications, and let AI help
@@ -32,7 +45,7 @@ export default function NavbarLoginButton() {
               className="flex items-center gap-3 justify-center 
               font-bold text-black
               p-2 rounded-md cursor-pointer border-[1px]
-              ease-in-out duration-200 hover:border-[var(--ring)]"
+              ease-in-out duration-200 hover:border-[var(--app-blue)]"
               onClick={login}
             >
               <svg
