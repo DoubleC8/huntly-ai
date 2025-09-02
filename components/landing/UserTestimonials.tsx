@@ -19,14 +19,14 @@ const userTestimonials: Testimony[] = [
   {
     userImage: "/user2.jpg",
     userName: "Gerbert Rodriguez",
-    userOccupation: "Product Designer, NY",
+    userOccupation: "Speech Language Pathologist, SF",
     content:
       "The ability to tailor resumes and track interviews in one place saved me hours. Highly recommend this for any job seeker.",
   },
   {
     userImage: "/user3.jpg",
-    userName: "Connor",
-    userOccupation: "Data Analyst, TX",
+    userName: "Connor Chicoine",
+    userOccupation: "Behavioral Specialist, SF",
     content:
       "Huntly AI gave me clarity and momentum in my job hunt. The visual tracker and AI summaries helped me stay focused and informed.",
   },
@@ -40,14 +40,14 @@ export default function UserTestimonials() {
           flex flex-col gap-3"
       >
         {userTestimonials.map((testimony, index) => (
-          <Card className="md:w-[32%] bg-[var(--background)] gap-1" key={index}>
+          <Card className="md:w-[32%] bg-[var(--background)] gap-3" key={index}>
             <CardHeader className="flex items-center gap-3">
               <div className="relative w-12 h-12 rounded-full overflow-hidden">
                 <Image
                   src={testimony.userImage}
                   alt="User profile"
                   fill
-                  className="object-cover"
+                  className="object-cover bg-muted-foreground"
                 />
               </div>
               <CardTitle className="text-sm font-semibold flex flex-col">

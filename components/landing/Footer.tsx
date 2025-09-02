@@ -14,12 +14,16 @@ export default function Footer() {
       >
         <a
           href="https://github.com/DoubleC8"
+          target="_blank"
+          rel="noopener noreferrer"
           className="hover:text-[var(--app-blue)] ease-in-out duration-200"
         >
           About
         </a>
         <a
           href="https://github.com/DoubleC8"
+          target="_blank"
+          rel="noopener noreferrer"
           className="hover:text-[var(--app-blue)] ease-in-out duration-200"
         >
           GitHub
@@ -32,6 +36,8 @@ export default function Footer() {
         </Link>
         <a
           href="https://github.com/DoubleC8"
+          target="_blank"
+          rel="noopener noreferrer"
           className="hover:text-[var(--app-blue)] ease-in-out duration-200"
         >
           Privacy Policy

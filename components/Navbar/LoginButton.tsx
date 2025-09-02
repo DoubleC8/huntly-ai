@@ -14,7 +14,7 @@ export default function LoginButton({ isButton }: { isButton: boolean }) {
     <Dialog>
       <DialogTrigger
         className="
-       font-bold ease-in-out duration-200 hover:text-[var(--ring)] hover:cursor-pointer"
+       font-bold"
         asChild
       >
         {isButton ? (
@@ -25,7 +25,9 @@ export default function LoginButton({ isButton }: { isButton: boolean }) {
             Get Started for Free
           </Button>
         ) : (
-          <p>Sign In</p>
+          <p className="ease-in-out duration-200 hover:text-[var(--ring)] hover:cursor-pointer">
+            Sign In
+          </p>
         )}
       </DialogTrigger>
       <DialogContent>

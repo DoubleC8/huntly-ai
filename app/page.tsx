@@ -3,8 +3,6 @@ import KeyFeatures from "@/components/landing/KeyFeatures";
 import LoginButton from "@/components/Navbar/LoginButton";
 import ImageCarousel from "@/components/landing/ImageCarousel";
 import Footer from "@/components/landing/Footer";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CircleUser } from "lucide-react";
 import UserTestimonials from "@/components/landing/UserTestimonials";
 
 export default async function Home() {
@@ -32,7 +30,7 @@ export default async function Home() {
         <ImageCarousel />
         <KeyFeatures />
       </div>
-      <div className="pageContainer !bg-[var(--background)] !gap-5 !min-h-fit !py-20">
+      <div className="pageContainer !bg-[var(--background)] !gap-5 !min-h-fit md:!py-20">
         <div className="flex flex-col gap-1 text-center">
           <h1
             className="md:text-4xl
