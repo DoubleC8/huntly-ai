@@ -3,6 +3,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -18,21 +19,28 @@ export default function ResumeTable({
   refresh?: () => void;
 }) {
   return (
-    <Table
-      className="
-    mx-auto
-    bg-[var(--app-blue)] 
-    rounded-2xl 
-  "
-    >
+    <Table className="mx-auto !bg-[var(--background)]">
       <TableHeader>
-        <TableRow className="hover:!bg-transparent">
-          <TableHead className="text-[var(--background)]">Resume</TableHead>
-          <TableHead className="text-[var(--background)]">Link</TableHead>
-          <TableHead className="text-[var(--background)]">Created</TableHead>
+        <TableRow className="bg-[var(--app-blue)]">
+          <TableHead className="text-[var(--background)] font-semibold rounded-tl-lg">
+            Resume
+          </TableHead>
+          <TableHead
+            className="
+           text-[var(--background)] text-left font-semibold"
+          >
+            Link
+          </TableHead>
+          <TableHead
+            className="md:table-cell md:text-center
+          hidden text-[var(--background)] font-semibold text-left"
+          >
+            Created
+          </TableHead>
+          <TableHead className="text-[var(--background)] font-semibold text-left rounded-tr-lg"></TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody className="bg-[var(--background)]">
+      <TableBody className="!overflow-x-auto">
         {resumes.map((resume) => (
           <TableRow key={resume.id} className="font-semibold">
             <TableCell>{resume.fileName.split(".")[0]}</TableCell>
@@ -45,7 +53,10 @@ export default function ResumeTable({
                 Go to Resume
               </a>
             </TableCell>
-            <TableCell className="text-muted-foreground">
+            <TableCell
+              className="md:table-cell md:text-center
+            hidden text-muted-foreground"
+            >
               {formatFn(resume.createdAt, { addSuffix: true })}
             </TableCell>
             <TableCell>

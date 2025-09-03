@@ -52,19 +52,21 @@ export default function KeyFeatures() {
           return (
             <Card
               className="md:w-[24%]
-            bg-[var(--background)] gap-1"
+            bg-[var(--background)] gap-3"
               key={index}
             >
               <CardHeader>
-                <CardTitle>
+                <CardTitle className="flex items-center gap-3">
                   <Icon />
+                  <h1 className="font-bold text-lg text-[var(--app-blue)]">
+                    {keyFeature.header}
+                  </h1>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <h1 className="font-bold text-lg text-[var(--app-blue)]">
-                  {keyFeature.header}
-                </h1>
-                <p className="text-muted-foreground">{keyFeature.content}</p>
+                <p className="text-muted-foreground text-sm">
+                  {keyFeature.content}
+                </p>
               </CardContent>
             </Card>
           );

@@ -55,9 +55,6 @@ export default async function DashboardPage({
     },
   });
 
-  // border-top-left-radius: calc(var(--radius) + 4px);
-  //border-top-right-radius: calc(var(--radius) + 4px);
-
   return (
     <div className="pageContainer">
       <form className="flex w-full justify-between gap-3">

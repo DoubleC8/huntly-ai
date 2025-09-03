@@ -4,11 +4,11 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <nav
-      className="px-4 py-1 md:flex-row
-    bg-[var(--background)] flex flex-col justify-between top-0 z-50 h-14 w-full items-center  border-t border-gray-200 shadow-md"
+      className="px-4 py-3 md:flex-row md:h-14
+    bg-[var(--background)] flex flex-col gap-3 justify-between h-fit w-full items-center border-t border-gray-200 shadow-md"
     >
       <div
-        className="md:w-1/2
+        className="md:w-1/2 
         w-full justify-between
       text-muted-foreground flex items-center bg-red"
       >

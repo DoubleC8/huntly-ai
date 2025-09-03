@@ -52,7 +52,7 @@ export default function UserTestimonials() {
               </div>
               <CardTitle className="text-sm font-semibold flex flex-col">
                 <p>{testimony.userName}</p>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground font-normal">
                   {testimony.userOccupation}
                 </p>
               </CardTitle>

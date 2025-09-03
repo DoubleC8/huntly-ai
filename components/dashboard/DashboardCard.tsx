@@ -22,7 +22,7 @@ export default function DashboardCard({
         </CardContent>
         <CardFooter>
           <Link
-            href="/jobs/resume"
+            href="/jobs/dashboard"
             className="lg:w-1/2 
           w-3/4 mx-auto"
           >

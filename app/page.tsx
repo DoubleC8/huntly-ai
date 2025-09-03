@@ -14,7 +14,7 @@ export default async function Home() {
         <div className="flex flex-col gap-5 text-center">
           <h1
             className="md:text-6xl
-          text-[var(--app-blue)] font-extrabold text-2xl"
+          text-[var(--app-blue)] font-extrabold text-3xl"
           >
             All Your Applications.
             <br />
@@ -34,7 +34,7 @@ export default async function Home() {
         <div className="flex flex-col gap-1 text-center">
           <h1
             className="md:text-4xl
-          text-[var(--app-blue)] font-extrabold text-2xl"
+          text-[var(--app-blue)] font-extrabold text-xl"
           >
             What Our Users Say
           </h1>

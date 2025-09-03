@@ -3,7 +3,7 @@ import NavbarBurgerButton from "./NavbarBurgerButton";
 
 export default function AppMobileNavar() {
   return (
-    <nav className="flex top-0 z-50 h-14 w-full items-center px-4 border-b border-gray-200 shadow-md">
+    <nav className="sticky bg-[var(--background)] flex justify-between top-0 z-50 h-14 w-full items-center px-4 border-b border-gray-200 shadow-md">
       <NavbarBurgerButton />
       <Link
         href={"/jobs/dashboard"}

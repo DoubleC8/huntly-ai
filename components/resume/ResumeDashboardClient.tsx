@@ -11,7 +11,6 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { HeartCrack } from "lucide-react";
-import { toast } from "sonner";
 
 export default function ResumeDashboardClient({ email }: { email: string }) {
   const [resumes, setResumes] = useState<Resume[]>([]);
