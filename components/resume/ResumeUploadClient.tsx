@@ -133,7 +133,13 @@ export default function ResumeUploadClient({
           className="flex items-center gap-2"
           disabled={resumeCount >= 5}
         >
-          Add Resume <Plus size={16} />
+          <span
+            className="md:block
+          hidden"
+          >
+            Add Resume
+          </span>{" "}
+          <Plus size={16} />
         </Button>
       </DialogTrigger>
 

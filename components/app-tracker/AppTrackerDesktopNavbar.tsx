@@ -12,7 +12,12 @@ export default function AppTrackerDesktopNavbar() {
           className="bg-[var(--background)]  h-9"
         />
         <Button>
-          Add Job
+          <span
+            className="md:block
+          hidden"
+          >
+            Add Job
+          </span>
           <Plus />
         </Button>
       </div>

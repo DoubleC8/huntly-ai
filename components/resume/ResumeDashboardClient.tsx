@@ -4,13 +4,8 @@ import { useEffect, useState } from "react";
 import ResumeUploadClient from "./ResumeUploadClient";
 import ResumeTable from "./ResumeTable";
 import { Resume } from "@/app/generated/prisma";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-} from "@/components/ui/card";
-import { HeartCrack } from "lucide-react";
+import { Card, CardContent, CardDescription, CardFooter } from "../ui/card";
+import { HeartCrack, PartyPopper } from "lucide-react";
 
 export default function ResumeDashboardClient({ email }: { email: string }) {
   const [resumes, setResumes] = useState<Resume[]>([]);
@@ -31,18 +26,33 @@ export default function ResumeDashboardClient({ email }: { email: string }) {
   return (
     <div className="pageContainer">
       <div className="flex items-center justify-between">
-        <p className="font-semibold text-muted-foreground">
-          {resumes.length}
-          <span className="text-[var(--app-blue)]"> / 5 </span>Resumes Left
-        </p>
+        {resumes.length === 5 ? (
+          <p
+            className="md:text-base
+          text-sm font-semibold text-[var(--app-blue)] flex items-center gap-1"
+          >
+            <PartyPopper size={16} /> You’ve uploaded all 5 resumes – You’re all
+            set!
+          </p>
+        ) : (
+          <p className="font-semibold text-muted-foreground">
+            <span
+              style={{
+                color: resumes.length === 5 ? "var(--app-blue)" : "",
+              }}
+            >
+              {resumes.length}
+            </span>
+            <span className="text-[var(--app-blue)]"> / 5 </span>Resumes Left
+          </p>
+        )}
         <ResumeUploadClient
           email={email}
           onUploadSuccess={fetchResumes}
           resumeCount={resumes.length}
         />
       </div>
-
-      {resumes.length === 0 ? (
+      {resumes.length === 0 || (resumes.length === 0 && !loading) ? (
         <div className="my-auto">
           <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
             <CardContent className="flex flex-col items-center gap-3">
