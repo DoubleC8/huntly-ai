@@ -14,7 +14,7 @@ export default function ResumeDashboardClient({ email }: { email: string }) {
 
   const fetchResumes = async () => {
     setLoading(true);
-    const res = await fetch("/api/resume/list");
+    const res = await fetch("/api/resumes");
     const data = await res.json();
     setResumes(data || []);
     setLoading(false);

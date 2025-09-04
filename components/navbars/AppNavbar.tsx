@@ -1,5 +1,5 @@
-import AppMobileNavar from "./Mobile Navbar/AppMobileNavbar";
-import AppSidebarNavbar from "./Desktop Navbar/AppSideNavbar";
+import AppMobileNavar from "./mobile-navbar/AppMobileNavbar";
+import AppSidebarNavbar from "./desktop-navbar/AppSideNavbar";
 
 export function AppNavbar() {
   return (

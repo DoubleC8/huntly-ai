@@ -86,7 +86,7 @@ export default function ResumeUploadClient({
 
       setResumeUrl(publicUrl);
 
-      const res = await fetch("/api/resume/update", {
+      const res = await fetch("/api/resumes", {
         method: "POST",
         body: JSON.stringify({ resumeUrl: publicUrl, fileName: file.name }),
       });

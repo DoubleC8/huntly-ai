@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { AppNavbar } from "@/components/Navbar/AppNavbar";
+import { AppNavbar } from "@/components/navbars/AppNavbar";
 
 export default async function JobsLayout({
   children,

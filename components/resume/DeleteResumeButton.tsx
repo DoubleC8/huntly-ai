@@ -34,15 +34,12 @@ export default function DeleteResumeButton({
 
     const filePath = publicUrl.split("/resumes/")[1];
 
-    const response = await fetch("/api/resume/delete", {
-      method: "POST",
-      body: JSON.stringify({
-        id: id,
-        filePath,
-      }),
+    const res = await fetch(`/api/resumes/${resume.id}`, {
+      method: "DELETE",
+      body: JSON.stringify({ filePath }),
     });
 
-    if (response.ok) {
+    if (res.ok) {
       setOpen(false);
       toast.success("Resume successfully deleted.");
       refresh?.();
