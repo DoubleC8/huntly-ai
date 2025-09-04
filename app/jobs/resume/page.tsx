@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
-import ResumeDashboardClient from "@/components/resume/ResumeDashboardClient";
 import { prisma } from "@/lib/prisma";
+import ResumeNavbar from "@/components/resume/ResumeNavbar";
+import ResumeDashboardClient from "@/components/resume/ResumeDashboardClient";
 
 export default async function ResumePage() {
   const session = await auth();
@@ -15,9 +16,9 @@ export default async function ResumePage() {
     );
   }
 
-  // get the logged-in user
   const user = await prisma.user.findUnique({
     where: { email: session?.user?.email! },
+    //we need this since users have a relationship with the resumes
     include: { resumes: true },
   });
 
@@ -34,7 +35,12 @@ export default async function ResumePage() {
       <div className="pageTitleContainer">
         <h1 className="pageTitle">Resume</h1>
       </div>
-      <ResumeDashboardClient email={session?.user?.email!} />
+      <div
+        className="
+            pageContainer !min-h-[94vh]"
+      >
+        <ResumeDashboardClient email={session?.user?.email!} />
+      </div>
     </div>
   );
 }

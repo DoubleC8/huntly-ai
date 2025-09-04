@@ -66,7 +66,12 @@ export default async function DashboardPage({
             className="bg-[var(--background)] h-9"
           />
           <Button type="submit">
-            Search
+            <span
+              className="md:block
+          hidden"
+            >
+              Search
+            </span>
             <Search />
           </Button>
         </div>
