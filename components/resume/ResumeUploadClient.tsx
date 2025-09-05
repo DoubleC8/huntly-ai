@@ -23,15 +23,16 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { resumeFileSchema } from "@/lib/validations/resume";
+import { Resume } from "@/app/generated/prisma";
 
 export default function ResumeUploadClient({
   email,
   resumeCount,
-  onUploadSuccess,
+  setResumes,
 }: {
   email: string;
   resumeCount: number;
-  onUploadSuccess?: () => void;
+  setResumes: React.Dispatch<React.SetStateAction<Resume[]>>;
 }) {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -101,9 +102,11 @@ export default function ResumeUploadClient({
         description: "Sit back and watch the magic happen.",
       });
 
+      const newResume: Resume = await res.json();
+
+      setResumes((prev) => [newResume, ...prev]);
       setOpen(false);
       setFile(null);
-      onUploadSuccess?.();
     } catch (error) {
       console.error("Unexpected error in handleUpload:", error);
       toast.error("Upload failed", {

@@ -17,13 +17,13 @@ import { toast } from "sonner";
 
 export default function ResumeTable({
   resumes,
-  refresh,
+  setResumes,
 }: {
   resumes: Resume[];
-  refresh?: () => void;
+  setResumes: React.Dispatch<React.SetStateAction<Resume[]>>;
 }) {
   const [isPending, startTransition] = useTransition();
-  const [localResumes, setLocalResumes] = useState(resumes);
+  const localResumes = resumes;
 
   const handleSetDefaultResume = async (resumeId: string) => {
     startTransition(async () => {
@@ -39,7 +39,7 @@ export default function ResumeTable({
           return;
         }
 
-        setLocalResumes((prev) =>
+        setResumes((prev) =>
           prev.map((resume) => ({
             ...resume,
             isDefault: resume.id === resumeId,
@@ -77,57 +77,61 @@ export default function ResumeTable({
       </TableHeader>
 
       <TableBody className="bg-[var(--background)] !h-14">
-        {localResumes.map((resume, index) => {
-          const isLast = index === resumes.length - 1;
-
-          return (
-            <TableRow key={resume.id} className="font-semibold">
-              <TableCell className={isLast ? "rounded-bl-2xl" : ""}>
-                <div className="flex items-center gap-3">
-                  <button
-                    className="hover:cursor-pointer disabled:cursor-not-allowed"
-                    onClick={() => handleSetDefaultResume(resume.id)}
-                    disabled={isPending || resume.isDefault}
-                    title={
-                      resume.isDefault
-                        ? "Already default"
-                        : "Set as default resume"
-                    }
+        {localResumes
+          .sort(
+            (a: Resume, b: Resume) =>
+              (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0)
+          )
+          .map((resume, index) => {
+            const isLast = index === resumes.length - 1;
+            return (
+              <TableRow key={resume.id} className="font-semibold">
+                <TableCell className={isLast ? "rounded-bl-2xl" : ""}>
+                  <div className="flex items-center gap-3">
+                    <button
+                      className="hover:cursor-pointer disabled:cursor-not-allowed"
+                      onClick={() => handleSetDefaultResume(resume.id)}
+                      disabled={isPending || resume.isDefault}
+                      title={
+                        resume.isDefault
+                          ? "Already default"
+                          : "Set as default resume"
+                      }
+                    >
+                      {resume.isDefault ? (
+                        <Star
+                          fill="yellow"
+                          className="text-[var(--app-yellow)]"
+                        />
+                      ) : (
+                        <Star className="hover:text-[var(--app-yellow)]" />
+                      )}
+                    </button>
+                    <p>{resume.fileName.split(".")[0]}</p>
+                  </div>
+                </TableCell>
+                <TableCell className="hover:text-[var(--app-blue)]">
+                  <a
+                    target="_blank"
+                    href={resume.publicUrl}
+                    rel="noopener noreferrer"
                   >
-                    {resume.isDefault ? (
-                      <Star
-                        fill="yellow"
-                        className="text-[var(--app-yellow)]"
-                      />
-                    ) : (
-                      <Star className="hover:text-[var(--app-yellow)]" />
-                    )}
-                  </button>
-                  <p>{resume.fileName.split(".")[0]}</p>
-                </div>
-              </TableCell>
-              <TableCell className="hover:text-[var(--app-blue)]">
-                <a
-                  target="_blank"
-                  href={resume.publicUrl}
-                  rel="noopener noreferrer"
-                >
-                  Go to Resume
-                </a>
-              </TableCell>
-              <TableCell
-                className={`
+                    Go to Resume
+                  </a>
+                </TableCell>
+                <TableCell
+                  className={`
             md:table-cell md:text-center hidden text-muted-foreground
           `}
-              >
-                {formatFn(resume.createdAt, { addSuffix: true })}
-              </TableCell>
-              <TableCell className={isLast ? "rounded-br-2xl" : ""}>
-                <DeleteResumeButton resume={resume} refresh={refresh} />
-              </TableCell>
-            </TableRow>
-          );
-        })}
+                >
+                  {formatFn(resume.createdAt, { addSuffix: true })}
+                </TableCell>
+                <TableCell className={isLast ? "rounded-br-2xl" : ""}>
+                  <DeleteResumeButton resume={resume} setResumes={setResumes} />
+                </TableCell>
+              </TableRow>
+            );
+          })}
       </TableBody>
     </Table>
   );

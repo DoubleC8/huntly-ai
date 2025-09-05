@@ -1,14 +1,15 @@
 import { PartyPopper } from "lucide-react";
 import ResumeUploadClient from "./ResumeUploadClient";
+import { Resume } from "@/app/generated/prisma";
 
 export default function ResumeNavbar({
   email,
   resumeCount,
-  onUploadSuccess,
+  setResumes,
 }: {
   email: string;
   resumeCount: number;
-  onUploadSuccess?: () => void;
+  setResumes: React.Dispatch<React.SetStateAction<Resume[]>>;
 }) {
   return (
     <div className="desktopAppPageNav">
@@ -39,7 +40,7 @@ export default function ResumeNavbar({
         <ResumeUploadClient
           email={email}
           resumeCount={resumeCount}
-          onUploadSuccess={onUploadSuccess}
+          setResumes={setResumes}
         />
       </div>
     </div>

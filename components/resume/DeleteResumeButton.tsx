@@ -16,10 +16,10 @@ import { toast } from "sonner";
 
 export default function DeleteResumeButton({
   resume,
-  refresh,
+  setResumes,
 }: {
   resume: Resume;
-  refresh?: () => void;
+  setResumes: React.Dispatch<React.SetStateAction<Resume[]>>;
 }) {
   const { id, publicUrl } = resume;
   const [deleting, setDeleting] = useState(false);
@@ -40,9 +40,9 @@ export default function DeleteResumeButton({
     });
 
     if (res.ok) {
+      setResumes((prev) => prev.filter((r) => r.id !== resume.id));
       setOpen(false);
       toast.success("Resume successfully deleted.");
-      refresh?.();
     } else {
       toast.error("Unable to delete resume.", {
         description: "Please try again later.",

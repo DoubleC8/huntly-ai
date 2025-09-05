@@ -16,6 +16,7 @@ export default function ResumeDashboardClient({ email }: { email: string }) {
     setLoading(true);
     const res = await fetch("/api/resumes");
     const data = await res.json();
+    // Sort default resume to top
     setResumes(data || []);
     setLoading(false);
   };
@@ -29,9 +30,9 @@ export default function ResumeDashboardClient({ email }: { email: string }) {
       <ResumeNavbar
         email={email}
         resumeCount={resumes.length}
-        onUploadSuccess={fetchResumes}
+        setResumes={setResumes}
       />
-      {resumes.length === 0 || (resumes.length === 0 && !loading) ? (
+      {!loading && resumes.length === 0 ? (
         <div className="my-auto">
           <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
             <CardContent className="flex flex-col items-center gap-3">
@@ -45,17 +46,17 @@ export default function ResumeDashboardClient({ email }: { email: string }) {
             <CardFooter className="mx-auto">
               <ResumeUploadClient
                 email={email}
-                onUploadSuccess={fetchResumes}
                 resumeCount={resumes.length}
+                setResumes={setResumes}
               />
             </CardFooter>
           </Card>
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          <ResumeTable resumes={resumes} refresh={fetchResumes} />
+          <ResumeTable resumes={resumes} setResumes={setResumes} />
           <p className="text-muted-foreground text-center text-sm">
-            Mark your star resume — and let Huntly work its AI magic
+            Mark your star resume, and let Huntly work its AI magic.
           </p>
         </div>
       )}
