@@ -52,7 +52,12 @@ export default function ResumeDashboardClient({ email }: { email: string }) {
           </Card>
         </div>
       ) : (
-        <ResumeTable resumes={resumes} refresh={fetchResumes} />
+        <div className="flex flex-col gap-3">
+          <ResumeTable resumes={resumes} refresh={fetchResumes} />
+          <p className="text-muted-foreground text-center text-sm">
+            Mark your star resume — and let Huntly work its AI magic
+          </p>
+        </div>
       )}
     </>
   );

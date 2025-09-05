@@ -1,3 +1,5 @@
+"use client";
+
 import { Resume } from "@/app/generated/prisma";
 import {
   Table,
@@ -9,7 +11,9 @@ import {
 } from "@/components/ui/table";
 import { formatDistanceToNow as formatFn } from "date-fns";
 import DeleteResumeButton from "./DeleteResumeButton";
-import { Frown } from "lucide-react";
+import { Star } from "lucide-react";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
 
 export default function ResumeTable({
   resumes,
@@ -18,6 +22,40 @@ export default function ResumeTable({
   resumes: Resume[];
   refresh?: () => void;
 }) {
+  const [isPending, startTransition] = useTransition();
+  const [localResumes, setLocalResumes] = useState(resumes);
+
+  const handleSetDefaultResume = async (resumeId: string) => {
+    startTransition(async () => {
+      try {
+        const res = await fetch(`/api/resumes/${resumeId}`, {
+          method: "PATCH",
+        });
+
+        if (!res.ok) {
+          toast.error("Failed to set default resume.", {
+            description: await res.text(),
+          });
+          return;
+        }
+
+        setLocalResumes((prev) =>
+          prev.map((resume) => ({
+            ...resume,
+            isDefault: resume.id === resumeId,
+          }))
+        );
+
+        toast.success("Default Resume Updated!", {
+          description: "Let the job hunt magic begin.",
+        });
+      } catch (error) {
+        console.error("Error setting default resume:", error);
+        toast.error("Failed to set default resume.");
+      }
+    });
+  };
+
   return (
     <Table className="mx-auto rounded-t-2xl">
       <TableHeader>
@@ -39,13 +77,34 @@ export default function ResumeTable({
       </TableHeader>
 
       <TableBody className="bg-[var(--background)] !h-14">
-        {resumes.map((resume, index) => {
+        {localResumes.map((resume, index) => {
           const isLast = index === resumes.length - 1;
 
           return (
             <TableRow key={resume.id} className="font-semibold">
               <TableCell className={isLast ? "rounded-bl-2xl" : ""}>
-                {resume.fileName.split(".")[0]}
+                <div className="flex items-center gap-3">
+                  <button
+                    className="hover:cursor-pointer disabled:cursor-not-allowed"
+                    onClick={() => handleSetDefaultResume(resume.id)}
+                    disabled={isPending || resume.isDefault}
+                    title={
+                      resume.isDefault
+                        ? "Already default"
+                        : "Set as default resume"
+                    }
+                  >
+                    {resume.isDefault ? (
+                      <Star
+                        fill="yellow"
+                        className="text-[var(--app-yellow)]"
+                      />
+                    ) : (
+                      <Star className="hover:text-[var(--app-yellow)]" />
+                    )}
+                  </button>
+                  <p>{resume.fileName.split(".")[0]}</p>
+                </div>
               </TableCell>
               <TableCell className="hover:text-[var(--app-blue)]">
                 <a
