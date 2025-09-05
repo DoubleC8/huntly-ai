@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+// gets all user resumes
 export async function GET() {
   const session = await auth();
   if (!session?.user?.email) return NextResponse.json([], { status: 401 });
@@ -14,6 +15,7 @@ export async function GET() {
   return NextResponse.json(user?.resumes ?? []);
 }
 
+// uploads users new resumes
 export async function POST(req: Request) {
   const session = await auth();
   if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -32,25 +32,32 @@ export default function DeleteResumeButton({
 
     setDeleting(true);
 
-    const filePath = publicUrl.split("/resumes/")[1];
+    try {
+      const filePath = publicUrl.split("/resumes/")[1];
 
-    const res = await fetch(`/api/resumes/${resume.id}`, {
-      method: "DELETE",
-      body: JSON.stringify({ filePath }),
-    });
-
-    if (res.ok) {
-      setResumes((prev) => prev.filter((r) => r.id !== resume.id));
-      setOpen(false);
-      toast.success("Resume successfully deleted.");
-    } else {
-      toast.error("Unable to delete resume.", {
-        description: "Please try again later.",
+      const res = await fetch(`/api/resumes/${resume.id}`, {
+        method: "DELETE",
+        body: JSON.stringify({ filePath }),
       });
-      console.error("Failed to delete resume.");
-    }
 
-    setDeleting(false);
+      if (res.ok) {
+        setResumes((prev) => prev.filter((r) => r.id !== resume.id));
+        setOpen(false);
+        toast.success("Resume successfully deleted.");
+      } else {
+        toast.error("Unable to delete resume.", {
+          description: "Please try again later.",
+        });
+        console.error("Failed to delete resume.");
+      }
+    } catch (error) {
+      console.error("Unexpected error in handleDelete: ", error);
+      toast.error("Delete fauled", {
+        description: "Please try again.",
+      });
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (

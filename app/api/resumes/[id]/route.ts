@@ -6,9 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 //handles deleting resumes
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const session = await auth();
-  if (!session?.user?.email) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  if (!session?.user?.email) { return NextResponse.json({ error: "Unauthorized" }, { status: 401 }); }
 
   const { filePath } = await req.json();
 
