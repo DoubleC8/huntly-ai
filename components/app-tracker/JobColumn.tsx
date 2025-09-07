@@ -47,19 +47,7 @@ export default function JobColumn({
         <p>{total_jobs}</p>
       </div>
 
-      {total_jobs === 0 && (
-        <div className="flex-1 flex  flex-col my-auto justify-center text-center text-[var(--foreground)] px-4">
-          <div
-            className="lg:h-1/4
-          h-1/2 flex flex-col gap-3 items-center "
-          >
-            <Icon size={30} />
-            <p className="text-sm opacity-70">{description}</p>
-          </div>
-        </div>
-      )}
-
-      <div className="flex flex-col gap-3 p-2">
+      <div className="flex flex-col gap-3 p-2 h-full">
         {jobs.map((job) => (
           <JobColumnJobPost job={job} key={job.id} />
         ))}

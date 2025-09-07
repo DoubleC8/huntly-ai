@@ -83,6 +83,7 @@ export default function AppTrackerColumnContainer({
     }
   };
 
+  //checks if the screen is large, if it is then allow drag and drop else disable it
   return isLargeScreen ? (
     <DndContext
       collisionDetection={closestCenter}

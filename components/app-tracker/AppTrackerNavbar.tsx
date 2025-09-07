@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
-export default function AppTrackerDesktopNavbar() {
+export default function AppTrackerNavbar() {
   return (
     <div className="desktopAppPageNav">
       <div className="w-full flex gap-2">

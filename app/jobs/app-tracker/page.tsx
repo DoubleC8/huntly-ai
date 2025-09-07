@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import AppTrackerColumnContainer from "@/components/app-tracker/AppTrackerColumnContainer";
-import AppTrackerDesktopNavbar from "@/components/app-tracker/AppTrackerDesktopNavbar";
+import AppTrackerNavbar from "@/components/app-tracker/AppTrackerNavbar";
 import AppTrackerTitle from "@/components/app-tracker/AppTrackerTitle";
 import { prisma } from "@/lib/prisma";
 
@@ -65,7 +65,7 @@ export default async function ApplicationTrackerPage() {
         className="
       pageContainer !min-h-[94vh]"
       >
-        <AppTrackerDesktopNavbar />
+        <AppTrackerNavbar />
         <AppTrackerColumnContainer
           wishlist={wishlistJobs}
           applied={appliedJobs}

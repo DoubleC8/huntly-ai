@@ -107,7 +107,16 @@ export default function ResumeTable({
                         <Star className="hover:text-[var(--app-yellow)]" />
                       )}
                     </button>
-                    <p>{resume.fileName.split(".")[0]}</p>
+                    {resume.isDefault ? (
+                      <p>
+                        {resume.fileName.split(".")[0]}{" "}
+                        <span className="hidden md:inline-block text-[var(--app-blue)]">
+                          (Default)
+                        </span>
+                      </p>
+                    ) : (
+                      <p>{resume.fileName.split(".")[0]}</p>
+                    )}
                   </div>
                 </TableCell>
                 <TableCell className="hover:text-[var(--app-blue)]">
