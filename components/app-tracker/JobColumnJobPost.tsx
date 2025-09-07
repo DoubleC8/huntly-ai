@@ -61,7 +61,8 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
         position: isDragging ? "absolute" : "relative",
         width: isDragging ? "24%" : "",
       }}
-      className="flex flex-col gap-3 justify-between p-3 min-h-[30%] max-h-[30%]"
+      className="lg:min-h-[30%] lg:max-h-[30%]
+      flex flex-col gap-3 justify-between p-3"
     >
       <CardHeader className="flex gap-3 items-center p-0">
         <a target="_blank" href="https://logo.dev" rel="noopener noreferrer">
