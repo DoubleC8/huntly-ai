@@ -41,6 +41,10 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
           description: "Congrats!",
         }
       );
+      const timer = setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+      return () => clearTimeout(timer);
     } catch (err) {
       toast.error("Failed to update job stage.");
     }

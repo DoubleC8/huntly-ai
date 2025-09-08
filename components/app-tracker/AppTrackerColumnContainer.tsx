@@ -101,7 +101,7 @@ function Layout({ columns }: { columns: Record<JobStage, Job[]> }) {
   return (
     <div
       className="lg:flex-row lg:justify-between lg:h-[85vh]
-    relative w-full flex flex-col gap-3 overflow-y-auto"
+    relative w-full flex flex-col gap-3 "
     >
       <JobColumn
         id="WISHLIST"

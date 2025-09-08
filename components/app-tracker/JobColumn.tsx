@@ -33,10 +33,7 @@ export default function JobColumn({
         "w-full h-[40vh] max-h-[40vh] min-h-[40vh]", // default: small & medium screens
         "md:min-h-[33vh]",
         "lg:w-[24%] lg:h-full lg:max-h-none",
-        "bg-[var(--background)] shadow-lg rounded-lg flex flex-col text-[var(--background)]",
-        {
-          "ring-2 ring-[var(--app-blue)]": isOver,
-        }
+        "bg-[var(--background)] shadow-lg rounded-lg flex flex-col text-[var(--background)]"
       )}
     >
       <div

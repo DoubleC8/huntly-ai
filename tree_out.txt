@@ -1,0 +1,170 @@
+.
+├── app
+│   ├── actions
+│   │   ├── setJobAsWishlist.ts
+│   │   ├── toggleWishlist.ts
+│   │   └── updateJobStage.ts
+│   ├── api
+│   │   ├── auth
+│   │   │   └── [...nextauth]
+│   │   │       └── route.ts
+│   │   ├── jobs
+│   │   │   └── :id
+│   │   │       └── star.ts
+│   │   └── resumes
+│   │       ├── [id]
+│   │       │   └── route.ts
+│   │       └── route.ts
+│   ├── constants
+│   │   └── jobStage.ts
+│   ├── favicon.ico
+│   ├── generated
+│   │   └── prisma
+│   │       ├── client.d.ts
+│   │       ├── client.js
+│   │       ├── default.d.ts
+│   │       ├── default.js
+│   │       ├── edge.d.ts
+│   │       ├── edge.js
+│   │       ├── index-browser.js
+│   │       ├── index.d.ts
+│   │       ├── index.js
+│   │       ├── libquery_engine-darwin-arm64.dylib.node
+│   │       ├── package.json
+│   │       ├── runtime
+│   │       │   ├── edge-esm.js
+│   │       │   ├── edge.js
+│   │       │   ├── index-browser.d.ts
+│   │       │   ├── index-browser.js
+│   │       │   ├── library.d.ts
+│   │       │   ├── library.js
+│   │       │   ├── react-native.js
+│   │       │   ├── wasm-compiler-edge.js
+│   │       │   └── wasm-engine-edge.js
+│   │       ├── schema.prisma
+│   │       ├── wasm.d.ts
+│   │       └── wasm.js
+│   ├── globals.css
+│   ├── jobs
+│   │   ├── app-tracker
+│   │   │   └── page.tsx
+│   │   ├── dashboard
+│   │   │   ├── applied
+│   │   │   │   └── page.tsx
+│   │   │   ├── interview
+│   │   │   │   └── page.tsx
+│   │   │   ├── layout.tsx
+│   │   │   ├── offer
+│   │   │   │   └── page.tsx
+│   │   │   ├── page.tsx
+│   │   │   └── wishlist
+│   │   │       └── page.tsx
+│   │   ├── layout.tsx
+│   │   ├── profile
+│   │   │   └── page.tsx
+│   │   ├── resume
+│   │   │   ├── loading.tsx
+│   │   │   └── page.tsx
+│   │   └── settings
+│   │       └── page.tsx
+│   ├── layout.tsx
+│   └── page.tsx
+├── auth.ts
+├── code.txt
+├── components
+│   ├── app-tracker
+│   │   ├── AppTrackerColumnContainer.tsx
+│   │   ├── AppTrackerNavbar.tsx
+│   │   ├── AppTrackerTitle.tsx
+│   │   ├── JobColumn.tsx
+│   │   └── JobColumnJobPost.tsx
+│   ├── dashboard
+│   │   ├── DashboardCard.tsx
+│   │   ├── DashboardJobPost.tsx
+│   │   ├── DashboardTitle.tsx
+│   │   ├── RecommendedJobsContainer.tsx
+│   │   └── StageFilterSelect.tsx
+│   ├── landing
+│   │   ├── Footer.tsx
+│   │   ├── ImageCarousel.tsx
+│   │   ├── KeyFeatures.tsx
+│   │   └── UserTestimonials.tsx
+│   ├── navbars
+│   │   ├── AppNavbar.tsx
+│   │   ├── Desktop Navbar
+│   │   │   └── AppSideNavbar.tsx
+│   │   ├── desktop-navbar
+│   │   │   └── AppSideNavbar.tsx
+│   │   ├── HomeNavbar.tsx
+│   │   ├── LoginButton.tsx
+│   │   ├── mobile-navbar
+│   │   │   ├── AppMobileNavbar.tsx
+│   │   │   └── NavbarBurgerButton.tsx
+│   │   └── style
+│   │       └── navbar.css
+│   ├── resume
+│   │   ├── DeleteResumeButton.tsx
+│   │   ├── ResumeDashboardClient.tsx
+│   │   ├── ResumeNavbar.tsx
+│   │   ├── ResumeTable.tsx
+│   │   └── ResumeUploadClient.tsx
+│   └── ui
+│       ├── button.tsx
+│       ├── card.tsx
+│       ├── carousel.tsx
+│       ├── dialog.tsx
+│       ├── form.tsx
+│       ├── input.tsx
+│       ├── label.tsx
+│       ├── select.tsx
+│       ├── sheet.tsx
+│       ├── sonner.tsx
+│       └── table.tsx
+├── components.json
+├── eslint.config.mjs
+├── hooks
+│   └── useIsLargeScreen.tsx
+├── lib
+│   ├── auth-actions.ts
+│   ├── prisma.ts
+│   ├── supabase
+│   │   ├── client.ts
+│   │   └── server.ts
+│   ├── utils.ts
+│   └── validations
+│       ├── dashboard.tsx
+│       └── resume.ts
+├── middleware.ts
+├── mockJobsData.tsx
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── prisma
+│   ├── migrations
+│   │   ├── 20250815191031_init
+│   │   │   └── migration.sql
+│   │   ├── 20250821192215_job
+│   │   │   └── migration.sql
+│   │   ├── 20250828164255_added_resume_url_to_job_and_user
+│   │   │   └── migration.sql
+│   │   ├── 20250828183929_added_resume_table
+│   │   │   └── migration.sql
+│   │   └── migration_lock.toml
+│   └── schema.prisma
+├── public
+│   ├── app-tracker-demo.png
+│   ├── dashboard-demo.png
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── logo.png
+│   ├── next.svg
+│   ├── resume-demo.png
+│   ├── vercel.svg
+│   └── window.svg
+├── README.md
+├── tree_out.txt
+└── tsconfig.json
+
+46 directories, 122 files
