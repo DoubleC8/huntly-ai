@@ -30,8 +30,10 @@ export default function JobColumn({
     <div
       ref={setNodeRef}
       className={cn(
-        "lg:w-[24%] lg:h-[83vh] lg:max-h-fit" +
-          "h-1/2 bg-[var(--background)] rounded-lg shadow-md flex flex-col text-[var(--background)] overflow-y-auto",
+        "w-full h-[40vh] max-h-[40vh] min-h-[40vh]", // default: small & medium screens
+        "md:min-h-[33vh]",
+        "lg:w-[24%] lg:h-full lg:max-h-none",
+        "bg-[var(--background)] shadow-lg rounded-lg flex flex-col text-[var(--background)]",
         {
           "ring-2 ring-[var(--app-blue)]": isOver,
         }
@@ -55,8 +57,8 @@ export default function JobColumn({
           ))}
         </div>
       ) : (
-        <div className="flex flex-col h-full">
-          <div className="text-muted-foreground flex flex-col gap-3 p-2 items-center text-center my-auto">
+        <div className="flex flex-col items-center justify-center my-auto gap-3 h-full p-3 overflow-y-auto">
+          <div className="text-muted-foreground flex flex-col gap-3 p-2 items-center text-center">
             <Icon size={30} />
             <p className="text-sm opacity-70">{description}</p>
           </div>

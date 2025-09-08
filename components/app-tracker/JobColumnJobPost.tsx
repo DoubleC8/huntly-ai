@@ -62,7 +62,7 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
         width: isDragging ? "24%" : "",
         cursor: isDragging ? "grabbing" : "grab",
       }}
-      className="lg:min-h-[32%] lg:max-h-[32%]
+      className="lg:min-h-[32%] lg:h-[32%] lg:max-h-fit lg:overflow-y-auto
       flex flex-col gap-3 justify-between p-3"
     >
       <CardHeader className="flex gap-3 items-center p-0">
@@ -108,12 +108,15 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
           )}
         </div>
       </CardContent>
-      <CardFooter className="flex gap-3 mx-auto">
+      <CardFooter
+        className="md:gap-3 md:justify-center
+       flex items-center justify-between"
+      >
         <Button className="lg:hidden" onClick={() => moveJobStage("up")}>
           <ChevronUp />
         </Button>
         <a href={job.sourceUrl} target="_blank" rel="noopener noreferrer">
-          <Button>View Job Posting</Button>
+          <Button className="w-full">View Job Posting</Button>
         </a>
         <Button className="lg:hidden" onClick={() => moveJobStage("down")}>
           <ChevronDown />
