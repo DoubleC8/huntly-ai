@@ -30,7 +30,8 @@ export default function JobColumn({
     <div
       ref={setNodeRef}
       className={cn(
-        "lg:w-[24%] lg:h-[83vh] lg:max-h-[83vh] h-1/2 bg-[var(--background)] rounded-lg shadow-md flex flex-col text-[var(--background)] overflow-y-auto",
+        "lg:w-[24%] lg:h-[83vh] lg:max-h-fit" +
+          "h-1/2 bg-[var(--background)] rounded-lg shadow-md flex flex-col text-[var(--background)] overflow-y-auto",
         {
           "ring-2 ring-[var(--app-blue)]": isOver,
         }
@@ -48,13 +49,13 @@ export default function JobColumn({
       </div>
 
       {jobs.length > 0 ? (
-        <div className="flex flex-col gap-3 p-2 h-full">
+        <div className="flex flex-col gap-3 h-full p-3 overflow-y-auto">
           {jobs.map((job) => (
             <JobColumnJobPost job={job} key={job.id} />
           ))}
         </div>
       ) : (
-        <div className="flex flex-col  h-full">
+        <div className="flex flex-col h-full">
           <div className="text-muted-foreground flex flex-col gap-3 p-2 items-center text-center my-auto">
             <Icon size={30} />
             <p className="text-sm opacity-70">{description}</p>

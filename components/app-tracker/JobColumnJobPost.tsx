@@ -60,8 +60,9 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
         zIndex: isDragging ? 50 : 0,
         position: isDragging ? "absolute" : "relative",
         width: isDragging ? "24%" : "",
+        cursor: isDragging ? "grabbing" : "grab",
       }}
-      className="lg:min-h-[30%] lg:max-h-[30%]
+      className="lg:min-h-[32%] lg:max-h-[32%]
       flex flex-col gap-3 justify-between p-3"
     >
       <CardHeader className="flex gap-3 items-center p-0">
