@@ -6,6 +6,7 @@ import DashboardJobPost from "./DashboardJobPost";
 
 export default function RecommendedJobs({ jobs }: { jobs: Job[] }) {
   return (
+    //error boundary is insise a client component
     <ErrorBoundary>
       <div className="flex flex-col gap-3">
         {jobs.map((job) => (

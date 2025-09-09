@@ -10,7 +10,7 @@ import { updateJobStage } from "@/app/actions/updateJobStage";
 import { useState } from "react";
 import useIsLargeScreen from "@/hooks/useIsLargeScreen";
 
-export default function AppTrackerColumnContainer({
+export default function AppTrackerColumns({
   wishlist,
   applied,
   interview,
@@ -30,7 +30,6 @@ export default function AppTrackerColumnContainer({
     OFFER: offered,
     REJECTED: [],
   });
-
   //handles the drag and drop event
   //uses toast to notify the user if the change was successful
   //only calls the function if the job moves columns

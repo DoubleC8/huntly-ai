@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import AppTrackerColumnContainer from "@/components/app-tracker/AppTrackerColumnContainer";
+import AppTrackerColumns from "@/components/app-tracker/AppTrackerColumns";
 import AppTrackerNavbar from "@/components/app-tracker/AppTrackerNavbar";
 import AppTrackerTitle from "@/components/app-tracker/AppTrackerTitle";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
@@ -68,7 +68,7 @@ export default async function ApplicationTrackerPage() {
       >
         <AppTrackerNavbar />
         <ErrorBoundary>
-          <AppTrackerColumnContainer
+          <AppTrackerColumns
             wishlist={wishlistJobs}
             applied={appliedJobs}
             interview={interviewJobs}
