@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import AppTrackerColumnContainer from "@/components/app-tracker/AppTrackerColumnContainer";
 import AppTrackerNavbar from "@/components/app-tracker/AppTrackerNavbar";
 import AppTrackerTitle from "@/components/app-tracker/AppTrackerTitle";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import { prisma } from "@/lib/prisma";
 
 export default async function ApplicationTrackerPage() {
@@ -66,12 +67,14 @@ export default async function ApplicationTrackerPage() {
       pageContainer !min-h-[94vh]"
       >
         <AppTrackerNavbar />
-        <AppTrackerColumnContainer
-          wishlist={wishlistJobs}
-          applied={appliedJobs}
-          interview={interviewJobs}
-          offered={offeredJobs}
-        />
+        <ErrorBoundary>
+          <AppTrackerColumnContainer
+            wishlist={wishlistJobs}
+            applied={appliedJobs}
+            interview={interviewJobs}
+            offered={offeredJobs}
+          />
+        </ErrorBoundary>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import ResumeNavbar from "@/components/resume/ResumeNavbar";
 import ResumeDashboardClient from "@/components/resume/ResumeDashboardClient";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 
 export default async function ResumePage() {
   const session = await auth();
@@ -39,7 +39,9 @@ export default async function ResumePage() {
         className="
             pageContainer !min-h-[94vh]"
       >
-        <ResumeDashboardClient email={session?.user?.email!} />
+        <ErrorBoundary>
+          <ResumeDashboardClient email={session?.user?.email!} />
+        </ErrorBoundary>
       </div>
     </div>
   );

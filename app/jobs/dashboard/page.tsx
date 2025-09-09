@@ -1,9 +1,16 @@
 import { auth } from "@/auth";
-import RecommendedJobsContainer from "@/components/dashboard/RecommendedJobsContainer";
 import { Frown, Search } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import RecommendedJobs from "@/components/dashboard/RecommendedJobs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
+import Link from "next/link";
 
 export default async function DashboardPage({
   searchParams,
@@ -34,9 +41,11 @@ export default async function DashboardPage({
     );
   }
 
+  //query if any
   const { q } = await searchParams;
   const query = q as string | undefined;
 
+  //getting all jobs attached to the user
   const jobs = await prisma.job.findMany({
     where: {
       userId: user.id,
@@ -57,6 +66,7 @@ export default async function DashboardPage({
 
   return (
     <div className="pageContainer">
+      {/**navbar */}
       <form className="flex w-full justify-between gap-3">
         <div className="w-full flex gap-2">
           <Input
@@ -76,15 +86,36 @@ export default async function DashboardPage({
           </Button>
         </div>
       </form>
+
+      {/**conditionally render jobs */}
       {jobs.length === 0 ? (
-        <div className="flex flex-col gap-3 justify-center items-center my-auto">
-          <Frown />
-          <p className="text-muted-foreground text-center">
-            No jobs matched your search.
-          </p>
-        </div>
+        query ? (
+          <div className="flex flex-col gap-3 justify-center items-center my-auto">
+            <Frown />
+            <p className="text-muted-foreground text-center">
+              No jobs matched your search.
+            </p>
+          </div>
+        ) : (
+          <div className="pageContainer justify-center">
+            <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
+              <CardContent className="flex flex-col items-center gap-3">
+                <Frown />
+                <p>No Recommended Jobs Yet?</p>
+                <CardDescription>
+                  Try Adding your Resume and Check Back Later!
+                </CardDescription>
+              </CardContent>
+              <CardFooter>
+                <Link href="/jobs/resume" className="w-1/2 mx-auto">
+                  <Button className="w-full">Add Resume</Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          </div>
+        )
       ) : (
-        <RecommendedJobsContainer jobs={jobs} />
+        <RecommendedJobs jobs={jobs} />
       )}
     </div>
   );
