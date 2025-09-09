@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { updateJobStage } from "@/app/actions/updateJobStage";
 import { useState } from "react";
 import useIsLargeScreen from "@/hooks/useIsLargeScreen";
+import ErrorBoundary from "../ui/ErrorBoundary";
 
 export default function AppTrackerColumns({
   wishlist,
@@ -84,15 +85,19 @@ export default function AppTrackerColumns({
 
   //checks if the screen is large, if it is then allow drag and drop else disable it
   return isLargeScreen ? (
-    <DndContext
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-      modifiers={[restrictToWindowEdges]}
-    >
-      <Layout columns={columns} />
-    </DndContext>
+    <ErrorBoundary>
+      <DndContext
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+        modifiers={[restrictToWindowEdges]}
+      >
+        <Layout columns={columns} />
+      </DndContext>
+    </ErrorBoundary>
   ) : (
-    <Layout columns={columns} />
+    <ErrorBoundary>
+      <Layout columns={columns} />
+    </ErrorBoundary>
   );
 }
 

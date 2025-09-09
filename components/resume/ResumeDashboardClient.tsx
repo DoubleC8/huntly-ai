@@ -7,6 +7,7 @@ import { Resume } from "@/app/generated/prisma";
 import { Card, CardContent, CardDescription, CardFooter } from "../ui/card";
 import { HeartCrack } from "lucide-react";
 import ResumeNavbar from "./ResumeNavbar";
+import ErrorBoundary from "../ui/ErrorBoundary";
 
 export default function ResumeDashboardClient({ email }: { email: string }) {
   const [resumes, setResumes] = useState<Resume[]>([]);
@@ -26,7 +27,7 @@ export default function ResumeDashboardClient({ email }: { email: string }) {
   }, []);
 
   return (
-    <>
+    <ErrorBoundary>
       <ResumeNavbar
         email={email}
         resumeCount={resumes.length}
@@ -60,6 +61,6 @@ export default function ResumeDashboardClient({ email }: { email: string }) {
           </p>
         </div>
       )}
-    </>
+    </ErrorBoundary>
   );
 }
