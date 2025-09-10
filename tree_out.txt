@@ -73,7 +73,7 @@
 ├── code.txt
 ├── components
 │   ├── app-tracker
-│   │   ├── AppTrackerColumnContainer.tsx
+│   │   ├── AppTrackerColumns.tsx
 │   │   ├── AppTrackerNavbar.tsx
 │   │   ├── AppTrackerTitle.tsx
 │   │   ├── JobColumn.tsx
@@ -82,8 +82,7 @@
 │   │   ├── DashboardCard.tsx
 │   │   ├── DashboardJobPost.tsx
 │   │   ├── DashboardTitle.tsx
-│   │   ├── RecommendedJobsContainer.tsx
-│   │   └── StageFilterSelect.tsx
+│   │   └── RecommendedJobs.tsx
 │   ├── landing
 │   │   ├── Footer.tsx
 │   │   ├── ImageCarousel.tsx
@@ -113,6 +112,7 @@
 │       ├── card.tsx
 │       ├── carousel.tsx
 │       ├── dialog.tsx
+│       ├── ErrorBoundary.tsx
 │       ├── form.tsx
 │       ├── input.tsx
 │       ├── label.tsx

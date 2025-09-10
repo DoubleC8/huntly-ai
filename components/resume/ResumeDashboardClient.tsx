@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import ResumeUploadClient from "./ResumeUploadClient";
 import ResumeTable from "./ResumeTable";
 import { Resume } from "@/app/generated/prisma";
@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter } from "../ui/card";
 import { HeartCrack } from "lucide-react";
 import ResumeNavbar from "./ResumeNavbar";
 import ErrorBoundary from "../ui/ErrorBoundary";
+import ResumeTableSkeleton from "./loading-state/ResumeTableSkeleton";
 
 export default function ResumeDashboardClient({ email }: { email: string }) {
   const [resumes, setResumes] = useState<Resume[]>([]);
@@ -28,11 +29,6 @@ export default function ResumeDashboardClient({ email }: { email: string }) {
 
   return (
     <ErrorBoundary>
-      <ResumeNavbar
-        email={email}
-        resumeCount={resumes.length}
-        setResumes={setResumes}
-      />
       {!loading && resumes.length === 0 ? (
         <div className="my-auto">
           <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
@@ -54,12 +50,21 @@ export default function ResumeDashboardClient({ email }: { email: string }) {
           </Card>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
-          <ResumeTable resumes={resumes} setResumes={setResumes} />
-          <p className="text-muted-foreground text-center text-sm">
-            Mark your star resume, and let Huntly work its AI magic.
-          </p>
-        </div>
+        <>
+          <ResumeNavbar
+            email={email}
+            resumeCount={resumes.length}
+            setResumes={setResumes}
+          />
+          <div className="flex flex-col gap-3">
+            <Suspense fallback={<ResumeTableSkeleton />}>
+              <ResumeTable resumes={resumes} setResumes={setResumes} />
+            </Suspense>
+            <p className="text-muted-foreground text-center text-sm">
+              Mark your star resume, and let Huntly work its AI magic.
+            </p>
+          </div>
+        </>
       )}
     </ErrorBoundary>
   );

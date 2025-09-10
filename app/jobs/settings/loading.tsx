@@ -4,7 +4,7 @@ export default function loading() {
   return (
     <div className="page">
       <div className="pageTitleContainer">
-        <h1 className="pageTitle">Resume</h1>
+        <h1 className="pageTitle">Settings</h1>
       </div>
       <div className="pageContainer !justify-center !items-center">
         <div className="flex flex-col gap-3 justify-center items-center">

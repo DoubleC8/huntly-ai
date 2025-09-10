@@ -12,7 +12,7 @@ import {
 import { formatDistanceToNow as formatFn } from "date-fns";
 import DeleteResumeButton from "./DeleteResumeButton";
 import { Star } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { toast } from "sonner";
 
 export default function ResumeTable({

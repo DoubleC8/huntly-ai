@@ -67,25 +67,6 @@ export default async function DashboardPage({
   return (
     <div className="pageContainer">
       {/**navbar */}
-      <form className="flex w-full justify-between gap-3">
-        <div className="w-full flex gap-2">
-          <Input
-            type="text"
-            name="q"
-            placeholder="Search for a Job"
-            className="bg-[var(--background)] h-9"
-          />
-          <Button type="submit">
-            <span
-              className="md:block
-          hidden"
-            >
-              Search
-            </span>
-            <Search />
-          </Button>
-        </div>
-      </form>
 
       {/**conditionally render jobs */}
       {jobs.length === 0 ? (
@@ -97,7 +78,7 @@ export default async function DashboardPage({
             </p>
           </div>
         ) : (
-          <div className="pageContainer justify-center">
+          <div className="my-auto">
             <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
               <CardContent className="flex flex-col items-center gap-3">
                 <Frown />
@@ -106,8 +87,8 @@ export default async function DashboardPage({
                   Try Adding your Resume and Check Back Later!
                 </CardDescription>
               </CardContent>
-              <CardFooter>
-                <Link href="/jobs/resume" className="w-1/2 mx-auto">
+              <CardFooter className="mx-auto">
+                <Link href="/jobs/resume" className="mx-auto">
                   <Button className="w-full">Add Resume</Button>
                 </Link>
               </CardFooter>
@@ -115,7 +96,28 @@ export default async function DashboardPage({
           </div>
         )
       ) : (
-        <RecommendedJobs jobs={jobs} />
+        <>
+          <form className="flex w-full justify-between gap-3">
+            <div className="w-full flex gap-2">
+              <Input
+                type="text"
+                name="q"
+                placeholder="Search for a Job"
+                className="bg-[var(--background)] h-9"
+              />
+              <Button type="submit">
+                <span
+                  className="md:block
+          hidden"
+                >
+                  Search
+                </span>
+                <Search />
+              </Button>
+            </div>
+          </form>
+          <RecommendedJobs jobs={jobs} />
+        </>
       )}
     </div>
   );

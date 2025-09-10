@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
-import RecommendedJobsContainer from "@/components/dashboard/RecommendedJobsContainer";
-import { Frown } from "lucide-react";
+import RecommendedJobs from "@/components/dashboard/RecommendedJobs";
 import { prisma } from "@/lib/prisma";
 import { JobStage } from "@/app/generated/prisma";
 import DashboardCard from "@/components/dashboard/DashboardCard";
@@ -48,7 +47,7 @@ export default async function appliedJobsPage() {
           description="Once you apply, they’ll show up here to help track your progress."
         />
       ) : (
-        <RecommendedJobsContainer jobs={jobs} />
+        <RecommendedJobs jobs={jobs} />
       )}
     </div>
   );
