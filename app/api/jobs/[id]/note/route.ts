@@ -1,12 +1,14 @@
+export const runtime = "nodejs";
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
-export const runtime = "nodejs";
 
 export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
+  request: Request,
+  context: { params: { id: string } }
 ) {
+  const { params } = context; 
   const session = await auth();
 
   if (!session?.user?.email) {
@@ -14,7 +16,7 @@ export async function PUT(
   }
 
   try {
-    const { note } = await req.json();
+    const { note } = await request.json();
 
     console.log("Updating job note:", {
       jobId: params.id,
@@ -33,11 +35,9 @@ export async function PUT(
     const updatedJob = await prisma.job.update({
       where: {
         id: params.id,
-        userId: user.id, 
+        userId: user.id,
       },
-      data: {
-        note,
-      },
+      data: { note },
     });
 
     return NextResponse.json(updatedJob);
