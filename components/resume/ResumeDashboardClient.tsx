@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ResumeUploadClient from "./ResumeUploadClient";
 import ResumeTable from "./ResumeTable";
 import { Resume } from "@/app/generated/prisma";
@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardFooter } from "../ui/card";
 import { HeartCrack } from "lucide-react";
 import ResumeNavbar from "./ResumeNavbar";
 import ErrorBoundary from "../ui/ErrorBoundary";
-import ResumeTableSkeleton from "./loading-state/ResumeTableSkeleton";
 
 export default function ResumeDashboardClient({ email }: { email: string }) {
   const [resumes, setResumes] = useState<Resume[]>([]);
@@ -57,9 +56,7 @@ export default function ResumeDashboardClient({ email }: { email: string }) {
             setResumes={setResumes}
           />
           <div className="flex flex-col gap-3">
-            <Suspense fallback={<ResumeTableSkeleton />}>
-              <ResumeTable resumes={resumes} setResumes={setResumes} />
-            </Suspense>
+            <ResumeTable resumes={resumes} setResumes={setResumes} />
             <p className="text-muted-foreground text-center text-sm">
               Mark your star resume, and let Huntly work its AI magic.
             </p>

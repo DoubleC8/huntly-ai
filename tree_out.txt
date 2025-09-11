@@ -47,6 +47,7 @@
 │   ├── globals.css
 │   ├── jobs
 │   │   ├── app-tracker
+│   │   │   ├── loading.tsx
 │   │   │   └── page.tsx
 │   │   ├── dashboard
 │   │   │   ├── applied
@@ -54,6 +55,7 @@
 │   │   │   ├── interview
 │   │   │   │   └── page.tsx
 │   │   │   ├── layout.tsx
+│   │   │   ├── loading.tsx
 │   │   │   ├── offer
 │   │   │   │   └── page.tsx
 │   │   │   ├── page.tsx
@@ -61,11 +63,13 @@
 │   │   │       └── page.tsx
 │   │   ├── layout.tsx
 │   │   ├── profile
+│   │   │   ├── loading.tsx
 │   │   │   └── page.tsx
 │   │   ├── resume
 │   │   │   ├── loading.tsx
 │   │   │   └── page.tsx
 │   │   └── settings
+│   │       ├── loading.tsx
 │   │       └── page.tsx
 │   ├── layout.tsx
 │   └── page.tsx
@@ -103,6 +107,8 @@
 │   │       └── navbar.css
 │   ├── resume
 │   │   ├── DeleteResumeButton.tsx
+│   │   ├── loading-state
+│   │   │   └── ResumeTableSkeleton.tsx
 │   │   ├── ResumeDashboardClient.tsx
 │   │   ├── ResumeNavbar.tsx
 │   │   ├── ResumeTable.tsx
@@ -118,6 +124,7 @@
 │       ├── label.tsx
 │       ├── select.tsx
 │       ├── sheet.tsx
+│       ├── skeleton.tsx
 │       ├── sonner.tsx
 │       └── table.tsx
 ├── components.json
@@ -167,4 +174,4 @@
 ├── tree_out.txt
 └── tsconfig.json
 
-46 directories, 122 files
+47 directories, 128 files

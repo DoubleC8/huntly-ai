@@ -28,6 +28,7 @@ import {
   STAGE_LABELS,
   STAGE_ORDER,
 } from "@/app/constants/jobStage";
+import NotesEditor from "./NotesEditor";
 
 export default function DashboardJobPost({ job }: { job: Job }) {
   const [isPending, startTransition] = useTransition();
@@ -133,114 +134,130 @@ export default function DashboardJobPost({ job }: { job: Job }) {
         className="lg:flex-row lg:gap-0
       flex-col gap-3 justify-between text-sm text-muted-foreground"
       >
-        <div className="flex gap-3">
-          {/**TODO: Add feature to when the user clicks on the location, it gives me a rough
-           * estimate of their commute
-           */}
-          <div className="flex items-center gap-1">
-            <MapPin size={14} />
-            <p>{job.location}</p>
+        <div className="flex items-center justify-between w-full">
+          {/**job info row */}
+          <div className="flex gap-3">
+            {/**TODO: Add feature to when the user clicks on the location, it gives me a rough
+             * estimate of their commute
+             */}
+            <div className="flex items-center gap-1">
+              <MapPin size={14} />
+              <p>{job.location}</p>
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock size={14} />
+              <p>{job.employment}</p>
+            </div>
+            <div className="flex items-center gap-1">
+              <Building size={14} />
+              <p>{job.remoteType}</p>
+            </div>
           </div>
-          <div className="flex items-center gap-1">
-            <Clock size={14} />
-            <p>{job.employment}</p>
-          </div>
-          <div className="flex items-center gap-1">
-            <Building size={14} />
-            <p>{job.remoteType}</p>
+
+          {/**dialog button container */}
+          <div className="flex gap-3">
+            {/**add notes button */}
+            <div className="md:block hidden">
+              <NotesEditor jobId={job.id} initialNote={job.note || ""} />
+            </div>
+            {/** view job button */}
+            <Dialog>
+              <DialogTrigger
+                asChild
+                className="md:block
+          hidden"
+              >
+                <Button>View</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>
+                    <div className="flex gap-3">
+                      <a
+                        target="_blank"
+                        href="https://logo.dev"
+                        rel="noopener noreferrer"
+                      >
+                        <Image
+                          src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
+                          width={50}
+                          height={50}
+                          alt="Logo API"
+                          className="rounded-lg"
+                        />
+                      </a>
+                      <div>
+                        <h2 className="text-xl font-bold">{job.title}</h2>
+                        <p className="text-sm text-muted-foreground">
+                          {job.company} — {job.location}
+                        </p>
+                      </div>
+                    </div>
+                  </DialogTitle>
+                  <DialogDescription asChild>
+                    <div className="flex flex-col gap-3">
+                      <div>
+                        <p>
+                          <strong>Employment Type:</strong> {job.employment}
+                        </p>
+                        <p>
+                          <strong>Remote Type:</strong> {job.remoteType}
+                        </p>
+                        <p>
+                          <strong>Salary:</strong> $
+                          {job.salaryMin.toLocaleString()} - $
+                          {job.salaryMax.toLocaleString()} {job.currency}
+                        </p>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <p>
+                          <strong>Description:</strong>
+                          <br />
+                          {job.description}
+                        </p>
+                        <p>
+                          <strong>Skills:</strong>
+                        </p>
+                        {job.skills.map((skill) => (
+                          <p key={skill}>• {skill}</p>
+                        ))}
+                      </div>
+                    </div>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  {job.stage === null ||
+                  STAGE_ORDER.indexOf(job.stage) <
+                    STAGE_ORDER.indexOf("APPLIED") ? (
+                    <a
+                      target="_blank"
+                      href={job.sourceUrl}
+                      rel="noopener noreferrer"
+                      className="mx-auto"
+                    >
+                      <Button>Apply</Button>
+                    </a>
+                  ) : (
+                    <Button className="mx-auto" disabled>
+                      {STAGE_LABELS[job.stage]}
+                    </Button>
+                  )}
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
-        <Dialog>
-          <DialogTrigger
-            asChild
-            className="md:block
-          hidden"
-          >
-            <Button>View</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                <div className="flex gap-3">
-                  <a
-                    target="_blank"
-                    href="https://logo.dev"
-                    rel="noopener noreferrer"
-                  >
-                    <Image
-                      src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
-                      width={50}
-                      height={50}
-                      alt="Logo API"
-                      className="rounded-lg"
-                    />
-                  </a>
-                  <div>
-                    <h2 className="text-xl font-bold">{job.title}</h2>
-                    <p className="text-sm text-muted-foreground">
-                      {job.company} — {job.location}
-                    </p>
-                  </div>
-                </div>
-              </DialogTitle>
-              <DialogDescription asChild>
-                <div className="flex flex-col gap-3">
-                  <div>
-                    <p>
-                      <strong>Employment Type:</strong> {job.employment}
-                    </p>
-                    <p>
-                      <strong>Remote Type:</strong> {job.remoteType}
-                    </p>
-                    <p>
-                      <strong>Salary:</strong> ${job.salaryMin.toLocaleString()}{" "}
-                      - ${job.salaryMax.toLocaleString()} {job.currency}
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <p>
-                      <strong>Description:</strong>
-                      <br />
-                      {job.description}
-                    </p>
-                    <p>
-                      <strong>Skills:</strong>
-                    </p>
-                    {job.skills.map((skill) => (
-                      <p key={skill}>• {skill}</p>
-                    ))}
-                  </div>
-                </div>
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              {job.stage === null ||
-              STAGE_ORDER.indexOf(job.stage) <
-                STAGE_ORDER.indexOf("APPLIED") ? (
-                <a
-                  target="_blank"
-                  href={job.sourceUrl}
-                  rel="noopener noreferrer"
-                  className="mx-auto"
-                >
-                  <Button>Apply</Button>
-                </a>
-              ) : (
-                <Button className="mx-auto" disabled>
-                  {STAGE_LABELS[job.stage]}
-                </Button>
-              )}
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-        <a
-          className="md:hidden flex w-3/4"
-          target="_blank"
-          rel="noopener noreferrer"
-          href={job.sourceUrl}
+        <div
+          className="md:hidden
+        w-full flex flex-col gap-3"
         >
-          <Button className="w-full">Apply</Button>
-        </a>
+          <a target="_blank" rel="noopener noreferrer" href={job.sourceUrl}>
+            <Button className="w-full">Apply</Button>
+          </a>
+          <div>
+            <NotesEditor jobId={job.id} initialNote={job.note || ""} />
+          </div>
+        </div>
       </CardFooter>
     </Card>
   );
