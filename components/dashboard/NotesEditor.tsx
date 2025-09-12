@@ -1,5 +1,5 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -21,12 +21,18 @@ interface NotesEditorProps {
 
 export default function NotesEditor({ jobId, initialNote }: NotesEditorProps) {
   const [note, setNote] = useState(initialNote ?? "");
-  const [isPending, startTransition] = useTransition();
   //if no note default to edit mode else, default to view mode
   const [editMode, setEditMode] = useState(!initialNote);
+  const [isPending, startTransition] = useTransition();
+  const [lastSavedNote, setLastSavedNote] = useState(note);
+  const [open, setOpen] = useState(false);
 
   //handles the adding/updating of the note
   const handleSave = async () => {
+    //dont save is nothing was changed
+    if (note === lastSavedNote) {
+      return;
+    }
     startTransition(async () => {
       try {
         const res = await fetch(`/api/jobs/${jobId}/note`, {
@@ -43,6 +49,9 @@ export default function NotesEditor({ jobId, initialNote }: NotesEditorProps) {
         }
 
         toast.success("Note updated successfully!");
+        setEditMode(false);
+        setLastSavedNote(note);
+        setOpen(false);
       } catch (error) {
         console.error("Failed to update note:", error);
         toast.error("Failed to update note.", {
@@ -53,7 +62,7 @@ export default function NotesEditor({ jobId, initialNote }: NotesEditorProps) {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="secondary" className="w-full">
           {initialNote && initialNote.trim() !== "" ? "View Notes" : "Add Note"}
@@ -78,6 +87,7 @@ export default function NotesEditor({ jobId, initialNote }: NotesEditorProps) {
           <Textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
+            onBlur={handleSave}
             placeholder='E.g. "Reach out to recruiter next week", "Tailor resume for a front end role"...'
             rows={4}
             disabled={isPending}
@@ -95,24 +105,14 @@ export default function NotesEditor({ jobId, initialNote }: NotesEditorProps) {
                 {isPending ? "Saving..." : "Save Note"}
               </Button>
               <DialogClose asChild>
-                <Button
-                  onClick={() => setEditMode(!editMode)}
-                  variant="outline"
-                >
-                  Cancel
-                </Button>
+                <Button variant="outline">Cancel</Button>
               </DialogClose>
             </>
           ) : (
             <>
-              <Button onClick={() => setEditMode(!editMode)}>Edit Note</Button>
+              <Button onClick={() => setEditMode(true)}>Edit Note</Button>
               <DialogClose asChild>
-                <Button
-                  onClick={() => setEditMode(!editMode)}
-                  variant="outline"
-                >
-                  Cancel
-                </Button>
+                <Button variant="outline">Cancel</Button>
               </DialogClose>
             </>
           )}
