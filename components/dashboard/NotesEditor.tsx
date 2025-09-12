@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { SquarePen } from "lucide-react";
 
 interface NotesEditorProps {
   jobId: string;
@@ -21,6 +22,7 @@ interface NotesEditorProps {
 
 export default function NotesEditor({ jobId, initialNote }: NotesEditorProps) {
   const [note, setNote] = useState(initialNote ?? "");
+  const [localInitialNote, setLocalInitialNote] = useState(initialNote ?? "");
   //if no note default to edit mode else, default to view mode
   const [editMode, setEditMode] = useState(!initialNote);
   const [isPending, startTransition] = useTransition();
@@ -51,6 +53,7 @@ export default function NotesEditor({ jobId, initialNote }: NotesEditorProps) {
         toast.success("Note updated successfully!");
         setEditMode(false);
         setLastSavedNote(note);
+        setLocalInitialNote(note);
         setOpen(false);
       } catch (error) {
         console.error("Failed to update note:", error);
@@ -63,9 +66,17 @@ export default function NotesEditor({ jobId, initialNote }: NotesEditorProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="secondary" className="w-full">
-          {initialNote && initialNote.trim() !== "" ? "View Notes" : "Add Note"}
+      <DialogTrigger asChild className="w-full">
+        <Button
+          variant={
+            localInitialNote && localInitialNote.trim() !== ""
+              ? "noted"
+              : "secondary"
+          }
+        >
+          {localInitialNote && localInitialNote.trim() !== ""
+            ? "View Notes"
+            : "Add Note"}
         </Button>
       </DialogTrigger>
 
@@ -98,23 +109,26 @@ export default function NotesEditor({ jobId, initialNote }: NotesEditorProps) {
           </div>
         )}
 
-        <DialogFooter className="mx-auto mt-4">
+        <DialogFooter className="mx-auto w-full">
           {editMode ? (
-            <>
+            <div className="flex flex-col gap-3 w-full">
               <Button onClick={handleSave} disabled={isPending}>
                 {isPending ? "Saving..." : "Save Note"}
               </Button>
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
-            </>
+            </div>
           ) : (
-            <>
-              <Button onClick={() => setEditMode(true)}>Edit Note</Button>
+            <div className="flex flex-col gap-3 w-full">
+              <Button onClick={() => setEditMode(true)}>
+                <SquarePen />
+                Edit Note
+              </Button>
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
-            </>
+            </div>
           )}
         </DialogFooter>
       </DialogContent>

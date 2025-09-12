@@ -146,16 +146,23 @@ export default function DashboardJobPost({ job }: { job: Job }) {
             </div>
           </div>
 
-          {/**dialog button container */}
-          <div className="flex gap-3">
+          {/**view job and view/edit note on desktop*/}
+          <div
+            className="md:flex 
+          hidden gap-3 w-1/4"
+          >
             {/**add notes button */}
-            <div className="md:block hidden">
+            <div className="w-1/2">
               <NotesEditor jobId={job.id} initialNote={job.note || ""} />
             </div>
             {/** view job button */}
-            <ViewJob job={job} />
+            <div className="w-1/2">
+              <ViewJob job={job} />
+            </div>
           </div>
         </div>
+
+        {/**view job and view/edit note on mobile */}
         <div
           className="md:hidden
         w-full flex flex-col gap-3"

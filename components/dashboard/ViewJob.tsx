@@ -18,11 +18,7 @@ export default function ViewJob({ job }: { job: Job }) {
   );
   return (
     <Dialog>
-      <DialogTrigger
-        asChild
-        className="md:block
-          hidden"
-      >
+      <DialogTrigger asChild className="w-full">
         <Button>View</Button>
       </DialogTrigger>
       <DialogContent>
