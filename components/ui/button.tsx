@@ -12,7 +12,7 @@ const buttonVariants = cva(
         default:
           "bg-[var(--app-blue)] text-white shadow-xs hover:bg-[var(--app-blue)]/85 font-bold hover:cursor-pointer",
         noted:
-          "bg-[var(--app-light-blue)] text-white shadow-xs hover:bg-[var(--app-light-blue)]/85 font-bold hover:cursor-pointer",
+          "bg-[var(--app-dark-purple)] text-white shadow-xs hover:bg-[var(--app-dark-purple)]/85 font-bold hover:cursor-pointer",
         destructive:
           "bg-[var(--app-red)] text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:

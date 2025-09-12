@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/client";
+import { Resume } from "@/app/generated/prisma";
 
 //handles deleting resumes
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
@@ -41,7 +42,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       include: { resumes: true },
     });
 
-    const ownsResume = user?.resumes.some((r) => r.id === params.id);
+    const ownsResume = user?.resumes.some((r: Resume) => r.id === params.id);
     if (!ownsResume) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
@@ -84,7 +85,7 @@ export async function PATCH(
     })
 
     //checking to see if the user is the owner of the resume to make sure they can  make it their default
-    const ownsResume = user?.resumes.some((r) => r.id === id);
+    const ownsResume = user?.resumes.some((r: Resume) => r.id === id);
     if (!ownsResume) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }

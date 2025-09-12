@@ -9,7 +9,9 @@
 │   │   │   └── [...nextauth]
 │   │   │       └── route.ts
 │   │   ├── jobs
-│   │   │   └── :id
+│   │   │   └── [id]
+│   │   │       ├── note
+│   │   │       │   └── route.ts
 │   │   │       └── star.ts
 │   │   └── resumes
 │   │       ├── [id]
@@ -31,6 +33,8 @@
 │   │       ├── index.js
 │   │       ├── libquery_engine-darwin-arm64.dylib.node
 │   │       ├── package.json
+│   │       ├── query_engine_bg.js
+│   │       ├── query_engine_bg.wasm
 │   │       ├── runtime
 │   │       │   ├── edge-esm.js
 │   │       │   ├── edge.js
@@ -42,6 +46,8 @@
 │   │       │   ├── wasm-compiler-edge.js
 │   │       │   └── wasm-engine-edge.js
 │   │       ├── schema.prisma
+│   │       ├── wasm-edge-light-loader.mjs
+│   │       ├── wasm-worker-loader.mjs
 │   │       ├── wasm.d.ts
 │   │       └── wasm.js
 │   ├── globals.css
@@ -86,7 +92,9 @@
 │   │   ├── DashboardCard.tsx
 │   │   ├── DashboardJobPost.tsx
 │   │   ├── DashboardTitle.tsx
-│   │   └── RecommendedJobs.tsx
+│   │   ├── NotesEditor.tsx
+│   │   ├── RecommendedJobs.tsx
+│   │   └── ViewJob.tsx
 │   ├── landing
 │   │   ├── Footer.tsx
 │   │   ├── ImageCarousel.tsx
@@ -126,7 +134,8 @@
 │       ├── sheet.tsx
 │       ├── skeleton.tsx
 │       ├── sonner.tsx
-│       └── table.tsx
+│       ├── table.tsx
+│       └── textarea.tsx
 ├── components.json
 ├── eslint.config.mjs
 ├── hooks
@@ -142,7 +151,6 @@
 │       ├── dashboard.tsx
 │       └── resume.ts
 ├── middleware.ts
-├── mockJobsData.tsx
 ├── next-env.d.ts
 ├── next.config.ts
 ├── package-lock.json
@@ -157,6 +165,8 @@
 │   │   ├── 20250828164255_added_resume_url_to_job_and_user
 │   │   │   └── migration.sql
 │   │   ├── 20250828183929_added_resume_table
+│   │   │   └── migration.sql
+│   │   ├── 20250911170916_add_note_to_job
 │   │   │   └── migration.sql
 │   │   └── migration_lock.toml
 │   └── schema.prisma
@@ -174,4 +184,4 @@
 ├── tree_out.txt
 └── tsconfig.json
 
-47 directories, 128 files
+49 directories, 136 files

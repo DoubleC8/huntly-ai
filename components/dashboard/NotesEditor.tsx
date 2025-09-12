@@ -116,17 +116,27 @@ export default function NotesEditor({ jobId, initialNote }: NotesEditorProps) {
                 {isPending ? "Saving..." : "Save Note"}
               </Button>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setEditMode(!editMode)}
+                >
+                  Cancel
+                </Button>
               </DialogClose>
             </div>
           ) : (
             <div className="flex flex-col gap-3 w-full">
-              <Button onClick={() => setEditMode(true)}>
+              <Button onClick={() => setEditMode(!editMode)}>
                 <SquarePen />
                 Edit Note
               </Button>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setEditMode(!editMode)}
+                >
+                  Cancel
+                </Button>
               </DialogClose>
             </div>
           )}
