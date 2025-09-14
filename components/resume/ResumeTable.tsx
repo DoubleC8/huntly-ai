@@ -64,6 +64,9 @@ export default function ResumeTable({
             <p className="py-3">Resume</p>
           </TableHead>
           <TableHead className="text-left font-semibold text-[var(--background)] bg-[var(--app-blue)]">
+            Target Job Title
+          </TableHead>
+          <TableHead className="text-left font-semibold text-[var(--background)] bg-[var(--app-blue)]">
             Link
           </TableHead>
           <TableHead
@@ -83,9 +86,11 @@ export default function ResumeTable({
               (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0)
           )
           .map((resume, index) => {
+            console.log(resume.targetJobTitle);
             const isLast = index === resumes.length - 1;
             return (
               <TableRow key={resume.id} className="font-semibold">
+                {/**resume name */}
                 <TableCell className={isLast ? "rounded-bl-2xl" : ""}>
                   <div className="flex items-center gap-3">
                     <button
@@ -119,6 +124,13 @@ export default function ResumeTable({
                     )}
                   </div>
                 </TableCell>
+
+                {/**resume target job title */}
+                <TableCell className="hover:text-[var(--app-blue)]">
+                  <p>{resume.targetJobTitle}</p>
+                </TableCell>
+
+                {/**link to resume */}
                 <TableCell className="hover:text-[var(--app-blue)]">
                   <a
                     target="_blank"
@@ -128,6 +140,7 @@ export default function ResumeTable({
                     Go to Resume
                   </a>
                 </TableCell>
+
                 <TableCell
                   className={`
             md:table-cell md:text-center hidden text-muted-foreground

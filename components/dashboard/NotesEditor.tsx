@@ -50,7 +50,7 @@ export default function NotesEditor({ jobId, initialNote }: NotesEditorProps) {
           console.error("Failed to update note");
         }
 
-        toast.success("Note updated successfully!");
+        toast.success("Succesfully added note!");
         setEditMode(false);
         setLastSavedNote(note);
         setLocalInitialNote(note);

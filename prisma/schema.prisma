@@ -106,11 +106,12 @@ enum JobStage {
 }
 
 model Resume {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  fileName  String   @default("Resume")
-  publicUrl String
-  isDefault Boolean
-  createdAt DateTime @default(now())
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fileName       String   @default("Resume")
+  publicUrl      String
+  isDefault      Boolean
+  createdAt      DateTime @default(now())
+  targetJobTitle String?
 }
