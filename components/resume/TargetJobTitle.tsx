@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { LoaderCircle, Send, SquarePen } from "lucide-react";
+import { LoaderCircle, Send, SquarePen, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 interface JobTitleProps {
@@ -15,15 +15,18 @@ export default function TargetJobTitle({
   resumeId,
   initialJobTitle,
 }: JobTitleProps) {
-  const [jobTitle, setJobTitle] = useState(initialJobTitle ?? "");
-  const [localJobTitle, setLocalJobTitle] = useState(initialJobTitle ?? "");
+  const [targetJobTitle, setTargetJobTitle] = useState(initialJobTitle ?? "");
+  const [localTargetJobTitle, setLocalTargetJobTitle] = useState(
+    initialJobTitle ?? ""
+  );
   const [editMode, setEditMode] = useState(!initialJobTitle);
   const [isPending, startTransition] = useTransition();
-  const [lastSavedJobTitle, setLastSavedJobTitle] = useState(jobTitle);
+  const [lastSavedTargetJobTitle, setLastSavedTargetJobTitle] =
+    useState(targetJobTitle);
 
   const handleSave = async () => {
-    if (jobTitle === lastSavedJobTitle) {
-      setEditMode(false); // just exit if no change
+    if (targetJobTitle === lastSavedTargetJobTitle) {
+      setEditMode(false);
       return;
     }
 
@@ -32,19 +35,30 @@ export default function TargetJobTitle({
         const res = await fetch(`/api/resumes/${resumeId}/target-title`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ jobTitle }),
+          body: JSON.stringify({ targetJobTitle }),
         });
 
+        const data = await res.json();
+
         if (!res.ok) {
-          toast.error("Failed to update job title.", {
-            description: "Please try again later",
-          });
+          if (
+            res.status === 400 &&
+            data?.issues?.targetJobTitle?._errors?.length > 0
+          ) {
+            toast.error("Validation Error", {
+              description: data.issues.targetJobTitle._errors[0],
+            });
+          } else {
+            toast.error("Failed to update job title.", {
+              description: data?.error || "Please try again later",
+            });
+          }
           return;
         }
 
         toast.success("Successfully updated job title!");
-        setLastSavedJobTitle(jobTitle);
-        setLocalJobTitle(jobTitle);
+        setLastSavedTargetJobTitle(targetJobTitle);
+        setLocalTargetJobTitle(targetJobTitle);
         setEditMode(false);
       } catch (error) {
         console.error("Failed to update job title:", error);
@@ -56,11 +70,11 @@ export default function TargetJobTitle({
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 min-w-9/10 w-9/10 max-w-9/10">
       {editMode ? (
         <Input
-          value={jobTitle}
-          onChange={(e) => setJobTitle(e.target.value)}
+          value={targetJobTitle}
+          onChange={(e) => setTargetJobTitle(e.target.value)}
           onBlur={handleSave}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -69,10 +83,11 @@ export default function TargetJobTitle({
             }
           }}
           placeholder="Target Job Title..."
+          className="w-full"
         />
       ) : (
         <p className="text-sm text-muted-foreground w-full p-2">
-          {lastSavedJobTitle || "No job title set."}
+          {lastSavedTargetJobTitle || "No job title set."}
         </p>
       )}
 
@@ -81,7 +96,7 @@ export default function TargetJobTitle({
           {isPending ? (
             <LoaderCircle className="animate-spin w-4 h-4" />
           ) : (
-            <Send className="w-4 h-4" />
+            <Upload className="w-4 h-4" />
           )}
         </Button>
       ) : (

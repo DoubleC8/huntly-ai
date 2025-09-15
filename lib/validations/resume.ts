@@ -8,3 +8,11 @@ export const resumeFileSchema = z
   .refine((file) => file.type === "application/pdf", {
     message: "Only PDF files are allowed.",
   });
+
+export const targetJobTitleSchema = z.object({
+  targetJobTitle: z.string()
+  .max(50, "Job title must be 50 characters or less.")
+  .trim()
+})
+
+export type TargetJobTitleInput = z.infer<typeof targetJobTitleSchema>;

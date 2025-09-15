@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { targetJobTitleSchema } from "@/lib/validations/resume";
 
 export async function PUT(
     request: Request, 
     context: { params: { id: string }}
 ) {
-    const { params } = context;
+    const { params } = await context;
     const session = await auth();
 
     if (!session?.user?.email) {
@@ -14,12 +15,23 @@ export async function PUT(
     }
 
     try{
-        const { jobTitle } = await request.json();
+        const json = await request.json();
 
-        console.log("Updating resume target job title:", {
+        const parsed = targetJobTitleSchema.safeParse(json);
+
+        if(!parsed.success){
+            return NextResponse.json(
+                { error: "Invalid input", issues: parsed.error.format() },
+                { status: 400 }
+            );
+        }
+
+        const { targetJobTitle } = parsed.data;
+
+       console.log("Updating resume target job title:", {
             jobId: params.id,
             userEmail: session.user.email,
-            jobTitle,
+            jobTitle: targetJobTitle,
         });
 
         const user = await prisma.user.findUnique({
@@ -35,7 +47,7 @@ export async function PUT(
                 id: params.id, 
                 userId: user.id, 
             }, 
-            data: { targetJobTitle: jobTitle }
+            data: { targetJobTitle: targetJobTitle }
         })
 
         return NextResponse.json(updatedResume);
