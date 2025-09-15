@@ -11,9 +11,10 @@ import {
 } from "@/components/ui/table";
 import { formatDistanceToNow as formatFn } from "date-fns";
 import DeleteResumeButton from "./DeleteResumeButton";
-import { Star } from "lucide-react";
+import { ExternalLink, Star } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
+import TargetJobTitle from "./TargetJobTitle";
 
 export default function ResumeTable({
   resumes,
@@ -63,19 +64,20 @@ export default function ResumeTable({
           <TableHead className="font-semibold text-[var(--background)] bg-[var(--app-blue)] rounded-tl-2xl">
             <p className="py-3">Resume</p>
           </TableHead>
-          <TableHead className="text-left font-semibold text-[var(--background)] bg-[var(--app-blue)]">
+
+          <TableHead className="md:table-cell hidden font-semibold text-left text-[var(--background)] bg-[var(--app-blue)]">
             Target Job Title
           </TableHead>
-          <TableHead className="text-left font-semibold text-[var(--background)] bg-[var(--app-blue)]">
+
+          <TableHead className="text-end font-semibold text-[var(--background)] bg-[var(--app-blue)]">
             Link
           </TableHead>
-          <TableHead
-            className="md:table-cell md:text-center
-          hidden font-semibold text-left text-[var(--background)] bg-[var(--app-blue)]"
-          >
+
+          <TableHead className="lg:table-cell hidden font-semibold text-center text-[var(--background)] bg-[var(--app-blue)]">
             Created
           </TableHead>
-          <TableHead className="font-semibold text-left bg-[var(--app-blue)] rounded-tr-2xl"></TableHead>
+
+          <TableHead className="font-semibold text-left bg-[var(--app-blue)] rounded-tr-2xl" />
         </TableRow>
       </TableHeader>
 
@@ -86,11 +88,10 @@ export default function ResumeTable({
               (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0)
           )
           .map((resume, index) => {
-            console.log(resume.targetJobTitle);
             const isLast = index === resumes.length - 1;
             return (
               <TableRow key={resume.id} className="font-semibold">
-                {/**resume name */}
+                {/* Resume name + star */}
                 <TableCell className={isLast ? "rounded-bl-2xl" : ""}>
                   <div className="flex items-center gap-3">
                     <button
@@ -125,31 +126,42 @@ export default function ResumeTable({
                   </div>
                 </TableCell>
 
-                {/**resume target job title */}
-                <TableCell className="hover:text-[var(--app-blue)]">
-                  <p>{resume.targetJobTitle}</p>
+                {/* Target Job Title */}
+                <TableCell className="md:table-cell hidden text-muted-foreground">
+                  <TargetJobTitle
+                    resumeId={resume.id}
+                    initialJobTitle={resume.targetJobTitle}
+                  />
                 </TableCell>
 
-                {/**link to resume */}
-                <TableCell className="hover:text-[var(--app-blue)]">
+                {/* Resume Link */}
+                <TableCell className="hover:text-[var(--app-blue)] text-muted-foreground">
                   <a
                     target="_blank"
                     href={resume.publicUrl}
                     rel="noopener noreferrer"
+                    className="flex items-center justify-end"
                   >
-                    Go to Resume
+                    <ExternalLink />
                   </a>
                 </TableCell>
 
-                <TableCell
-                  className={`
-            md:table-cell md:text-center hidden text-muted-foreground
-          `}
-                >
+                {/* Created At */}
+                <TableCell className="lg:table-cell hidden md:text-center text-muted-foreground">
                   {formatFn(resume.createdAt, { addSuffix: true })}
                 </TableCell>
+
+                {/* Delete Button */}
                 <TableCell className={isLast ? "rounded-br-2xl" : ""}>
-                  <DeleteResumeButton resume={resume} setResumes={setResumes} />
+                  <div
+                    className="md:justify-center
+                  w-full flex items-end justify-end"
+                  >
+                    <DeleteResumeButton
+                      resume={resume}
+                      setResumes={setResumes}
+                    />
+                  </div>
                 </TableCell>
               </TableRow>
             );
