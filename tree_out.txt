@@ -15,7 +15,9 @@
 │   │   │       └── star.ts
 │   │   └── resumes
 │   │       ├── [id]
-│   │       │   └── route.ts
+│   │       │   ├── route.ts
+│   │       │   └── target-title
+│   │       │       └── route.ts
 │   │       └── route.ts
 │   ├── constants
 │   │   └── jobStage.ts
@@ -115,12 +117,11 @@
 │   │       └── navbar.css
 │   ├── resume
 │   │   ├── DeleteResumeButton.tsx
-│   │   ├── loading-state
-│   │   │   └── ResumeTableSkeleton.tsx
 │   │   ├── ResumeDashboardClient.tsx
 │   │   ├── ResumeNavbar.tsx
 │   │   ├── ResumeTable.tsx
-│   │   └── ResumeUploadClient.tsx
+│   │   ├── ResumeUploadClient.tsx
+│   │   └── TargetJobTitle.tsx
 │   └── ui
 │       ├── button.tsx
 │       ├── card.tsx
@@ -168,6 +169,8 @@
 │   │   │   └── migration.sql
 │   │   ├── 20250911170916_add_note_to_job
 │   │   │   └── migration.sql
+│   │   ├── 20250914002659_add_target_job_title_to_resumes
+│   │   │   └── migration.sql
 │   │   └── migration_lock.toml
 │   └── schema.prisma
 ├── public
@@ -184,4 +187,4 @@
 ├── tree_out.txt
 └── tsconfig.json
 
-49 directories, 136 files
+50 directories, 138 files

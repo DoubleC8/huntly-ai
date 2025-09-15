@@ -19,7 +19,7 @@ export default function ViewJob({ job }: { job: Job }) {
   return (
     <Dialog>
       <DialogTrigger asChild className="w-full">
-        <Button>View</Button>
+        <Button>View Job</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

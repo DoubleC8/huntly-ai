@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import RecommendedJobs from "@/components/dashboard/RecommendedJobs";
-import { Frown } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { JobStage } from "@/app/generated/prisma";
 import DashboardCard from "@/components/dashboard/DashboardCard";

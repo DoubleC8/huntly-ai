@@ -93,6 +93,7 @@ model Job {
   resumeUrl String?
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserJobs")
   note      String?
+  tags      String[]  @default([])
 
   @@unique([userId, title, company, sourceUrl])
 }

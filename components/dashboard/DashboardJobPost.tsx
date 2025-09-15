@@ -7,7 +7,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Building, Clock, MapPin, Star } from "lucide-react";
+import { Building, Clock, MapPin, Star, Tags } from "lucide-react";
 import Image from "next/image";
 import { formatDistanceToNow as formatFn } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -149,7 +149,7 @@ export default function DashboardJobPost({ job }: { job: Job }) {
           {/**view job and view/edit note on desktop*/}
           <div
             className="md:flex 
-          hidden gap-3 w-1/4"
+          hidden gap-2"
           >
             {/**add notes button */}
             <div className="w-1/2">
