@@ -8,13 +8,15 @@ import {
   Building,
   Clock,
   Crosshair,
-  ExternalLink,
+  Lightbulb,
   ListTodo,
   MapPin,
   NotebookPen,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import ShareJobButton from "@/components/dashboard/buttons/ShareJob";
+import StarButton from "@/components/dashboard/buttons/StarButton";
 
 export default async function JobPage({ params }: { params: { id: string } }) {
   const session = await auth();
@@ -58,11 +60,11 @@ export default async function JobPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="pageContainer">
-      <div className="flex w-full justify-end">
+      <div className="flex w-full gap-3 items-center justify-end">
+        <StarButton jobId={job.id} jobStage={job.stage} />
+        <ShareJobButton jobSourceUrl={job?.sourceUrl} />
         <a target="_blank" href={`${job.sourceUrl}`} rel="noopener noreferrer">
-          <Button>
-            Apply Now <ExternalLink />
-          </Button>
+          <Button className="w-40">Apply Now</Button>
         </a>
       </div>
       <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-3 flex flex-col gap-3">
@@ -83,7 +85,7 @@ export default async function JobPage({ params }: { params: { id: string } }) {
             </a>
 
             {job.postedAt ? (
-              <p>
+              <p className="font-semibold">
                 {job.company} •{" "}
                 <span className="text-muted-foreground">
                   {formatFn(new Date(job.postedAt), {
@@ -105,9 +107,6 @@ export default async function JobPage({ params }: { params: { id: string } }) {
           <div className="h-full flex flex-col justify-between">
             <h1 className="font-bold text-2xl">{job.title}</h1>
             <div className="flex gap-3 text-muted-foreground">
-              {/**TODO: Add feature to when the user clicks on the location, it gives me a rough
-               * estimate of their commute
-               */}
               <div className="flex items-center gap-1">
                 <MapPin size={14} />
                 <p>{job.location}</p>
@@ -123,34 +122,72 @@ export default async function JobPage({ params }: { params: { id: string } }) {
             </div>
           </div>
         </div>
+        {/**AI Summary */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Bot className="text-[var(--app-blue)]" />
             <h1 className="font-bold text-2xl">Ai Summary</h1>
           </div>
-          <p>{job.aiSummary}</p>
+          {job.aiSummary ? (
+            <p>{job.aiSummary}</p>
+          ) : (
+            <p className="text-muted-foreground">
+              Our AI is still sharpening its resume writing skills. Check back
+              soon!
+            </p>
+          )}
         </div>
+        {/**Reponsibilities */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <ListTodo className="text-[var(--app-blue)]" />
             <h1 className="font-bold text-2xl">Responsibilites</h1>
           </div>
-          <ul className="list-disc ml-5 space-y-3">
-            {job.responsibilities.map((responsibility, index) => (
-              <li key={index}>{responsibility}</li>
-            ))}
-          </ul>
+          {job.responsibilities?.length ? (
+            <ul className="list-disc ml-5 space-y-3">
+              {job.responsibilities.map((responsibility, index) => (
+                <li key={index}>{responsibility}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-muted-foreground">
+              Oops! The responsibility list seems to be on a coffee break.
+            </p>
+          )}
         </div>
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Crosshair className="text-[var(--app-blue)]" />
             <h1 className="font-bold text-2xl">Qualifications</h1>
           </div>
-          <ul className="list-disc ml-5 space-y-3">
-            {job.qualifications.map((qualification, index) => (
-              <li key={index}>{qualification}</li>
-            ))}
-          </ul>
+          {job.qualifications?.length ? (
+            <ul className="list-disc ml-5 space-y-3">
+              {job.qualifications.map((qualification, index) => (
+                <li key={index}>{qualification}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-muted-foreground">
+              Qualifications are currently out of office — stay tuned!
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Lightbulb className="text-[var(--app-blue)]" />
+            <h1 className="font-bold text-2xl">Skills</h1>
+          </div>
+          {job.skills?.length ? (
+            <ul className="list-disc ml-5 space-y-3">
+              {job.skills.map((skill, index) => (
+                <li key={index}>{skill}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-muted-foreground">
+              Our skill scanner might’ve blinked — give it a sec to catch up!
+            </p>
+          )}
         </div>
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
@@ -161,10 +198,12 @@ export default async function JobPage({ params }: { params: { id: string } }) {
         </div>
         <div className="flex gap-3 w-full justify-center">
           <a href={job.sourceUrl} target="_blank" rel="noopener noreferrer">
-            <Button>Apply Now</Button>
+            <Button className="w-40">Apply Now</Button>
           </a>
           <Link href="/jobs/dashboard">
-            <Button variant="outline">Back to Dashboard</Button>
+            <Button variant="outline" className="w-40">
+              Back to Dashboard
+            </Button>
           </Link>
         </div>
       </div>

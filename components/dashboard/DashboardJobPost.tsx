@@ -1,51 +1,20 @@
-"use client";
-
-import { useState, useTransition } from "react";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Building, Clock, MapPin, Star, Tags } from "lucide-react";
+import { Building, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
 import { formatDistanceToNow as formatFn } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Job } from "@/app/generated/prisma";
-import { toast } from "sonner";
-import { toggleWishlist } from "@/app/actions/toggleWishlist";
-import {
-  STAGE_COLORS,
-  STAGE_LABELS,
-  STAGE_ORDER,
-} from "@/app/constants/jobStage";
+import { STAGE_COLORS, STAGE_LABELS } from "@/app/constants/jobStage";
 import NotesEditor from "./NotesEditor";
-import ViewJob from "./ViewJob";
 import Link from "next/link";
+import StarButton from "./buttons/StarButton";
 
 export default function DashboardJobPost({ job }: { job: Job }) {
-  const [isPending, startTransition] = useTransition();
-  const [isWishlisted, setIsWishlisted] = useState(job.stage === "WISHLIST");
-
-  const handleStarClick = () => {
-    setIsWishlisted((prev) => !prev);
-
-    startTransition(async () => {
-      try {
-        const updatedJob = await toggleWishlist(job.id);
-        setIsWishlisted(updatedJob.stage === "WISHLIST");
-        toast.success(
-          updatedJob.stage === "WISHLIST"
-            ? "Job added to Wishlist!"
-            : "Job removed from Wishlist."
-        );
-      } catch (error) {
-        setIsWishlisted(job.stage === "WISHLIST");
-        toast.error("Failed to toggle wishlist.");
-      }
-    });
-  };
-
   return (
     <Card
       key={job.id}
@@ -100,20 +69,7 @@ export default function DashboardJobPost({ job }: { job: Job }) {
               )}
             </div>
           </div>
-          {job.stage === null ||
-          STAGE_ORDER.indexOf(job.stage) < STAGE_ORDER.indexOf("APPLIED") ? (
-            <button
-              onClick={handleStarClick}
-              disabled={isPending}
-              className="hover:cursor-pointer"
-            >
-              {isWishlisted ? (
-                <Star fill="yellow" className="text-[var(--app-yellow)]" />
-              ) : (
-                <Star className="hover:text-[var(--app-yellow)]" />
-              )}
-            </button>
-          ) : null}
+          <StarButton jobId={job.id} jobStage={job.stage} />
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-1">
