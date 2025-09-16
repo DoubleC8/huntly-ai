@@ -146,7 +146,7 @@ export default function ResumeUploadClient({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="md:min-w-1/2 sm:max-w-md rounded-xl shadow-lg flex flex-col justify-between">
+      <DialogContent className="md:min-w-1/2 sm:max-w-md rounded-xl shadow-md flex flex-col justify-between">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center">
             Upload Your Resume

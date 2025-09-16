@@ -159,7 +159,7 @@ export default function DashboardJobPost({ job }: { job: Job }) {
             {/** view job button */}
             <div className="w-1/2">
               <Link href={`/jobs/dashboard/${job.id}`}>
-                <Button>VIew Job</Button>
+                <Button>View Job</Button>
               </Link>
             </div>
           </div>

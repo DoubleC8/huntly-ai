@@ -59,6 +59,7 @@ export default function ImageCarousel() {
               unoptimized
               className="md:w-8/10
               object-cover rounded-2xl"
+              loading="lazy"
             />
           </CarouselItem>
         ))}

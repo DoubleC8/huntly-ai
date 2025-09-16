@@ -1,17 +1,24 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
-import { notFound } from "next/navigation";
 import { formatDistanceToNow as formatFn } from "date-fns";
-import { STAGE_LABELS, STAGE_COLORS } from "@/app/constants/jobStage";
-import NotesEditor from "@/components/dashboard/NotesEditor";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { Star } from "lucide-react";
-import Link from "next/link";
 import DashboardCard from "@/components/dashboard/DashboardCard";
+import { Button } from "@/components/ui/button";
+import {
+  Bot,
+  Building,
+  Clock,
+  Crosshair,
+  ExternalLink,
+  ListTodo,
+  MapPin,
+  NotebookPen,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export default async function JobPage({ params }: { params: { id: string } }) {
   const session = await auth();
+
   if (!session) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
@@ -43,53 +50,116 @@ export default async function JobPage({ params }: { params: { id: string } }) {
     return (
       <DashboardCard
         message="Hmm... Job Not Found"
-        description="Looks like this job took a day off — or maybe the link’s a bit wonky. Try heading back to your dashboard and picking another one!"
+        description="Looks like this job took a day off — or maybe the link’s a bit wonky. 
+        Try heading back to your dashboard and picking another one!"
       />
     );
   }
 
   return (
     <div className="pageContainer">
-      <div className="flex items-center gap-4">
-        <Image
-          src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
-          width={60}
-          height={60}
-          alt={`${job.company} logo`}
-          className="rounded"
-        />
-        <div>
-          <h1 className="text-2xl font-bold">{job.title}</h1>
-          <p className="text-muted-foreground">{job.company}</p>
-          <p className="text-muted-foreground text-sm">
-            Posted{" "}
-            {formatFn(new Date(job.postedAt ?? job.createdAt), {
-              addSuffix: true,
-            })}
-          </p>
-        </div>
+      <div className="flex w-full justify-end">
+        <a target="_blank" href={`${job.sourceUrl}`} rel="noopener noreferrer">
+          <Button>
+            Apply Now <ExternalLink />
+          </Button>
+        </a>
       </div>
+      <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-3 flex flex-col gap-3">
+        <div className="flex flex-col gap-3 h-[20vh]">
+          <div className="flex items-center gap-3">
+            <a
+              target="_blank"
+              href="https://logo.dev"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
+                width={75}
+                height={75}
+                alt="Logo API"
+                className="rounded-lg"
+              />
+            </a>
 
-      <div className="mt-6 space-y-4">
-        <p className="text-muted-foreground">
-          <strong>Salary:</strong> ${job.salaryMin.toLocaleString()} – $
-          {job.salaryMax.toLocaleString()} {job.currency}
-        </p>
-
-        <p className="text-muted-foreground whitespace-pre-line">
-          {job.description}
-        </p>
-
-        <div>
-          <h2 className="text-lg font-semibold mb-2">AI Summary</h2>
+            {job.postedAt ? (
+              <p>
+                {job.company} •{" "}
+                <span className="text-muted-foreground">
+                  {formatFn(new Date(job.postedAt), {
+                    addSuffix: true,
+                  })}
+                </span>
+              </p>
+            ) : (
+              <p>
+                {job.company} •{" "}
+                <span className="text-muted-foreground">
+                  {formatFn(new Date(job.createdAt), {
+                    addSuffix: true,
+                  })}
+                </span>
+              </p>
+            )}
+          </div>
+          <div className="h-full flex flex-col justify-between">
+            <h1 className="font-bold text-2xl">{job.title}</h1>
+            <div className="flex gap-3 text-muted-foreground">
+              {/**TODO: Add feature to when the user clicks on the location, it gives me a rough
+               * estimate of their commute
+               */}
+              <div className="flex items-center gap-1">
+                <MapPin size={14} />
+                <p>{job.location}</p>
+              </div>
+              <div className="flex items-center gap-1">
+                <Clock size={14} />
+                <p>{job.employment}</p>
+              </div>
+              <div className="flex items-center gap-1">
+                <Building size={14} />
+                <p>{job.remoteType}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Bot className="text-[var(--app-blue)]" />
+            <h1 className="font-bold text-2xl">Ai Summary</h1>
+          </div>
           <p>{job.aiSummary}</p>
         </div>
-
-        <div className="mt-6">
-          <NotesEditor jobId={job.id} initialNote={job.note || ""} />
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <ListTodo className="text-[var(--app-blue)]" />
+            <h1 className="font-bold text-2xl">Responsibilites</h1>
+          </div>
+          <ul className="list-disc ml-5 space-y-3">
+            {job.responsibilities.map((responsibility, index) => (
+              <li key={index}>{responsibility}</li>
+            ))}
+          </ul>
         </div>
-
-        <div className="mt-4 flex gap-3">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Crosshair className="text-[var(--app-blue)]" />
+            <h1 className="font-bold text-2xl">Qualifications</h1>
+          </div>
+          <ul className="list-disc ml-5 space-y-3">
+            {job.qualifications.map((qualification, index) => (
+              <li key={index}>{qualification}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <NotebookPen className="text-[var(--app-blue)]" />
+            <h1 className="font-bold text-2xl">Your Notes</h1>
+          </div>
+          <p>{job.note}</p>
+        </div>
+        <div className="flex gap-3 w-full justify-center">
           <a href={job.sourceUrl} target="_blank" rel="noopener noreferrer">
             <Button>Apply Now</Button>
           </a>
