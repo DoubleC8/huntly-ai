@@ -21,6 +21,7 @@ import {
 } from "@/app/constants/jobStage";
 import NotesEditor from "./NotesEditor";
 import ViewJob from "./ViewJob";
+import Link from "next/link";
 
 export default function DashboardJobPost({ job }: { job: Job }) {
   const [isPending, startTransition] = useTransition();
@@ -157,7 +158,9 @@ export default function DashboardJobPost({ job }: { job: Job }) {
             </div>
             {/** view job button */}
             <div className="w-1/2">
-              <ViewJob job={job} />
+              <Link href={`/jobs/dashboard/${job.id}`}>
+                <Button>VIew Job</Button>
+              </Link>
             </div>
           </div>
         </div>

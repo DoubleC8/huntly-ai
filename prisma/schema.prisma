@@ -72,21 +72,23 @@ model VerificationToken {
 }
 
 model Job {
-  id          String    @id @default(cuid())
-  sourceUrl   String
-  title       String
-  company     String
-  location    String
-  employment  String
-  remoteType  String
-  salaryMin   Int
-  salaryMax   Int
-  currency    String
-  description String
-  aiSummary   String
-  skills      String[]
-  createdAt   DateTime  @default(now())
-  postedAt    DateTime?
+  id               String    @id @default(cuid())
+  sourceUrl        String
+  title            String
+  company          String
+  location         String
+  employment       String
+  remoteType       String
+  salaryMin        Int
+  salaryMax        Int
+  currency         String
+  description      String
+  aiSummary        String
+  skills           String[]  @default([])
+  responsibilities String[]  @default([])
+  qualifications   String[]  @default([])
+  createdAt        DateTime  @default(now())
+  postedAt         DateTime?
 
   stage     JobStage?
   userId    String
