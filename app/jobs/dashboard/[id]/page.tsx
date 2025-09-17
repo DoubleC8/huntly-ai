@@ -60,15 +60,21 @@ export default async function JobPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="pageContainer">
-      <div className="flex w-full gap-3 items-center justify-end">
+      <div
+        className="md:justify-end
+      flex w-full gap-3 items-center justify-center"
+      >
         <StarButton jobId={job.id} jobStage={job.stage} />
         <ShareJobButton jobSourceUrl={job?.sourceUrl} />
         <a target="_blank" href={`${job.sourceUrl}`} rel="noopener noreferrer">
           <Button className="w-40">Apply Now</Button>
         </a>
       </div>
-      <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-3 flex flex-col gap-3">
-        <div className="flex flex-col gap-3 h-[20vh]">
+      <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-3 flex flex-col gap-3 justify-between">
+        <div
+          className="md:h-[20vh]
+        flex flex-col gap-3"
+        >
           <div className="flex items-center gap-3">
             <a
               target="_blank"
@@ -194,7 +200,14 @@ export default async function JobPage({ params }: { params: { id: string } }) {
             <NotebookPen className="text-[var(--app-blue)]" />
             <h1 className="font-bold text-2xl">Your Notes</h1>
           </div>
-          <p>{job.note}</p>
+          {job.note?.trim().length ? (
+            <p>{job.note}</p>
+          ) : (
+            <p className="text-muted-foreground">
+              This space is looking a little empty... Keep track of interview
+              tips, application dates, or reasons you’re excited about this job
+            </p>
+          )}
         </div>
         <div className="flex gap-3 w-full justify-center">
           <a href={job.sourceUrl} target="_blank" rel="noopener noreferrer">

@@ -83,9 +83,15 @@ export default function DashboardJobPost({ job }: { job: Job }) {
         className="lg:flex-row lg:gap-0
       flex-col gap-3 justify-between text-sm text-muted-foreground"
       >
-        <div className="flex items-center justify-between w-full">
+        <div
+          className="md:flex-row
+        flex flex-col gap-3 items-center justify-between w-full"
+        >
           {/**job info row */}
-          <div className="flex gap-3">
+          <div
+            className="md:w-1/2
+          flex gap-3"
+          >
             {/**TODO: Add feature to when the user clicks on the location, it gives me a rough
              * estimate of their commute
              */}
@@ -105,32 +111,24 @@ export default function DashboardJobPost({ job }: { job: Job }) {
 
           {/**view job and view/edit note on desktop*/}
           <div
-            className="md:flex 
-          hidden gap-2"
+            className="md:flex md:flex-row md:justify-end md:w-1/2
+          flex flex-col-reverse gap-2 w-full "
           >
             {/**add notes button */}
-            <div className="w-1/2">
+            <div
+              className="md:w-1/2 lg:w-1/4
+            w-full"
+            >
               <NotesEditor jobId={job.id} initialNote={job.note || ""} />
             </div>
             {/** view job button */}
-            <div className="w-1/2">
-              <Link href={`/jobs/dashboard/${job.id}`}>
-                <Button>View Job</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/**view job and view/edit note on mobile */}
-        <div
-          className="md:hidden
-        w-full flex flex-col gap-3"
-        >
-          <a target="_blank" rel="noopener noreferrer" href={job.sourceUrl}>
-            <Button className="w-full">Apply</Button>
-          </a>
-          <div>
-            <NotesEditor jobId={job.id} initialNote={job.note || ""} />
+            <Link
+              href={`/jobs/dashboard/${job.id}`}
+              className="md:w-1/2 lg:w-1/4
+            w-full"
+            >
+              <Button className="w-full">View Job</Button>
+            </Link>
           </div>
         </div>
       </CardFooter>

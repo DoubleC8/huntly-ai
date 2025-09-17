@@ -66,13 +66,14 @@ export default function NotesEditor({ jobId, initialNote }: NotesEditorProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild className="w-full">
+      <DialogTrigger asChild>
         <Button
           variant={
             localInitialNote && localInitialNote.trim() !== ""
               ? "noted"
               : "secondary"
           }
+          className="w-full"
         >
           {localInitialNote && localInitialNote.trim() !== ""
             ? "View Notes"

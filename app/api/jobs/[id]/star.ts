@@ -16,7 +16,21 @@ export async function PATCH(
       },
     });
 
-    return NextResponse.json(job);
+    if (!job) {
+      return NextResponse.json({ error: "Job not found" }, { status: 404 });
+    }
+
+     const newStage = job.stage === "WISHLIST" ? null : "WISHLIST";
+
+
+    const updatedJob = await prisma.job.update({
+      where: { id },
+      data: {
+        stage: newStage,
+      },
+    });
+
+    return NextResponse.json(updatedJob);
   } catch (error) {
     return NextResponse.json({ error: "Failed to star job" }, { status: 500 });
   }

@@ -29,17 +29,27 @@ export default function StarButton({
             : "Job removed from Wishlist."
         );
       } catch (error) {
-        setIsWishlisted(jobStage === "WISHLIST");
+        setIsWishlisted((prev) => !prev);
         toast.error("Failed to toggle wishlist.");
       }
     });
   };
+
+  // Only show star if job is not yet applied or earlier
+  const showStar =
+    jobStage === null ||
+    STAGE_ORDER.indexOf(jobStage) < STAGE_ORDER.indexOf("APPLIED");
+
+  if (!showStar) return null;
+
   return jobStage === null ||
     STAGE_ORDER.indexOf(jobStage) < STAGE_ORDER.indexOf("APPLIED") ? (
     <button
       onClick={handleStarClick}
       disabled={isPending}
       className="hover:cursor-pointer"
+      aria-pressed={isWishlisted}
+      title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
     >
       {isWishlisted ? (
         <Star fill="yellow" className="text-[var(--app-yellow)]" />
