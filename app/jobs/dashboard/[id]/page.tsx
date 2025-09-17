@@ -17,6 +17,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ShareJobButton from "@/components/dashboard/buttons/ShareJob";
 import StarButton from "@/components/dashboard/buttons/StarButton";
+import JobPageNotes from "@/components/dashboard/JobPageNotes";
 
 export default async function JobPage({ params }: { params: { id: string } }) {
   const session = await auth();
@@ -71,6 +72,7 @@ export default async function JobPage({ params }: { params: { id: string } }) {
         </a>
       </div>
       <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-3 flex flex-col gap-3 justify-between">
+        {/**header */}
         <div
           className="md:h-[20vh]
         flex flex-col gap-3"
@@ -161,6 +163,7 @@ export default async function JobPage({ params }: { params: { id: string } }) {
             </p>
           )}
         </div>
+        {/**qualifications */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Crosshair className="text-[var(--app-blue)]" />
@@ -178,6 +181,7 @@ export default async function JobPage({ params }: { params: { id: string } }) {
             </p>
           )}
         </div>
+        {/**skills */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Lightbulb className="text-[var(--app-blue)]" />
@@ -195,26 +199,29 @@ export default async function JobPage({ params }: { params: { id: string } }) {
             </p>
           )}
         </div>
+        {/**skills */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <NotebookPen className="text-[var(--app-blue)]" />
             <h1 className="font-bold text-2xl">Your Notes</h1>
           </div>
-          {job.note?.trim().length ? (
-            <p>{job.note}</p>
-          ) : (
-            <p className="text-muted-foreground">
-              This space is looking a little empty... Keep track of interview
-              tips, application dates, or reasons you’re excited about this job
-            </p>
-          )}
+          <JobPageNotes jobId={job.id} initialNote={job.note} />
         </div>
-        <div className="flex gap-3 w-full justify-center">
-          <a href={job.sourceUrl} target="_blank" rel="noopener noreferrer">
-            <Button className="w-40">Apply Now</Button>
+        {/**apply/go back to dashboard button */}
+        <div
+          className="
+        w-full flex gap-1 mx-auto justify-center"
+        >
+          <a
+            href={job.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-1/4"
+          >
+            <Button className="w-full">Apply Now</Button>
           </a>
-          <Link href="/jobs/dashboard">
-            <Button variant="outline" className="w-40">
+          <Link href="/jobs/dashboard" className="w-1/4">
+            <Button variant="outline" className="w-full">
               Back to Dashboard
             </Button>
           </Link>

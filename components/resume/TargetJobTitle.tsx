@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { LoaderCircle, Send, SquarePen, Upload } from "lucide-react";
+import { LoaderCircle, Plus, SquarePen } from "lucide-react";
 import { toast } from "sonner";
 
 interface JobTitleProps {
@@ -96,7 +96,7 @@ export default function TargetJobTitle({
           {isPending ? (
             <LoaderCircle className="animate-spin w-4 h-4" />
           ) : (
-            <Upload className="w-4 h-4" />
+            <Plus className="w-4 h-4" />
           )}
         </Button>
       ) : (

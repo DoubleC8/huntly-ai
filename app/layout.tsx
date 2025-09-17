@@ -25,7 +25,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen w-full bg-[var(--background)] text-[var(--foreground)]`}
       >
         {children}
-        <Toaster position="top-right" richColors expand={true} />
+        <Toaster position="top-right" richColors expand={false} />
       </body>
     </html>
   );
