@@ -71,12 +71,33 @@ export default async function DashboardPage({
       {/**conditionally render jobs */}
       {jobs.length === 0 ? (
         query ? (
-          <div className="flex flex-col gap-3 justify-center items-center my-auto">
-            <Frown />
-            <p className="text-muted-foreground text-center">
-              No jobs matched your search.
-            </p>
-          </div>
+          <>
+            <form className="flex w-full justify-between gap-3">
+              <div className="w-full flex gap-2">
+                <Input
+                  type="text"
+                  name="q"
+                  placeholder="Search for a Job"
+                  className="bg-[var(--background)] h-9"
+                />
+                <Button type="submit">
+                  <span
+                    className="md:block
+          hidden"
+                  >
+                    Search
+                  </span>
+                  <Search />
+                </Button>
+              </div>
+            </form>
+            <div className="flex flex-col gap-3 justify-center items-center my-auto">
+              <Frown />
+              <p className="text-muted-foreground text-center">
+                No jobs matched your search.
+              </p>
+            </div>
+          </>
         ) : (
           <div className="my-auto">
             <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
