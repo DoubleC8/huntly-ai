@@ -18,6 +18,7 @@ import Link from "next/link";
 import ShareJobButton from "@/components/dashboard/buttons/ShareJob";
 import StarButton from "@/components/dashboard/buttons/StarButton";
 import JobPageNotes from "@/components/dashboard/JobPageNotes";
+import { ResumeMatchScore } from "@/components/dashboard/charts/ResumeMatchScore";
 
 export default async function JobPage({ params }: { params: { id: string } }) {
   const session = await auth();
@@ -74,61 +75,67 @@ export default async function JobPage({ params }: { params: { id: string } }) {
       <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-3 flex flex-col gap-3 justify-between">
         {/**header */}
         <div
-          className="md:h-[20vh]
+          className="md:h-[20vh] md:justify-between md:flex-row
         flex flex-col gap-3"
         >
-          <div className="flex items-center gap-3">
-            <a
-              target="_blank"
-              href="https://logo.dev"
-              rel="noopener noreferrer"
-            >
-              <Image
-                src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
-                width={75}
-                height={75}
-                alt="Logo API"
-                className="rounded-lg"
-              />
-            </a>
+          <div className="md:w-3/4 flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <a
+                target="_blank"
+                href="https://logo.dev"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
+                  width={75}
+                  height={75}
+                  alt="Logo API"
+                  className="rounded-lg"
+                />
+              </a>
 
-            {job.postedAt ? (
-              <p className="font-semibold">
-                {job.company} •{" "}
-                <span className="text-muted-foreground">
-                  {formatFn(new Date(job.postedAt), {
-                    addSuffix: true,
-                  })}
-                </span>
-              </p>
-            ) : (
-              <p>
-                {job.company} •{" "}
-                <span className="text-muted-foreground">
-                  {formatFn(new Date(job.createdAt), {
-                    addSuffix: true,
-                  })}
-                </span>
-              </p>
-            )}
-          </div>
-          <div className="h-full flex flex-col justify-between">
-            <h1 className="font-bold text-2xl">{job.title}</h1>
-            <div className="flex gap-3 text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <MapPin size={14} />
-                <p>{job.location}</p>
-              </div>
-              <div className="flex items-center gap-1">
-                <Clock size={14} />
-                <p>{job.employment}</p>
-              </div>
-              <div className="flex items-center gap-1">
-                <Building size={14} />
-                <p>{job.remoteType}</p>
+              {job.postedAt ? (
+                <p className="font-semibold">
+                  {job.company} •{" "}
+                  <span className="text-muted-foreground">
+                    {formatFn(new Date(job.postedAt), {
+                      addSuffix: true,
+                    })}
+                  </span>
+                </p>
+              ) : (
+                <p>
+                  {job.company} •{" "}
+                  <span className="text-muted-foreground">
+                    {formatFn(new Date(job.createdAt), {
+                      addSuffix: true,
+                    })}
+                  </span>
+                </p>
+              )}
+            </div>
+            <div
+              className="md:items-start
+            h-full flex flex-col items-center gap-3 justify-between"
+            >
+              <h1 className="font-bold text-2xl">{job.title}</h1>
+              <div className="flex gap-3 text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <MapPin size={14} />
+                  <p>{job.location}</p>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Clock size={14} />
+                  <p>{job.employment}</p>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Building size={14} />
+                  <p>{job.remoteType}</p>
+                </div>
               </div>
             </div>
           </div>
+          <ResumeMatchScore />
         </div>
         {/**AI Summary */}
         <div className="flex flex-col gap-3">
