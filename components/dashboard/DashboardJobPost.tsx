@@ -10,9 +10,9 @@ import { formatDistanceToNow as formatFn } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Job } from "@/app/generated/prisma";
 import { STAGE_COLORS, STAGE_LABELS } from "@/app/constants/jobStage";
-import NotesEditor from "./NotesEditor";
 import Link from "next/link";
 import StarButton from "./buttons/StarButton";
+import NotesButton from "./NotesEditor";
 
 export default function DashboardJobPost({ job }: { job: Job }) {
   return (
@@ -119,7 +119,7 @@ export default function DashboardJobPost({ job }: { job: Job }) {
               className="md:w-1/2 lg:w-1/4
             w-full"
             >
-              <NotesEditor jobId={job.id} initialNote={job.note || ""} />
+              <NotesButton jobId={job.id} initialNote={job.note || ""} />
             </div>
             {/** view job button */}
             <Link
