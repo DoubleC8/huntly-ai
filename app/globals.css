@@ -80,8 +80,9 @@
   --app-dark-purple: #5246BA;
   --app-blue: #1F51FF;
   --app-light-blue: #1FC1FF;
-  --app-red: #FF3131;
+  --app-green: #32CD32;
   --app-yellow: #FFC000;
+  --app-red: #FF3131;
 }
 
 .dark {

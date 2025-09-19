@@ -13,14 +13,24 @@ type ResumeMatchScoreProps = {
 };
 
 export function ResumeMatchScore({ matchScore }: ResumeMatchScoreProps) {
-  const score = typeof matchScore === "number" ? matchScore : 50; // Fallback for now
+  const score = typeof matchScore === "number" ? matchScore : 40; // Fallback for now
   const remaining = 100 - score;
+
+  const fillColor =
+    score >= 80
+      ? "var(--app-green)"
+      : score >= 50
+      ? "var(--app-yellow)"
+      : "var(--app-red)";
+
+  const matchMessage =
+    score >= 80 ? "Great Match" : score >= 50 ? "Decent Match" : "Needs Work";
 
   const chartData = [
     {
       name: "Match",
       value: score,
-      fill: "var(--app-blue)",
+      fill: fillColor,
     },
     {
       name: "Remaining",
@@ -72,7 +82,7 @@ export function ResumeMatchScore({ matchScore }: ResumeMatchScoreProps) {
                       y={(viewBox.cy || 0) + 24}
                       className="fill-muted-foreground text-sm"
                     >
-                      Match Score
+                      {matchMessage}
                     </tspan>
                   </text>
                 );
