@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/chart";
 
 type ResumeMatchScoreProps = {
-  matchScore?: number; // Future AI-driven value (0–100)
+  matchScore?: number;
 };
 
 export function ResumeMatchScore({ matchScore }: ResumeMatchScoreProps) {
-  const score = typeof matchScore === "number" ? matchScore : 40; // Fallback for now
+  const score = typeof matchScore === "number" ? matchScore : 85; // Fallback for now
   const remaining = 100 - score;
 
   const fillColor =
@@ -25,6 +25,13 @@ export function ResumeMatchScore({ matchScore }: ResumeMatchScoreProps) {
 
   const matchMessage =
     score >= 80 ? "Great Match" : score >= 50 ? "Decent Match" : "Needs Work";
+
+  const matchSuggestion =
+    score >= 80
+      ? "Looks strong! Your resume aligns well with this role."
+      : score >= 50
+      ? "You might want to tweak your summary or highlight relevant skills."
+      : "Try tailoring your resume to better match the job description.";
 
   const chartData = [
     {
@@ -44,7 +51,7 @@ export function ResumeMatchScore({ matchScore }: ResumeMatchScoreProps) {
       config={{
         value: { label: "Match Score" },
       }}
-      className="mx-auto aspect-square max-h-[250px]"
+      className="mx-auto min-h-[20vh] h-[20vh] flex items-end"
     >
       <PieChart>
         <ChartTooltip
@@ -55,7 +62,8 @@ export function ResumeMatchScore({ matchScore }: ResumeMatchScoreProps) {
           data={chartData}
           dataKey="value"
           nameKey="name"
-          innerRadius={60}
+          innerRadius={54}
+          outerRadius={58}
           strokeWidth={0}
           startAngle={90}
           endAngle={-270}
@@ -73,14 +81,14 @@ export function ResumeMatchScore({ matchScore }: ResumeMatchScoreProps) {
                     <tspan
                       x={viewBox.cx}
                       y={viewBox.cy}
-                      className="fill-foreground text-3xl font-bold"
+                      className="fill-foreground text-2xl font-bold"
                     >
                       {score}%
                     </tspan>
                     <tspan
                       x={viewBox.cx}
                       y={(viewBox.cy || 0) + 24}
-                      className="fill-muted-foreground text-sm"
+                      className="fill-muted-foreground text-xs"
                     >
                       {matchMessage}
                     </tspan>

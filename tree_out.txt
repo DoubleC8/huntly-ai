@@ -58,6 +58,8 @@
 │   │   │   ├── loading.tsx
 │   │   │   └── page.tsx
 │   │   ├── dashboard
+│   │   │   ├── [id]
+│   │   │   │   └── page.tsx
 │   │   │   ├── applied
 │   │   │   │   └── page.tsx
 │   │   │   ├── interview
@@ -91,12 +93,19 @@
 │   │   ├── JobColumn.tsx
 │   │   └── JobColumnJobPost.tsx
 │   ├── dashboard
+│   │   ├── buttons
+│   │   │   ├── ShareJob.tsx
+│   │   │   └── StarButton.tsx
+│   │   ├── charts
+│   │   │   └── ResumeMatchScore.tsx
 │   │   ├── DashboardCard.tsx
 │   │   ├── DashboardJobPost.tsx
 │   │   ├── DashboardTitle.tsx
+│   │   ├── JobPageNotes.tsx
+│   │   ├── notes
+│   │   │   └── NoteEditorBase.tsx
 │   │   ├── NotesEditor.tsx
-│   │   ├── RecommendedJobs.tsx
-│   │   └── ViewJob.tsx
+│   │   └── RecommendedJobs.tsx
 │   ├── landing
 │   │   ├── Footer.tsx
 │   │   ├── ImageCarousel.tsx
@@ -126,6 +135,7 @@
 │       ├── button.tsx
 │       ├── card.tsx
 │       ├── carousel.tsx
+│       ├── chart.tsx
 │       ├── dialog.tsx
 │       ├── ErrorBoundary.tsx
 │       ├── form.tsx
@@ -171,6 +181,10 @@
 │   │   │   └── migration.sql
 │   │   ├── 20250914002659_add_target_job_title_to_resumes
 │   │   │   └── migration.sql
+│   │   ├── 20250915183054_add_tags_to_job
+│   │   │   └── migration.sql
+│   │   ├── 20250916013047_add_responsibilities_and_qualifications_to_job
+│   │   │   └── migration.sql
 │   │   └── migration_lock.toml
 │   └── schema.prisma
 ├── public
@@ -187,4 +201,4 @@
 ├── tree_out.txt
 └── tsconfig.json
 
-50 directories, 138 files
+56 directories, 146 files

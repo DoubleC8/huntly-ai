@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { SquarePen } from "lucide-react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -24,6 +25,13 @@ export default function NoteEditorBase({
   const [lastSavedNote, setLastSavedNote] = useState(initialNote ?? "");
 
   const handleSave = () => {
+    if (note.length > 1000) {
+      toast.error("Note is too long", {
+        description: "Notes must be under 1000 characters.",
+      });
+      return;
+    }
+
     if (note === lastSavedNote) {
       setEditMode(false);
       onFinish?.(note);
@@ -38,8 +46,18 @@ export default function NoteEditorBase({
           body: JSON.stringify({ note }),
         });
 
+        const data = await res.json();
+
         if (!res.ok) {
-          toast.error("Failed to update note.");
+          if (res.status === 400 && data?.issues?.note?._errors.length > 0) {
+            toast.error("Validation Error", {
+              description: data.issues.note._errors[0],
+            });
+          } else {
+            toast.error("Failed to update note.", {
+              description: data?.error || "Please try again later",
+            });
+          }
           return;
         }
 
@@ -64,6 +82,14 @@ export default function NoteEditorBase({
           rows={4}
           disabled={isPending}
         />
+        <div
+          className={cn(
+            "text-xs text-right mt-1",
+            note.length > 1000 ? "text-destructive" : "text-muted-foreground"
+          )}
+        >
+          {note.length} / 1000
+        </div>
         <div className="flex gap-3 items-center justify-center">
           <Button onClick={handleSave} disabled={isPending}>
             {isPending ? "Saving..." : "Save Note"}

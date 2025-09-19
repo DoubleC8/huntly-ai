@@ -21,7 +21,7 @@ export async function PUT(
 
         if(!parsed.success){
             return NextResponse.json(
-                { error: "Invalid input", issues: parsed.error.format() },
+                { error: "Invalid input", issues: parsed.error },
                 { status: 400 }
             );
         }

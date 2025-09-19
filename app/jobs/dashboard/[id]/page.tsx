@@ -75,7 +75,7 @@ export default async function JobPage({ params }: { params: { id: string } }) {
       <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-3 flex flex-col gap-3 justify-between">
         {/**header */}
         <div
-          className="md:h-[20vh] md:justify-between md:flex-row
+          className="md:min-h-[20vh] md:max-h-fit md:justify-between md:flex-row
         flex flex-col gap-3"
         >
           <div className="md:w-3/4 flex flex-col gap-3">
