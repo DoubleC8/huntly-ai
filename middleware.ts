@@ -1,11 +1,11 @@
-import { auth } from "@/auth";
+import { auth } from "@/auth-middleware"
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const protectedRoutes = ["/jobs"];
 
 export default async function middleware(request: NextRequest) {
-  const session = await auth();
+  const session = await auth(request);
   const pathname = request.nextUrl.pathname;
 
   //if the user is logged in and authorized they should not
