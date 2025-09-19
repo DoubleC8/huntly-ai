@@ -7,11 +7,12 @@ import { createClient } from "@/lib/supabase/client";
 import { Resume } from "@/app/generated/prisma";
 
 //handles deleting resumes
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session?.user?.email) { return NextResponse.json({ error: "Unauthorized" }, { status: 401 }); }
 
   const { filePath } = await req.json();
+  const { id } = await params;
 
   if (!filePath) {
     return new Response("Missing filePath", { status: 400 });
@@ -31,7 +32,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
     // Look for resume in DB
     const resume = await prisma.resume.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!resume) {
@@ -44,13 +45,13 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       include: { resumes: true },
     });
 
-    const ownsResume = user?.resumes.some((r: Resume) => r.id === params.id);
+    const ownsResume = user?.resumes.some((r: Resume) => r.id === id);
     if (!ownsResume) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const deleted = await prisma.resume.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json(deleted, { status: 200 });
@@ -63,14 +64,14 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 //handles making resumes default resume
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session?.user?.email) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     try{
     const resume = await prisma.resume.findUnique({

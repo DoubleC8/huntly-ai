@@ -7,7 +7,7 @@ import { targetJobTitleSchema } from "@/lib/validations/resume";
 
 export async function PUT(
     request: Request, 
-    context: { params: { id: string }}
+    context: { params: Promise<{ id: string }> }
 ) {
     const { params } = await context;
     const session = await auth();
@@ -30,8 +30,10 @@ export async function PUT(
 
         const { targetJobTitle } = parsed.data;
 
+       const { id } = await params;
+       
        console.log("Updating resume target job title:", {
-            jobId: params.id,
+            jobId: id,
             userEmail: session.user.email,
             jobTitle: targetJobTitle,
         });
@@ -46,7 +48,7 @@ export async function PUT(
 
         const updatedResume = await prisma.resume.update({
             where: {
-                id: params.id, 
+                id, 
                 userId: user.id, 
             }, 
             data: { targetJobTitle: targetJobTitle }

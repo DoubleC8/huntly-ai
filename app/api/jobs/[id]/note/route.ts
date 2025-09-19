@@ -5,11 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { jobNoteSchema } from "@/lib/validations/jobNotes";
 
-export async function PUT(
-  request: Request,
-  context: { params: { id: string } }
-) {
-  const { params } = context; 
+export async function PUT(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await auth();
 
   if (!session?.user?.email) {
@@ -21,23 +17,18 @@ export async function PUT(
 
     const parsed = jobNoteSchema.safeParse(json);
 
-    if(!parsed.success){
+    if (!parsed.success) {
       if (process.env.NODE_ENV === "development") {
         console.error("Validation failed:", parsed.error);
       }
       return NextResponse.json(
-        { error: "Invalid Input", issues: parsed.error}, 
+        { error: "Invalid Input", issues: parsed.error },
         { status: 400 }
-      )
+      );
     }
 
     const { note } = parsed.data;
-
-    console.log("Updating job note:", {
-      jobId: params.id,
-      userEmail: session.user.email,
-      note,
-    });
+    const { id } = await context.params;
 
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
@@ -49,7 +40,7 @@ export async function PUT(
 
     const updatedJob = await prisma.job.update({
       where: {
-        id: params.id,
+        id,
         userId: user.id,
       },
       data: { note: note ?? "" },

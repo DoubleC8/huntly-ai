@@ -20,7 +20,11 @@ import StarButton from "@/components/dashboard/buttons/StarButton";
 import JobPageNotes from "@/components/dashboard/JobPageNotes";
 import { ResumeMatchScore } from "@/components/dashboard/charts/ResumeMatchScore";
 
-export default async function JobPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function Page({ params }: PageProps) {
   const session = await auth();
 
   if (!session) {
@@ -44,9 +48,10 @@ export default async function JobPage({ params }: { params: { id: string } }) {
     );
   }
 
+  const { id } = await params;
   const job = await prisma.job.findUnique({
     where: {
-      id: params.id,
+      id,
     },
   });
 
