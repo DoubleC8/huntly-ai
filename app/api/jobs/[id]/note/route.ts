@@ -47,9 +47,9 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
     });
 
     return NextResponse.json(updatedJob.note);
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { error: "Internal Server Error", details: error.message },
+      { error: "Internal Server Error", details: error instanceof Error ? error.message : "Unknown error" },
       { status: 500 }
     );
   }

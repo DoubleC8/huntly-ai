@@ -15,8 +15,16 @@ export default async function ResumePage() {
     );
   }
 
+  if (!session.user?.email) {
+    return (
+      <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
+        User email not found.
+      </div>
+    );
+  }
+
   const user = await prisma.user.findUnique({
-    where: { email: session?.user?.email! },
+    where: { email: session.user.email },
     //we need this since users have a relationship with the resumes
     include: { resumes: true },
   });
@@ -38,7 +46,7 @@ export default async function ResumePage() {
         className="
             pageContainer !min-h-[94vh]"
       >
-        <ResumeDashboardClient email={session?.user?.email!} />
+        <ResumeDashboardClient email={session.user.email} />
       </div>
     </div>
   );

@@ -17,8 +17,16 @@ export default async function appliedJobsPage() {
     );
   }
 
+  if (!session.user?.email) {
+    return (
+      <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
+        User email not found.
+      </div>
+    );
+  }
+
   const user = await prisma.user.findUnique({
-    where: { email: session.user?.email! },
+    where: { email: session.user.email },
   });
 
   if (!user) {

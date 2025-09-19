@@ -25,7 +25,7 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
 
   const moveJobStage = async (direction: "up" | "down") => {
     const currentIndex = STAGE_ORDER.indexOf(job.stage as JobStage);
-    let newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+    const newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
 
     if (newIndex < 0 || newIndex >= STAGE_ORDER.length) return;
 
