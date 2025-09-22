@@ -20,7 +20,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Job not found" }, { status: 404 });
     }
 
-     const newStage = job.stage === "WISHLIST" ? null : "WISHLIST";
+     const newStage = job.stage === "WISHLIST" ? "DEFAULT" : "WISHLIST";
 
 
     const updatedJob = await prisma.job.update({

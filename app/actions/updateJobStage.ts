@@ -10,6 +10,9 @@ export async function updateJobStage(jobId: string, newStage: JobStage){
 
     //some extra precaution
     if(!session?.user?.email) throw new Error("Unauthorized")
+    
+    // Validate that newStage is not null or undefined
+    if (!newStage) throw new Error("Invalid stage: stage cannot be null or undefined")
 
     //making sure the user exist by checking that the id of the user exists in our db
     const user = await prisma.user.findUnique({

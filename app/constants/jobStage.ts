@@ -26,4 +26,5 @@ export const STAGE_ORDER: JobStage[] = [
   "APPLIED",
   "INTERVIEW",
   "OFFER",
+  "REJECTED",
 ];

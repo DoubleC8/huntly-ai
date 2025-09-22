@@ -31,6 +31,11 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
 
     const newStage = STAGE_ORDER[newIndex];
 
+    if (!newStage) {
+      console.error("Invalid stage index:", newIndex);
+      return;
+    }
+
     try {
       await updateJobStage(job.id, newStage);
       toast.success(

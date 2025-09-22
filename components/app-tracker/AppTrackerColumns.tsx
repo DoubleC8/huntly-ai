@@ -25,6 +25,7 @@ export default function AppTrackerColumns({
   const isLargeScreen = useIsLargeScreen();
 
   const [columns, setColumns] = useState<Record<JobStage, Job[]>>({
+    DEFAULT: [],
     WISHLIST: wishlist,
     APPLIED: applied,
     INTERVIEW: interview,
@@ -40,6 +41,12 @@ export default function AppTrackerColumns({
 
     const jobId = active.id.toString();
     const destinationStage = over.id.toString() as JobStage;
+
+    // Validate destination stage
+    if (!destinationStage) {
+      console.error("Invalid destination stage:", over.id);
+      return;
+    }
 
     // Skip if dropped into same column
     const sourceStage = Object.entries(columns).find(([_, jobs]) =>
