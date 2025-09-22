@@ -6,13 +6,13 @@ import {
 } from "@/components/ui/card";
 import { Building, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
-import { formatDistanceToNow as formatFn } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Job } from "@/app/generated/prisma";
 import { STAGE_COLORS, STAGE_LABELS } from "@/app/constants/jobStage";
 import Link from "next/link";
 import StarButton from "./buttons/StarButton";
 import NotesButton from "./NotesEditor";
+import { formatJobDate, formatSalary } from "@/lib/date-utils";
 
 export default function DashboardJobPost({ job }: { job: Job }) {
   return (
@@ -56,17 +56,11 @@ export default function DashboardJobPost({ job }: { job: Job }) {
 
               {job.postedAt ? (
                 <p className="text-sm text-muted-foreground">
-                  Posted{" "}
-                  {formatFn(new Date(job.postedAt), {
-                    addSuffix: true,
-                  })}
+                  Posted {formatJobDate(job.postedAt)}
                 </p>
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  We found this job for you{" "}
-                  {formatFn(new Date(job.createdAt), {
-                    addSuffix: true,
-                  })}
+                  We found this job for you {formatJobDate(job.createdAt)}
                 </p>
               )}
             </div>
@@ -76,7 +70,7 @@ export default function DashboardJobPost({ job }: { job: Job }) {
       </CardHeader>
       <CardContent className="flex flex-col gap-1">
         <p className="text-muted-foreground text-sm">
-          ${job.salaryMin.toLocaleString()} - ${job.salaryMax.toLocaleString()}{" "}
+          ${formatSalary(job.salaryMin)} - ${formatSalary(job.salaryMax)}{" "}
           {job.currency}
         </p>
         <p>{job.aiSummary}</p>

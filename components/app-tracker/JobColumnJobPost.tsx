@@ -12,7 +12,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { updateJobStage } from "@/app/actions/updateJobStage";
 import { toast } from "sonner";
 import { STAGE_ORDER } from "@/app/constants/jobStage";
-import { formatDistanceToNow as formatFn } from "date-fns";
+import { formatJobDate, formatSalary } from "@/lib/date-utils";
 
 export default function JobColumnJobPost({ job }: { job: Job }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
@@ -89,26 +89,16 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
       <CardContent className="flex justify-start p-0">
         <div className="font-medium text-xs text-muted-foreground">
           <p>
-            Salary: ${job.salaryMin.toLocaleString()} - $
-            {job.salaryMax.toLocaleString()} {job.currency}
+            Salary: ${formatSalary(job.salaryMin)} - $
+            {formatSalary(job.salaryMax)} {job.currency}
           </p>
           <p>
             Job Type: {job.employment}, {job.remoteType}
           </p>
           {job.postedAt ? (
-            <p>
-              Posted:{" "}
-              {formatFn(new Date(job.postedAt), {
-                addSuffix: true,
-              })}
-            </p>
+            <p>Posted: {formatJobDate(job.postedAt)}</p>
           ) : (
-            <p>
-              We found this job for you{" "}
-              {formatFn(new Date(job.createdAt), {
-                addSuffix: true,
-              })}
-            </p>
+            <p>We found this job for you {formatJobDate(job.createdAt)}</p>
           )}
         </div>
       </CardContent>
