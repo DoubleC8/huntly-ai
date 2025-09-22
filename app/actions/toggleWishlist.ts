@@ -28,7 +28,7 @@ export async function toggleWishlist(jobId: string) {
   const updated = await prisma.job.update({
     where: { id: jobId },
     data: {
-      stage: isWishlisted ? null : JobStage.WISHLIST,
+      stage: isWishlisted ? JobStage.DEFAULT : JobStage.WISHLIST,
     },
   });
 

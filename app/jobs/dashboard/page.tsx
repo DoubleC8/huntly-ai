@@ -57,7 +57,7 @@ export default async function DashboardPage({
   const jobs = await prisma.job.findMany({
     where: {
       userId: user.id,
-      stage: null,
+      stage: "DEFAULT",
       ...(query && {
         OR: [
           { title: { contains: query, mode: "insensitive" } },

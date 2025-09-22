@@ -72,19 +72,36 @@ export default async function ProfilePage() {
           {/**user resume section */}
           <div className="flex flex-col gap-3">
             <h2 className="font-bold text-xl">Your Default Resume</h2>
-            <div className="flex items-center gap-1">
-              <Star fill="yellow" className="text-[var(--app-yellow)]" />
-              <a
-                target="_blank"
-                href={defaultResume.publicUrl}
-                rel="noopener noreferrer"
-              >
-                {defaultResume.fileName.split(".")[0]}
-              </a>
-            </div>
-            <p className="text-muted-foreground">
-              You can change your default resume at any time in the resume tab.
-            </p>
+            {defaultResume ? (
+              <>
+                <div className="flex items-center gap-1">
+                  <Star fill="yellow" className="text-[var(--app-yellow)]" />
+                  <a
+                    target="_blank"
+                    href={defaultResume.publicUrl}
+                    rel="noopener noreferrer"
+                  >
+                    {defaultResume.fileName.split(".")[0]}
+                  </a>
+                </div>
+                <p className="text-muted-foreground">
+                  You can change your default resume at any time in the resume
+                  tab.
+                </p>
+              </>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <p className="text-muted-foreground">
+                  No default resume found. Upload a resume to get started!
+                </p>
+                <a
+                  href="/jobs/resume"
+                  className="text-blue-500 hover:text-blue-700 underline"
+                >
+                  Go to Resume Tab
+                </a>
+              </div>
+            )}
           </div>
 
           {/**user job table */}
