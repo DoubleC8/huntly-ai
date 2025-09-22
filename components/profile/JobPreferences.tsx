@@ -1,65 +1,40 @@
 "use client";
 
-import { useState } from "react";
 import {
   Command,
+  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
+  CommandSeparator,
 } from "@/components/ui/command";
 
-import { X } from "lucide-react";
-import { Badge } from "../ui/badge";
-
-const JOB_TITLES = [
-  "Software Engineer",
-  "Frontend Software Engineer",
-  "Backend Software Engineer",
-  "Data Engineer",
-  "Data Analyst",
-  "Quantitative Analyst",
-  "Product Manager",
-];
+const languages = [
+  { label: "English", value: "en" },
+  { label: "French", value: "fr" },
+  { label: "German", value: "de" },
+  { label: "Spanish", value: "es" },
+  { label: "Portuguese", value: "pt" },
+  { label: "Russian", value: "ru" },
+  { label: "Japanese", value: "ja" },
+  { label: "Korean", value: "ko" },
+  { label: "Chinese", value: "zh" },
+] as const;
 
 export default function JobPreferences() {
-  const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
-
-  const addJob = (job: string) => {
-    if (!selectedJobs.includes(job)) {
-      setSelectedJobs([...selectedJobs, job]);
-    }
-  };
-
-  const removeJob = (job: string) => {
-    setSelectedJobs(selectedJobs.filter((j) => j !== job));
-  };
-
   return (
-    <div className="w-full  mx-auto flex flex-col gap-4">
-      {/* Searchable input */}
-      <Command>
-        <CommandInput placeholder="Search job titles..." />
-        <CommandGroup>
-          {JOB_TITLES.map((job) => (
-            <CommandItem key={job} onSelect={() => addJob(job)}>
-              {job}
-            </CommandItem>
-          ))}
+    <Command>
+      <CommandInput placeholder="Type a command or search..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Suggestions">
+          <CommandItem>Calendar</CommandItem>
+          <CommandItem>Search Emoji</CommandItem>
+          <CommandItem>Calculator</CommandItem>
         </CommandGroup>
-      </Command>
-
-      {/* Selected chips */}
-      <div className="flex flex-wrap gap-2">
-        {selectedJobs.map((job) => (
-          <Badge key={job} className="flex items-center gap-1">
-            {job}
-            <X
-              className="h-3 w-3 cursor-pointer"
-              onClick={() => removeJob(job)}
-            />
-          </Badge>
-        ))}
-      </div>
-    </div>
+        <CommandSeparator />
+      </CommandList>
+    </Command>
   );
 }

@@ -30,7 +30,9 @@ export default function StarButton({
         );
       } catch (error) {
         setIsWishlisted((prev) => !prev);
-        toast.error("Failed to toggle wishlist.");
+        toast.error("Failed to toggle wishlist.", {
+          description: "Please try again later.",
+        });
       }
     });
   };

@@ -13,6 +13,7 @@ import Link from "next/link";
 import StarButton from "./buttons/StarButton";
 import NotesButton from "./NotesEditor";
 import { formatJobDate, formatSalary } from "@/lib/date-utils";
+import RejectedButton from "./buttons/RejectedButton";
 
 export default function DashboardJobPost({ job }: { job: Job }) {
   return (
@@ -66,6 +67,7 @@ export default function DashboardJobPost({ job }: { job: Job }) {
             </div>
           </div>
           <StarButton jobId={job.id} jobStage={job.stage} />
+          <RejectedButton jobId={job.id} jobStage={job.stage} />
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-1">
