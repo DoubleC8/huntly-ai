@@ -20,7 +20,7 @@ export default function DashboardJobPost({ job }: { job: Job }) {
       key={job.id}
       className={`bg-[var(--background)] flex ${job.stage ? "pt-0" : ""}`}
     >
-      {job.stage && (
+      {job.stage && job.stage !== "DEFAULT" ? (
         <div
           className="w-full h-1/10 rounded-t-xl px-6 py-1"
           style={{ backgroundColor: `var(${STAGE_COLORS[job.stage]})` }}
@@ -29,6 +29,8 @@ export default function DashboardJobPost({ job }: { job: Job }) {
             {STAGE_LABELS[job.stage]}
           </p>
         </div>
+      ) : (
+        <div className="w-full h-1/10 rounded-t-xl px-6 py-1"></div>
       )}
       <CardHeader>
         <div className="flex items-center justify-between">

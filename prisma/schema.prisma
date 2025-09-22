@@ -86,8 +86,8 @@ model Job {
   location         String
   employment       String
   remoteType       String
-  salaryMin        Decimal // more precise for currency
-  salaryMax        Decimal // more precise for currency
+  salaryMin        Int // more precise for currency
+  salaryMax        Int // more precise for currency
   currency         String
   description      String
   aiSummary        String?
@@ -100,9 +100,9 @@ model Job {
   stage     JobStage @default(DEFAULT)
   userId    String
   resumeUrl String?
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserJobs")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserJobs")
   note      String?
-  tags      String[]  @default([])
+  tags      String[] @default([])
 
   @@unique([userId, title, company, sourceUrl])
 }
