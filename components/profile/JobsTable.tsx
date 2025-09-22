@@ -1,4 +1,6 @@
+import { STAGE_COLORS } from "@/app/constants/jobStage";
 import { Job } from "@/app/generated/prisma";
+import Image from "next/image";
 import {
   Table,
   TableBody,
@@ -7,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDistanceToNow as formatFn } from "date-fns";
 
 export default function JobsTable({ jobs }: { jobs: Job[] }) {
   return (
@@ -15,14 +16,14 @@ export default function JobsTable({ jobs }: { jobs: Job[] }) {
       <TableHeader>
         <TableRow>
           <TableHead className="font-semibold text-[var(--background)] bg-[var(--app-blue)] rounded-tl-2xl">
-            <p className="py-3">Company Name</p>
+            <p className="py-3">Company</p>
           </TableHead>
 
           <TableHead className="md:table-cell hidden font-semibold text-left text-[var(--background)] bg-[var(--app-blue)]">
             Job Title
           </TableHead>
 
-          <TableHead className="text-center font-semibold text-[var(--background)] bg-[var(--app-blue)]">
+          <TableHead className="md:table-cell hidden text-center font-semibold text-[var(--background)] bg-[var(--app-blue)]">
             Location
           </TableHead>
 
@@ -39,16 +40,40 @@ export default function JobsTable({ jobs }: { jobs: Job[] }) {
           return (
             <TableRow key={job.id} className="font-semibold">
               <TableCell className={isLast ? "rounded-bl-2xl" : ""}>
-                {job.company}
+                <div className="flex items-center gap-3">
+                  <a
+                    target="_blank"
+                    href="https://logo.dev"
+                    rel="noopener noreferrer"
+                  >
+                    <Image
+                      src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
+                      width={35}
+                      height={35}
+                      alt="Logo API"
+                      className="rounded-lg"
+                    />
+                  </a>
+                  <div>
+                    <p>{job.company}</p>
+                    <p className="text-muted-foreground block md:hidden">
+                      {job.title}
+                    </p>
+                  </div>
+                </div>
               </TableCell>
-              <TableCell>{job.title}</TableCell>
-              <TableCell className="text-center">{job.location}</TableCell>
-              <TableCell
-                className={
-                  isLast ? "rounded-br-2xl text-center" : "text-center"
-                }
-              >
-                {job.stage}
+              <TableCell className="md:table-cell hidden">
+                {job.title}
+              </TableCell>
+              <TableCell className="md:table-cell hidden text-center">
+                {job.location}
+              </TableCell>
+              <TableCell className={isLast ? "rounded-br-2xl text-center" : ""}>
+                {job.stage ? (
+                  <p style={{ color: `var(${STAGE_COLORS[job.stage]})` }}>
+                    {job.stage}
+                  </p>
+                ) : null}
               </TableCell>
             </TableRow>
           );

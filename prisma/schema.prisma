@@ -23,12 +23,19 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
-  //setting relation for user and jobs array
-  jobs Job[] @relation("UserJobs")
+  // setting relation between user and jobs
+  jobs    Job[]    @relation("UserJobs")
+  resumes Resume[]
+
+  // Job preferences (many-to-many with JobTitle)
+  jobPreferences JobTitle[] @relation("UserPreferences")
+
+  // AI-enriched fields
+  skills    String[] @default([]) // extracted skills from resume
+  education String[] @default([]) // e.g., ["B.S. Computer Science, UCSB"]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  resumes   Resume[]
 }
 
 model Account {
@@ -79,18 +86,18 @@ model Job {
   location         String
   employment       String
   remoteType       String
-  salaryMin        Int
-  salaryMax        Int
+  salaryMin        Decimal // more precise for currency
+  salaryMax        Decimal // more precise for currency
   currency         String
   description      String
-  aiSummary        String
+  aiSummary        String?
   skills           String[]  @default([])
   responsibilities String[]  @default([])
   qualifications   String[]  @default([])
   createdAt        DateTime  @default(now())
   postedAt         DateTime?
 
-  stage     JobStage?
+  stage     JobStage @default(DEFAULT)
   userId    String
   resumeUrl String?
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserJobs")
@@ -101,11 +108,21 @@ model Job {
 }
 
 enum JobStage {
+  DEFAULT
   WISHLIST
   APPLIED
   INTERVIEW
   OFFER
   REJECTED
+}
+
+model JobTitle {
+  id    String @id @default(cuid())
+  title String @unique
+
+  users User[] @relation("UserPreferences")
+
+  @@index([title]) // better search/autocomplete performance
 }
 
 model Resume {
@@ -116,5 +133,6 @@ model Resume {
   publicUrl      String
   isDefault      Boolean
   createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt // added for tracking updates
   targetJobTitle String?
 }

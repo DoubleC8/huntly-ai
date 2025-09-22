@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import JobPreferences from "@/components/profile/JobPreferences";
 import JobsTable from "@/components/profile/JobsTable";
 import { prisma } from "@/lib/prisma";
 import { Star } from "lucide-react";
@@ -95,6 +96,7 @@ export default async function ProfilePage() {
           {/**user job preferences */}
           <div className="flex flex-col gap-3">
             <h2 className="font-bold text-xl">Your Job Preferences</h2>
+            <JobPreferences />
           </div>
         </div>
       </div>
