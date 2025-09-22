@@ -8,10 +8,12 @@ import {
   Building,
   Clock,
   Crosshair,
+  FileText,
   Lightbulb,
   ListTodo,
   MapPin,
   NotebookPen,
+  Tags,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,6 +21,7 @@ import ShareJobButton from "@/components/dashboard/buttons/ShareJob";
 import StarButton from "@/components/dashboard/buttons/StarButton";
 import JobPageNotes from "@/components/dashboard/JobPageNotes";
 import { ResumeMatchScore } from "@/components/dashboard/charts/ResumeMatchScore";
+import { Badge } from "@/components/ui/badge";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -88,10 +91,13 @@ export default async function Page({ params }: PageProps) {
       <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-3 flex flex-col gap-3 justify-between">
         {/**header */}
         <div
-          className="md:min-h-[20vh] md:max-h-fit md:justify-between md:flex-row
-        flex flex-col gap-3"
+          className="md:min-h-[20vh] md:max-h-fit md:flex-row md:justify-between md:gap-0 items-center
+        flex flex-col gap-3 justify-between"
         >
-          <div className="md:w-3/4 flex flex-col gap-3">
+          <div
+            className="md:w-3/4
+          flex flex-col gap-3 "
+          >
             <div className="flex items-center gap-3">
               <a
                 target="_blank"
@@ -129,9 +135,23 @@ export default async function Page({ params }: PageProps) {
             </div>
             <div
               className="md:items-start
-            h-full flex flex-col items-center gap-3 justify-between"
+            h-full flex flex-col  gap-3 justify-between"
             >
               <h1 className="font-bold text-2xl">{job.title}</h1>
+              <div className="flex flex-col gap-1">
+                {job.aiSummary ? (
+                  <>
+                    <p className="font-semibold">{job.aiSummary}</p>
+                    <p className="text-muted-foreground">(Ai Summary)</p>
+                  </>
+                ) : (
+                  <p className="text-muted-foreground">
+                    Our AI is still sharpening its resume writing skills. Check
+                    back soon!
+                  </p>
+                )}
+              </div>
+
               <div className="flex gap-3 text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <MapPin size={14} />
@@ -150,22 +170,22 @@ export default async function Page({ params }: PageProps) {
           </div>
           <ResumeMatchScore />
         </div>
-        {/**AI Summary */}
+        {/**description */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <Bot className="text-[var(--app-blue)]" />
-            <h1 className="font-bold text-2xl">Ai Summary</h1>
+            <FileText className="text-[var(--app-blue)]" />
+            <h1 className="font-bold text-2xl">Description</h1>
           </div>
-          {job.aiSummary ? (
-            <p>{job.aiSummary}</p>
+          {job.description ? (
+            <p>{job.description}</p>
           ) : (
             <p className="text-muted-foreground">
-              Our AI is still sharpening its resume writing skills. Check back
-              soon!
+              Our AI is still hasn't gotten the jobs description, try checking
+              back later!
             </p>
           )}
         </div>
-        {/**Reponsibilities */}
+        {/**reponsibilities */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <ListTodo className="text-[var(--app-blue)]" />
@@ -219,7 +239,27 @@ export default async function Page({ params }: PageProps) {
             </p>
           )}
         </div>
-        {/**skills */}
+        {/**tags */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Tags className="text-[var(--app-blue)]" />
+            <h1 className="font-bold text-2xl">Tags</h1>
+          </div>
+          {job.tags.length ? (
+            <div className="flex gap-2">
+              {job.tags.map((tag, index) => (
+                <Badge key={index} variant="outline">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          ) : (
+            <p className="text-muted-foreground">
+              Looks like no tags have been added yet — try checking back later!
+            </p>
+          )}
+        </div>
+        {/**notes */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <NotebookPen className="text-[var(--app-blue)]" />
@@ -236,11 +276,16 @@ export default async function Page({ params }: PageProps) {
             href={job.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-1/4"
+            className="md:w-1/4
+            w-1/2"
           >
             <Button className="w-full">Apply Now</Button>
           </a>
-          <Link href="/jobs/dashboard" className="w-1/4">
+          <Link
+            href="/jobs/dashboard"
+            className="md:w-1/4 
+          w-1/2"
+          >
             <Button variant="outline" className="w-full">
               Back to Dashboard
             </Button>

@@ -39,6 +39,7 @@ export default async function ProfilePage() {
           },
         },
       },
+      jobPreferences: true,
     },
   });
 
@@ -62,16 +63,43 @@ export default async function ProfilePage() {
           {/**user info section */}
           <div className="flex flex-col gap-3">
             <h2 className="font-bold text-xl">{user.name}</h2>
-            <p>{user.email}</p>
+            <p className="font-semibold">{user.email}</p>
             <h2 className="font-bold text-lg">Education</h2>
-            <p>{user.email}</p>
+            {user.education?.length ? (
+              <ul className="list-disc ml-5 space-y-1">
+                {user?.education?.map((edu, index) => (
+                  <li key={index}>{edu}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-muted-foreground">
+                No education details yet, upload a resume so Huntly Ai can
+                extract them!
+              </p>
+            )}
             <h2 className="font-bold text-lg">Skills</h2>
-            <p>{user.email}</p>
+            {user?.skills?.length ? (
+              <ul className="flex flex-wrap gap-2">
+                {user.skills.map((skill, i) => (
+                  <li
+                    key={i}
+                    className="px-2 py-1 rounded-md bg-muted text-sm text-muted-foreground"
+                  >
+                    {skill}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-muted-foreground">
+                No skills detected yet, try uploading a resume to get let Huntly
+                Ai get your personalized skills.
+              </p>
+            )}
           </div>
 
           {/**user resume section */}
           <div className="flex flex-col gap-3">
-            <h2 className="font-bold text-xl">Your Default Resume</h2>
+            <h2 className="font-bold text-xl">Default Resume</h2>
             {defaultResume ? (
               <>
                 <div className="flex items-center gap-1">
@@ -84,22 +112,27 @@ export default async function ProfilePage() {
                     {defaultResume.fileName.split(".")[0]}
                   </a>
                 </div>
+
                 <p className="text-muted-foreground">
-                  You can change your default resume at any time in the resume
-                  tab.
+                  This is your{" "}
+                  <span className="font-semibold">default resume</span>. It’s
+                  the one Huntly AI will use to calculate match scores when
+                  comparing you to job listings. You can change your default
+                  resume at any time in the Resume tab.
                 </p>
               </>
             ) : (
               <div className="flex flex-col gap-2">
                 <p className="text-muted-foreground">
-                  No default resume found. Upload a resume to get started!
+                  No default resume found. Upload a resume to get started! (
+                  <a
+                    href="/jobs/resume"
+                    className="text-blue-500 hover:text-blue-700 underline"
+                  >
+                    Go to Resume Tab
+                  </a>
+                  )
                 </p>
-                <a
-                  href="/jobs/resume"
-                  className="text-blue-500 hover:text-blue-700 underline"
-                >
-                  Go to Resume Tab
-                </a>
               </div>
             )}
           </div>
@@ -107,13 +140,27 @@ export default async function ProfilePage() {
           {/**user job table */}
           <div className="flex flex-col gap-3">
             <h2 className="font-bold text-xl">Jobs You have Applied to</h2>
-            <JobsTable jobs={user.jobs} />
+            {user?.jobs?.length ? (
+              <JobsTable jobs={user.jobs} />
+            ) : (
+              <p className="text-muted-foreground">
+                You haven’t applied to any jobs yet. Once you do, they’ll show
+                up here!
+              </p>
+            )}
           </div>
 
           {/**user job preferences */}
           <div className="flex flex-col gap-3">
-            <h2 className="font-bold text-xl">Your Job Preferences</h2>
-            <JobPreferences />
+            <h2 className="font-bold text-xl">Job Preferences</h2>
+            {user?.jobPreferences.length ? (
+              <JobPreferences />
+            ) : (
+              <p className="text-muted-foreground">
+                No job preferences set yet. Add some job titles you would be
+                interested in and let Huntly Ai find jobs based on these titles!
+              </p>
+            )}
           </div>
         </div>
       </div>

@@ -74,8 +74,6 @@ export default async function DashboardPage({
 
   return (
     <div className="pageContainer">
-      {/**navbar */}
-
       {/**conditionally render jobs */}
       {jobs.length === 0 ? (
         query ? (
