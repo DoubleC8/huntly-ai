@@ -3,7 +3,7 @@
 import { JobStage } from "@/app/generated/prisma";
 
 export const STAGE_COLORS: Record<JobStage, string> = {
-    DEFAULT: "--muted-foreground",
+  DEFAULT: "--muted-foreground",
   WISHLIST: "--app-purple",
   APPLIED: "--app-dark-purple",
   INTERVIEW: "--app-blue",
