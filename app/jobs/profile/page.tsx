@@ -141,7 +141,19 @@ export default async function ProfilePage() {
           <div className="flex flex-col gap-3">
             <h2 className="font-bold text-xl">Jobs You have Applied to</h2>
             {user?.jobs?.length ? (
-              <JobsTable jobs={user.jobs} />
+              <>
+                <JobsTable jobs={user.jobs} />
+                {user.jobs.length > 1 ? (
+                  <p className="text-muted-foreground">
+                    You've applied to {user?.jobs.length} jobs so far! Congrats!
+                  </p>
+                ) : (
+                  <p className="text-muted-foreground">
+                    You've applied to {user?.jobs.length} job so far! Congrats!
+                    Keep Going!
+                  </p>
+                )}
+              </>
             ) : (
               <p className="text-muted-foreground">
                 You haven’t applied to any jobs yet. Once you do, they’ll show

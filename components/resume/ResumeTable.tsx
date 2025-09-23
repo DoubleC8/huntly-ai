@@ -142,7 +142,7 @@ export default function ResumeTable({
                     rel="noopener noreferrer"
                     className="flex items-center justify-end"
                   >
-                    <ExternalLink />
+                    <ExternalLink className="hover:cursor-pointer ease-in-out duration-200" />
                   </a>
                 </TableCell>
 

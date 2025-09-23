@@ -49,14 +49,16 @@ export default function StarButton({
     <button
       onClick={handleStarClick}
       disabled={isPending}
-      className="hover:cursor-pointer"
       aria-pressed={isWishlisted}
       title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
     >
       {isWishlisted ? (
-        <Star fill="yellow" className="text-[var(--app-yellow)]" />
+        <Star
+          fill="yellow"
+          className="text-[var(--app-yellow)] hover:cursor-pointer ease-in-out duration-200"
+        />
       ) : (
-        <Star className="hover:text-[var(--app-yellow)]" />
+        <Star className="hover:text-[var(--app-yellow)] hover:cursor-pointer ease-in-out duration-200" />
       )}
     </button>
   ) : null;

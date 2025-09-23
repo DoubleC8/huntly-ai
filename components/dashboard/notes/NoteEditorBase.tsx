@@ -78,7 +78,7 @@ export default function NoteEditorBase({
           value={note}
           onChange={(e) => setNote(e.target.value)}
           onBlur={handleSave}
-          placeholder='e.g. "Follow up next week", "Tailor resume to frontend role"...'
+          placeholder='e.g. "Follow up next week", "Tailor resume for a frontend role"...'
           rows={4}
           disabled={isPending}
         />

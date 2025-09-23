@@ -65,15 +65,16 @@ export default function DeleteResumeButton({
       <DialogTrigger asChild>
         <Trash2 className="text-muted-foreground ease-in-out duration-200 hover:text-[var(--app-red)] hover:cursor-pointer" />
       </DialogTrigger>
+
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center">
-            Are you sure you want to delete this resume?
+          <DialogTitle className="font-semibold text-center">
+            Are you sure you want to Delete this resume?
           </DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col items-center gap-4">
-          <FileX2 size={55} />
+          <FileX2 size={55} className="text-[var(--app-red)]" />
         </div>
         <p className="text-xs text-muted-foreground text-center">
           This action cannot be undone.

@@ -1,6 +1,7 @@
 .
 ├── app
 │   ├── actions
+│   │   ├── setJobAsRejected.ts
 │   │   ├── setJobAsWishlist.ts
 │   │   ├── toggleWishlist.ts
 │   │   └── updateJobStage.ts
@@ -10,9 +11,8 @@
 │   │   │       └── route.ts
 │   │   ├── jobs
 │   │   │   └── [id]
-│   │   │       ├── note
-│   │   │       │   └── route.ts
-│   │   │       └── star.ts
+│   │   │       └── note
+│   │   │           └── route.ts
 │   │   └── resumes
 │   │       ├── [id]
 │   │       │   ├── route.ts
@@ -83,6 +83,7 @@
 │   │       └── page.tsx
 │   ├── layout.tsx
 │   └── page.tsx
+├── auth-middleware.ts
 ├── auth.ts
 ├── code.txt
 ├── components
@@ -94,6 +95,7 @@
 │   │   └── JobColumnJobPost.tsx
 │   ├── dashboard
 │   │   ├── buttons
+│   │   │   ├── RejectedButton.tsx
 │   │   │   ├── ShareJob.tsx
 │   │   │   └── StarButton.tsx
 │   │   ├── charts
@@ -113,8 +115,6 @@
 │   │   └── UserTestimonials.tsx
 │   ├── navbars
 │   │   ├── AppNavbar.tsx
-│   │   ├── Desktop Navbar
-│   │   │   └── AppSideNavbar.tsx
 │   │   ├── desktop-navbar
 │   │   │   └── AppSideNavbar.tsx
 │   │   ├── HomeNavbar.tsx
@@ -124,6 +124,9 @@
 │   │   │   └── NavbarBurgerButton.tsx
 │   │   └── style
 │   │       └── navbar.css
+│   ├── profile
+│   │   ├── JobPreferences.tsx
+│   │   └── JobsTable.tsx
 │   ├── resume
 │   │   ├── DeleteResumeButton.tsx
 │   │   ├── ResumeDashboardClient.tsx
@@ -132,15 +135,18 @@
 │   │   ├── ResumeUploadClient.tsx
 │   │   └── TargetJobTitle.tsx
 │   └── ui
+│       ├── badge.tsx
 │       ├── button.tsx
 │       ├── card.tsx
 │       ├── carousel.tsx
 │       ├── chart.tsx
+│       ├── command.tsx
 │       ├── dialog.tsx
 │       ├── ErrorBoundary.tsx
 │       ├── form.tsx
 │       ├── input.tsx
 │       ├── label.tsx
+│       ├── popover.tsx
 │       ├── select.tsx
 │       ├── sheet.tsx
 │       ├── skeleton.tsx
@@ -153,6 +159,7 @@
 │   └── useIsLargeScreen.tsx
 ├── lib
 │   ├── auth-actions.ts
+│   ├── date-utils.ts
 │   ├── prisma.ts
 │   ├── supabase
 │   │   ├── client.ts
@@ -160,6 +167,7 @@
 │   ├── utils.ts
 │   └── validations
 │       ├── dashboard.tsx
+│       ├── jobNotes.ts
 │       └── resume.ts
 ├── middleware.ts
 ├── next-env.d.ts
@@ -185,6 +193,12 @@
 │   │   │   └── migration.sql
 │   │   ├── 20250916013047_add_responsibilities_and_qualifications_to_job
 │   │   │   └── migration.sql
+│   │   ├── 20250922004940_add_default_enum_value
+│   │   │   └── migration.sql
+│   │   ├── 20250922005120_make_stage_required_with_default
+│   │   │   └── migration.sql
+│   │   ├── 20250922012500_changed_decimal_back_to_number
+│   │   │   └── migration.sql
 │   │   └── migration_lock.toml
 │   └── schema.prisma
 ├── public
@@ -199,6 +213,7 @@
 │   └── window.svg
 ├── README.md
 ├── tree_out.txt
-└── tsconfig.json
+├── tsconfig.json
+└── tsconfig.tsbuildinfo
 
-56 directories, 146 files
+59 directories, 158 files

@@ -23,7 +23,7 @@ export default function JobsTable({ jobs }: { jobs: Job[] }) {
             Job Title
           </TableHead>
 
-          <TableHead className="md:table-cell hidden text-center font-semibold text-[var(--background)] bg-[var(--app-blue)]">
+          <TableHead className="md:table-cell hidden text-left font-semibold text-[var(--background)] bg-[var(--app-blue)]">
             Location
           </TableHead>
 
@@ -65,10 +65,14 @@ export default function JobsTable({ jobs }: { jobs: Job[] }) {
               <TableCell className="md:table-cell hidden">
                 {job.title}
               </TableCell>
-              <TableCell className="md:table-cell hidden text-center">
+              <TableCell className="md:table-cell hidden text-left">
                 {job.location}
               </TableCell>
-              <TableCell className={isLast ? "rounded-br-2xl text-center" : ""}>
+              <TableCell
+                className={
+                  isLast ? "rounded-br-2xl text-center" : "text-center"
+                }
+              >
                 {job.stage ? (
                   <p style={{ color: `var(${STAGE_COLORS[job.stage]})` }}>
                     {job.stage}

@@ -1,7 +1,7 @@
 "use client";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { Ghost } from "lucide-react";
+import { Ghost, HeartCrack, LoaderCircle } from "lucide-react";
 import { JobStage } from "@/app/generated/prisma";
 import {
   Dialog,
@@ -51,43 +51,38 @@ export default function RejectedButton({
   return jobStage === null ||
     STAGE_ORDER.indexOf("APPLIED") <= STAGE_ORDER.indexOf(jobStage) ? (
     <Dialog>
-      <DialogTrigger asChild>
-        <button
-          disabled={isPending}
-          className="hover:cursor-pointer hover:text-[var(--app-red)]"
-          title="Reject Job"
-        >
-          <Ghost />
-        </button>
+      <DialogTrigger asChild title="Mark Job as Rejected">
+        <Ghost className="text-muted-foreground ease-in-out duration-200 hover:text-[var(--app-red)] hover:cursor-pointer" />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>Reject Job</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to mark this job as <strong>Rejected</strong>?
-            <br />
-            <span className="text-red-600 font-semibold">
-              This action cannot be undone.
-            </span>
-          </DialogDescription>
+          <DialogTitle className="font-semibold text-center">
+            Are you sure you want to mark this job as Rejected?
+          </DialogTitle>
         </DialogHeader>
 
-        <DialogFooter className="sm:justify-end gap-2">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Cancel
-            </Button>
-          </DialogClose>
-          <DialogClose asChild>
-            <Button
-              type="button"
-              variant="destructive"
-              disabled={isPending}
-              onClick={handleReject}
-            >
-              {isPending ? "Rejecting..." : "Reject Job"}
-            </Button>
-          </DialogClose>
+        <div className="flex flex-col items-center gap-4">
+          <HeartCrack className="text-[var(--app-red)]" size={55} />
+        </div>
+        <p className="text-xs text-muted-foreground text-center">
+          This action cannot be undone.
+        </p>
+        <DialogFooter>
+          <Button
+            onClick={handleReject}
+            disabled={isPending}
+            className="md:w-1/2 md:mx-auto
+            w-full"
+            variant={"destructive"}
+          >
+            {isPending ? (
+              <LoaderCircle className="animate-spin mr-2" size={18} />
+            ) : (
+              ""
+            )}
+            {isPending ? "Deleting..." : "Delete"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
