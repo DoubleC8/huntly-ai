@@ -1,6 +1,8 @@
 import { auth } from "@/auth";
+import DefaultResume from "@/components/profile/DefaultResume";
 import JobPreferences from "@/components/profile/JobPreferences";
 import JobsTable from "@/components/profile/JobsTable";
+import UserInfo from "@/components/profile/user-info/UserInfo";
 import { prisma } from "@/lib/prisma";
 import { Star } from "lucide-react";
 
@@ -59,59 +61,16 @@ export default async function ProfilePage() {
       </div>
 
       <div className="pageContainer">
-        <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-3 flex flex-col gap-3">
+        <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-5 flex flex-col gap-3">
           {/**user info section */}
-          <div className="flex flex-col gap-3">
-            <h2 className="font-bold text-xl">{user.name}</h2>
-            <p className="font-semibold">{user.email}</p>
-            <h2 className="font-bold text-lg">Education</h2>
-            {user.education?.length ? (
-              <ul className="list-disc ml-5 space-y-1">
-                {user?.education?.map((edu, index) => (
-                  <li key={index}>{edu}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-muted-foreground">
-                No education details yet, upload a resume so Huntly Ai can
-                extract them!
-              </p>
-            )}
-            <h2 className="font-bold text-lg">Skills</h2>
-            {user?.skills?.length ? (
-              <ul className="flex flex-wrap gap-2">
-                {user.skills.map((skill, i) => (
-                  <li
-                    key={i}
-                    className="px-2 py-1 rounded-md bg-muted text-sm text-muted-foreground"
-                  >
-                    {skill}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-muted-foreground">
-                No skills detected yet, try uploading a resume to get let Huntly
-                Ai get your personalized skills.
-              </p>
-            )}
-          </div>
+          <UserInfo user={user} />
 
           {/**user resume section */}
           <div className="flex flex-col gap-3">
             <h2 className="font-bold text-xl">Default Resume</h2>
             {defaultResume ? (
               <>
-                <div className="flex items-center gap-1">
-                  <Star fill="yellow" className="text-[var(--app-yellow)]" />
-                  <a
-                    target="_blank"
-                    href={defaultResume.publicUrl}
-                    rel="noopener noreferrer"
-                  >
-                    {defaultResume.fileName.split(".")[0]}
-                  </a>
-                </div>
+                <DefaultResume resume={user.resumes[0]} />
 
                 <p className="text-muted-foreground">
                   This is your{" "}

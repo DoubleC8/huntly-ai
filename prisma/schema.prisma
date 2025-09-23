@@ -34,6 +34,13 @@ model User {
   skills    String[] @default([]) // extracted skills from resume
   education String[] @default([]) // e.g., ["B.S. Computer Science, UCSB"]
 
+  // User personal optional info
+  githubUrl    String?
+  linkedInUrl  String?
+  portfolioUrl String?
+  phoneNumber  String?
+  city         String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

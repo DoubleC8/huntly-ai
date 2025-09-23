@@ -4,7 +4,6 @@ import { formatDistanceToNow as formatFn } from "date-fns";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import { Button } from "@/components/ui/button";
 import {
-  Bot,
   Building,
   Clock,
   Crosshair,

@@ -63,7 +63,14 @@ export default function JobsTable({ jobs }: { jobs: Job[] }) {
                 </div>
               </TableCell>
               <TableCell className="md:table-cell hidden">
-                {job.title}
+                <a
+                  target="_blank"
+                  href={job.sourceUrl}
+                  rel="noopener noreferrer"
+                  className="ease-in-out duration-200 hover:cursor-pointer hover:text-[var(--app-blue)]"
+                >
+                  {job.title}
+                </a>
               </TableCell>
               <TableCell className="md:table-cell hidden text-left">
                 {job.location}

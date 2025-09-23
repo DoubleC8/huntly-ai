@@ -101,11 +101,7 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
           <RejectedButton jobId={job.id} jobStage={job.stage} />
         </span>
       </CardHeader>
-      <CardContent
-        className="flex justify-start p-0"
-        {...listeners}
-        {...attributes}
-      >
+      <CardContent className="flex justify-start p-0">
         <div className="font-medium text-xs text-muted-foreground">
           <p>
             Salary: ${formatSalary(job.salaryMin)} - $
