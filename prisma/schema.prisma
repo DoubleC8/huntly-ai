@@ -31,8 +31,9 @@ model User {
   jobPreferences JobTitle[] @relation("UserPreferences")
 
   // AI-enriched fields
-  skills    String[] @default([]) // extracted skills from resume
-  education String[] @default([]) // e.g., ["B.S. Computer Science, UCSB"]
+  skills String[] @default([]) // extracted skills from resume
+
+  education Education[] // e.g., ["B.S. Computer Science, UCSB"]
 
   // User personal optional info
   githubUrl    String?
@@ -142,4 +143,22 @@ model Resume {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt // added for tracking updates
   targetJobTitle String?
+}
+
+model Education {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  school String
+  degree String
+
+  major     String?
+  gpa       String?
+  startDate DateTime?
+  endDate   DateTime?
+  onGoing   Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

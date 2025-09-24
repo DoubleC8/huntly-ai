@@ -179,9 +179,9 @@ export default function ResumeUploadClient({
             className="md:w-1/2 md:mx-auto w-full"
           >
             {uploading ? (
-              <LoaderCircle className="animate-spin mr-2" size={18} />
+              <LoaderCircle className="animate-spin mr-1" />
             ) : (
-              <Upload size={16} className="mr-1" />
+              <Upload className="mr-1" />
             )}
             {uploading ? "Uploading..." : "Upload"}
           </Button>

@@ -22,24 +22,22 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { SquarePen } from "lucide-react";
+import { LoaderCircle, Plus, SquarePen } from "lucide-react";
 import { User } from "@/app/generated/prisma";
 import { updateUserPersonalInfo } from "@/app/actions/updateUserInfo";
+import { useState } from "react";
 
 const formSchema = z.object({
   githubUrl: z
     .url("Must Be valid URL")
-    .min(1)
     .max(150, "GitHub URL must be under 150 characters")
     .optional(),
   linkedInUrl: z
     .url("Must Be valid URL")
-    .min(1)
     .max(150, "LinkedIn URL must be under 150 characters")
     .optional(),
   portfolioUrl: z
     .url("Must Be valid URL")
-    .min(1)
     .max(150, "Portfolio URL must be under 150 characters")
     .optional(),
   phoneNumber: z
@@ -51,6 +49,8 @@ const formSchema = z.object({
 });
 
 export default function UserInfoSideBar({ user }: { user: User }) {
+  const [open, setOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -63,6 +63,7 @@ export default function UserInfoSideBar({ user }: { user: User }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setUploading(true);
     try {
       await updateUserPersonalInfo(values);
       console.log(values);
@@ -72,11 +73,16 @@ export default function UserInfoSideBar({ user }: { user: User }) {
       toast.error("Failed to update information.", {
         description: "Please try again later.",
       });
+    } finally {
+      setUploading(false);
+      setTimeout(() => {
+        setOpen(false);
+      }, 1000);
     }
   }
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
         <SquarePen className="ease-in-out duration-200 hover:cursor-pointer hover:text-[var(--app-blue)]" />
       </SheetTrigger>
@@ -203,7 +209,14 @@ export default function UserInfoSideBar({ user }: { user: User }) {
               />
 
               <div className="flex justify-center">
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit" disabled={uploading}>
+                  {uploading ? (
+                    <LoaderCircle className="animate-spin mr-1" />
+                  ) : (
+                    <Plus className="mr-1" />
+                  )}
+                  {uploading ? "Saving Changes..." : "Save Changes"}
+                </Button>
               </div>
             </form>
           </Form>

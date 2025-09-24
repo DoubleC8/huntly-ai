@@ -1,10 +1,10 @@
 import { auth } from "@/auth";
 import DefaultResume from "@/components/profile/DefaultResume";
+import UserEducation from "@/components/profile/education/UserEducation";
 import JobPreferences from "@/components/profile/JobPreferences";
 import JobsTable from "@/components/profile/JobsTable";
 import UserInfo from "@/components/profile/user-info/UserInfo";
 import { prisma } from "@/lib/prisma";
-import { Star } from "lucide-react";
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -42,6 +42,7 @@ export default async function ProfilePage() {
         },
       },
       jobPreferences: true,
+      education: true,
     },
   });
 
@@ -65,6 +66,7 @@ export default async function ProfilePage() {
           {/**user info section */}
           <UserInfo user={user} />
 
+          <UserEducation user={user} />
           {/**user resume section */}
           <div className="flex flex-col gap-3">
             <h2 className="font-bold text-xl">Default Resume</h2>

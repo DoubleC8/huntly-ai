@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { normalizePhoneNumber } from "@/lib/phone-utils";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function updateUserPersonalInfo(values: {
     githubUrl?: string;
@@ -30,5 +31,6 @@ export async function updateUserPersonalInfo(values: {
         }
     })
 
+    revalidatePath("/jobs/profile")
     return user;
 }
