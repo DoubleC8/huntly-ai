@@ -7,13 +7,13 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
 import {
   Sheet,
   SheetContent,
@@ -23,38 +23,55 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { SquarePen } from "lucide-react";
+import { User } from "@/app/generated/prisma";
+import { updateUserPersonalInfo } from "@/app/actions/updateUserInfo";
 
 const formSchema = z.object({
-  name_1246341246: z.string().min(1).optional(),
-  name_8524351057: z.string().min(1).optional(),
-  name_5606332286: z.string().min(1).optional(),
-  name_7727238488: z.string().min(1).optional(),
-  name_7815295068: z.string().min(1).optional(),
+  githubUrl: z
+    .url("Must Be valid URL")
+    .min(1)
+    .max(150, "GitHub URL must be under 150 characters")
+    .optional(),
+  linkedInUrl: z
+    .url("Must Be valid URL")
+    .min(1)
+    .max(150, "LinkedIn URL must be under 150 characters")
+    .optional(),
+  portfolioUrl: z
+    .url("Must Be valid URL")
+    .min(1)
+    .max(150, "Portfolio URL must be under 150 characters")
+    .optional(),
+  phoneNumber: z
+    .string()
+    .regex(/^\+?[0-9\s-]{7,20}$/, "Invalid phone number format")
+    .max(20, "Phone number too long")
+    .optional(),
+  city: z.string().max(50, "City name must be under 50 characters").optional(),
 });
 
-export default function UserInfoSideBar() {
+export default function UserInfoSideBar({ user }: { user: User }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name_1246341246: "",
-      name_8524351057: "",
-      name_5606332286: "",
-      name_7727238488: "",
-      name_7815295068: "",
+      githubUrl: user.githubUrl ?? "",
+      linkedInUrl: user.linkedInUrl ?? "",
+      portfolioUrl: user.portfolioUrl ?? "",
+      phoneNumber: user.phoneNumber ?? "",
+      city: user.city ?? "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
+      await updateUserPersonalInfo(values);
       console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      );
+      toast.success("Information updated successfully!");
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
+      toast.error("Failed to update information.", {
+        description: "Please try again later.",
+      });
     }
   }
 
@@ -63,19 +80,22 @@ export default function UserInfoSideBar() {
       <SheetTrigger>
         <SquarePen className="ease-in-out duration-200 hover:cursor-pointer hover:text-[var(--app-blue)]" />
       </SheetTrigger>
-      <SheetContent className="rounded-tl-4xl">
+      <SheetContent className="rounded-tl-4xl !min-w-[500px]">
         <SheetHeader>
           <SheetTitle>Personal Info</SheetTitle>
           <SheetDescription>
             Update your personal information and social media links.
           </SheetDescription>
         </SheetHeader>
-        <div className="w-[95%] mx-auto">
+        <SheetDescription asChild>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="w-[95%] mx-auto flex flex-col gap-3"
+            >
               <FormField
                 control={form.control}
-                name="name_1246341246"
+                name="githubUrl"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Github Url</FormLabel>
@@ -86,6 +106,10 @@ export default function UserInfoSideBar() {
                         {...field}
                       />
                     </FormControl>
+                    <FormDescription>
+                      Add your GitHub URL for quick access when applications
+                      request it.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -93,7 +117,7 @@ export default function UserInfoSideBar() {
 
               <FormField
                 control={form.control}
-                name="name_8524351057"
+                name="linkedInUrl"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>LinkedIn Url</FormLabel>
@@ -104,6 +128,10 @@ export default function UserInfoSideBar() {
                         {...field}
                       />
                     </FormControl>
+                    <FormDescription>
+                      Provide your LinkedIn profile link to share it with
+                      recruiters and to network.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -111,7 +139,7 @@ export default function UserInfoSideBar() {
 
               <FormField
                 control={form.control}
-                name="name_5606332286"
+                name="portfolioUrl"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Portfolio Url</FormLabel>
@@ -122,6 +150,10 @@ export default function UserInfoSideBar() {
                         {...field}
                       />
                     </FormControl>
+                    <FormDescription>
+                      Share your personal site or portfolio to have quick access
+                      to it.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -129,7 +161,7 @@ export default function UserInfoSideBar() {
 
               <FormField
                 control={form.control}
-                name="name_7727238488"
+                name="phoneNumber"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Phone Number</FormLabel>
@@ -140,6 +172,9 @@ export default function UserInfoSideBar() {
                         {...field}
                       />
                     </FormControl>
+                    <FormDescription>
+                      This is will remain private and not public.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -147,7 +182,7 @@ export default function UserInfoSideBar() {
 
               <FormField
                 control={form.control}
-                name="name_7815295068"
+                name="city"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>City</FormLabel>
@@ -158,6 +193,10 @@ export default function UserInfoSideBar() {
                         {...field}
                       />
                     </FormControl>
+                    <FormDescription>
+                      The city you live in, used for tailoring job opportunities
+                      near you.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -168,7 +207,7 @@ export default function UserInfoSideBar() {
               </div>
             </form>
           </Form>
-        </div>
+        </SheetDescription>
       </SheetContent>
     </Sheet>
   );
