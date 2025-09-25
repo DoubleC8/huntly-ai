@@ -55,6 +55,7 @@ export default async function ProfilePage() {
   }
 
   const defaultResume = user.resumes[0];
+  console.log(user);
   return (
     <div className="page">
       <div className="pageTitleContainer">
@@ -66,7 +67,7 @@ export default async function ProfilePage() {
           {/**user info section */}
           <UserInfo user={user} />
 
-          <UserEducation user={user} />
+          <UserEducation education={user.education} />
           {/**user resume section */}
           <div className="flex flex-col gap-3">
             <h2 className="font-bold text-xl">Default Resume</h2>

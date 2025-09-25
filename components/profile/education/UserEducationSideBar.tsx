@@ -22,9 +22,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Calendar as CalendarIcon, SquarePen } from "lucide-react";
+import {
+  Calendar as CalendarIcon,
+  LoaderCircle,
+  Plus,
+  SquarePen,
+  SquarePlus,
+} from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { User } from "@/app/generated/prisma";
+import { Education, User } from "@/app/generated/prisma";
 import {
   SheetContent,
   SheetDescription,
@@ -33,6 +39,7 @@ import {
   SheetTrigger,
   Sheet,
 } from "@/components/ui/sheet";
+import { updateUserEducation } from "@/app/actions/updateUserEducation";
 
 const formSchema = z.object({
   school: z.string().min(1, "School name is required").max(150),
@@ -44,7 +51,9 @@ const formSchema = z.object({
   onGoing: z.boolean().optional(),
 });
 
-export default function MyForm({ user }: { user: User }) {
+export default function UserEducationSideBar() {
+  const [open, setOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,24 +67,29 @@ export default function MyForm({ user }: { user: User }) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setUploading(true);
     try {
+      await updateUserEducation(values);
       console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      );
+      toast.success("Education updated successfully!");
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
+      toast.error("Failed to update education.", {
+        description: "Please try again later.",
+      });
+    } finally {
+      setUploading(false);
+      setTimeout(() => {
+        setOpen(false);
+      }, 1000);
     }
   }
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <SquarePen className="ease-in-out duration-200 hover:cursor-pointer hover:text-[var(--app-blue)]" />
+        <SquarePlus className="ease-in-out duration-200 hover:cursor-pointer hover:text-[var(--app-blue)]" />
       </SheetTrigger>
       <SheetContent className="rounded-tl-4xl !min-w-[500px]">
         <SheetHeader>
@@ -88,7 +102,7 @@ export default function MyForm({ user }: { user: User }) {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-[95%] mx-auto flex flex-col gap-3"
+              className="w-[95%] flex flex-col gap-3 mx-auto"
             >
               <FormField
                 control={form.control}
@@ -120,7 +134,7 @@ export default function MyForm({ user }: { user: User }) {
                         <FormControl>
                           <Input
                             placeholder="Enter Your Major..."
-                            type="text"
+                            type=""
                             {...field}
                           />
                         </FormControl>
@@ -141,7 +155,7 @@ export default function MyForm({ user }: { user: User }) {
                         <FormControl>
                           <Input
                             placeholder="Enter Degree Type (B.S., A.S,)..."
-                            type="text"
+                            type=""
                             {...field}
                           />
                         </FormControl>
@@ -162,7 +176,7 @@ export default function MyForm({ user }: { user: User }) {
                         <FormControl>
                           <Input
                             placeholder="Enter GPA..."
-                            type="text"
+                            type=""
                             {...field}
                           />
                         </FormControl>
@@ -206,7 +220,7 @@ export default function MyForm({ user }: { user: User }) {
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
-                              initialFocus
+                              captionLayout="dropdown"
                             />
                           </PopoverContent>
                         </Popover>
@@ -248,7 +262,7 @@ export default function MyForm({ user }: { user: User }) {
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
-                              initialFocus
+                              captionLayout="dropdown"
                             />
                           </PopoverContent>
                         </Popover>
@@ -278,7 +292,16 @@ export default function MyForm({ user }: { user: User }) {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Submit</Button>
+              <div className="flex justify-center">
+                <Button type="submit" disabled={uploading}>
+                  {uploading ? (
+                    <LoaderCircle className="animate-spin mr-1" />
+                  ) : (
+                    <Plus className="mr-1" />
+                  )}
+                  {uploading ? "Adding Education..." : "Add Education"}
+                </Button>
+              </div>
             </form>
           </Form>
         </SheetDescription>

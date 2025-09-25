@@ -97,7 +97,7 @@ export default function UserInfoSideBar({ user }: { user: User }) {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-[95%] mx-auto flex flex-col gap-3"
+              className="w-[95%] flex flex-col gap-3 mx-auto"
             >
               <FormField
                 control={form.control}
