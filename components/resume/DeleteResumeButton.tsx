@@ -1,6 +1,6 @@
 "use client";
 
-import { FileX2, LoaderCircle, Trash2 } from "lucide-react";
+import { HeartCrack, LoaderCircle, Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -74,7 +74,7 @@ export default function DeleteResumeButton({
         </DialogHeader>
 
         <div className="flex flex-col items-center gap-4">
-          <FileX2 size={55} className="text-[var(--app-red)]" />
+          <HeartCrack size={55} className="text-[var(--app-red)]" />
         </div>
         <p className="text-xs text-muted-foreground text-center">
           This action cannot be undone.
