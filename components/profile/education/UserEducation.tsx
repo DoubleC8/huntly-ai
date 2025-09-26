@@ -3,7 +3,7 @@ import UserEducationSideBar from "./UserEducationSideBar";
 import Link from "next/link";
 import { PenSquare, School, Trash, Trash2 } from "lucide-react";
 import { format } from "date-fns";
-import DeleteEducationEntry from "../user-info/DeleteEducationEntry";
+import DeleteEducationEntry from "./DeleteEducationEntry";
 
 export default function UserEducation({
   education,

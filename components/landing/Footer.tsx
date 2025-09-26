@@ -45,8 +45,11 @@ export default function Footer() {
       </div>
       <p className="text-muted-foreground flex items-center gap-1">
         © 2025 Huntly AI. Built with{" "}
-        <Heart size={14} className="hover:text-[var(--app-blue)]" /> by Chris
-        Cortes.
+        <Heart
+          size={14}
+          className="hover:text-[var(--app-blue)] hover:fill-[var(--app-blue)]"
+        />
+        by Chris Cortes.
       </p>
     </nav>
   );

@@ -3,6 +3,7 @@ import DefaultResume from "@/components/profile/DefaultResume";
 import UserEducation from "@/components/profile/education/UserEducation";
 import JobPreferences from "@/components/profile/JobPreferences";
 import JobsTable from "@/components/profile/JobsTable";
+import UserSkills from "@/components/profile/skills/UserSkills";
 import UserInfo from "@/components/profile/user-info/UserInfo";
 import { prisma } from "@/lib/prisma";
 
@@ -68,6 +69,8 @@ export default async function ProfilePage() {
           <UserInfo user={user} />
 
           <UserEducation education={user.education} />
+
+          <UserSkills skills={user.skills} />
           {/**user resume section */}
           <div className="flex flex-col gap-3">
             <h2 className="font-bold text-xl">Default Resume</h2>
