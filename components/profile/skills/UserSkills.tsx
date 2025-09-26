@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
 
 export default function UserSkills({ skills }: { skills: String[] }) {
   return (
@@ -12,7 +13,7 @@ export default function UserSkills({ skills }: { skills: String[] }) {
         {skills.length ? (
           skills.map((skill, index) => (
             <div key={index} className="flex flex-col gap-2">
-              <Badge>{skill}</Badge>
+              <Badge className="flex items-center gap-3">{skill}</Badge>
             </div>
           ))
         ) : (

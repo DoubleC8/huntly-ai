@@ -10,15 +10,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[var(--app-blue)] text-[var(--background)] shadow-md hover:bg-[var(--app-blue)]/85 font-bold hover:cursor-pointer",
+          "bg-[var(--app-blue)] text-[var(--background)] hover:bg-[var(--app-blue)]/85 font-bold hover:cursor-pointer shadow-md",
         noted:
-          "bg-[var(--app-dark-purple)] text-white shadow-md hover:bg-[var(--app-dark-purple)]/85 font-bold hover:cursor-pointer",
+          "bg-[var(--app-dark-purple)] text-white  hover:bg-[var(--app-dark-purple)]/85 font-bold hover:cursor-pointer",
         destructive:
-          "bg-[var(--app-red)] text-white shadow-md hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "bg-[var(--app-red)] text-white  hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
-          "border bg-[var(--background)] font-bold shadow-md hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 hover:cursor-pointer",
+          "border bg-[var(--background)] font-bold  hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 hover:cursor-pointer",
         secondary:
-          "bg-[var(--card)] text-muted-foreground shadow-md hover:bg-secondary/80 font-bold hover:cursor-pointer",
+          "bg-[var(--card)] text-muted-foreground hover:bg-secondary/80 font-bold hover:cursor-pointer",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",

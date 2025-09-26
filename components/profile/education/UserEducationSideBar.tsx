@@ -25,6 +25,7 @@ import { Calendar } from "@/components/ui/calendar";
 import {
   Calendar as CalendarIcon,
   LoaderCircle,
+  PenSquare,
   Plus,
   SquarePen,
   SquarePlus,
@@ -51,28 +52,48 @@ const formSchema = z.object({
   onGoing: z.boolean().optional(),
 });
 
-export default function UserEducationSideBar() {
+export default function UserEducationSideBar({
+  education,
+}: {
+  education?: Education;
+}) {
   const [open, setOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      school: "",
-      major: "",
-      degree: "",
-      gpa: "",
-      startDate: undefined,
-      endDate: undefined,
-      onGoing: false,
-    },
+    defaultValues: education
+      ? {
+          school: education.school,
+          major: education.major ?? "",
+          degree: education.degree,
+          gpa: education.gpa ?? "",
+          startDate: education.startDate
+            ? new Date(education.startDate)
+            : undefined,
+          endDate: education.endDate ? new Date(education.endDate) : undefined,
+          onGoing: education.onGoing ?? false,
+        }
+      : {
+          school: "",
+          major: "",
+          degree: "",
+          gpa: "",
+          startDate: undefined,
+          endDate: undefined,
+          onGoing: false,
+        },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setUploading(true);
     try {
-      await updateUserEducation(values);
-      console.log(values);
-      toast.success("Education updated successfully!");
+      if (education) {
+        await updateUserEducation({ id: education.id, ...values });
+        toast.success("Education updated successfully!");
+      } else {
+        await updateUserEducation(values);
+        toast.success("Education added successfully!");
+      }
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to update education.", {
@@ -89,7 +110,11 @@ export default function UserEducationSideBar() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <SquarePlus className="ease-in-out duration-200 hover:cursor-pointer hover:text-[var(--app-blue)]" />
+        {education ? (
+          <PenSquare className="ease-in-out duration-200 hover:cursor-pointer hover:text-[var(--app-blue)]" />
+        ) : (
+          <SquarePlus className="ease-in-out duration-200 hover:cursor-pointer hover:text-[var(--app-blue)]" />
+        )}
       </SheetTrigger>
       <SheetContent className="rounded-tl-4xl !min-w-[500px]">
         <SheetHeader>
