@@ -15,11 +15,15 @@ export async function DeleteUserEducation(id: string){
         include: { education: true }
     })
 
-    const ownsEducationEntry = user?.education.some((e: Education) => e.id === id);
-    if(!ownsEducationEntry) throw new Error("Unauthorized");
+    if(!user) throw new Error("User not found")
 
     await prisma.education.delete({
-        where: { id },
+        where: { 
+            id_userId: {
+                id, 
+                userId: user.id
+            }
+        },
     });
 
     revalidatePath("/jobs/profile");

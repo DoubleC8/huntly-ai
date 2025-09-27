@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PenSquare, School } from "lucide-react";
 import DeleteEducationEntry from "./DeleteEducationEntry";
 import { format } from "date-fns";
-import UserEducationSideBar from "./UserEducationSideBar";
+import UserEducationSidebar from "./UserEducationSidebar";
 
 export function UserEducationCard({ education }: { education: Education }) {
   return (
@@ -19,7 +19,7 @@ export function UserEducationCard({ education }: { education: Education }) {
             className="
           flex items-center gap-2"
           >
-            <UserEducationSideBar education={education} />
+            <UserEducationSidebar education={education} />
             <DeleteEducationEntry education={education} />{" "}
           </div>
         </div>

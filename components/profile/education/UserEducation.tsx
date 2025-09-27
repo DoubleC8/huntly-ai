@@ -1,10 +1,8 @@
 import { Education } from "@/app/generated/prisma";
-import UserEducationSideBar from "./UserEducationSideBar";
+
 import Link from "next/link";
-import { PenSquare, School } from "lucide-react";
-import { format } from "date-fns";
-import DeleteEducationEntry from "./DeleteEducationEntry";
 import { UserEducationCard } from "./UserEducationCard";
+import UserEducationSidebar from "./UserEducationSidebar";
 
 export default function UserEducation({
   education,
@@ -12,13 +10,13 @@ export default function UserEducation({
   education: Education[];
 }) {
   return (
-    <div className="h-fit flex flex-col gap-5">
+    <div className="h-fit flex flex-col gap-3">
       <div className="flex items-center justify-between w-full">
         <h2 className="font-bold text-xl">Education</h2>
-        <UserEducationSideBar />
+        <UserEducationSidebar />
       </div>
 
-      <div className="flex flex-col gap-2 flex-wrap">
+      <div className="flex flex-col gap-3 flex-wrap">
         {education.length ? (
           education.map((edu) => (
             <UserEducationCard education={edu} key={edu.id} />

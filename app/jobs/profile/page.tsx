@@ -64,7 +64,7 @@ export default async function ProfilePage() {
       </div>
 
       <div className="pageContainer">
-        <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-5 flex flex-col gap-3">
+        <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-5 flex flex-col gap-5">
           {/**user info section */}
           <UserInfo user={user} />
 

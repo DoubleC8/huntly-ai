@@ -1,6 +1,5 @@
 import { User } from "@/app/generated/prisma";
 import { Badge } from "../../ui/badge";
-import UserInfoSideBar from "./UserInfoSideBar";
 import {
   BriefcaseBusiness,
   Building2,
@@ -12,6 +11,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { formatPhoneForDisplay } from "@/lib/utils";
+import UserInfoSidebar from "./UserInfoSidebar";
 
 export default function UserInfo({ user }: { user: User }) {
   const userFields: {
@@ -47,7 +47,7 @@ export default function UserInfo({ user }: { user: User }) {
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between w-full">
           <h2 className="font-bold text-xl">{user.name}</h2>
-          <UserInfoSideBar user={user} />
+          <UserInfoSidebar user={user} />
         </div>
 
         <div className="w-3/4 flex gap-2 flex-wrap">

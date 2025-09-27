@@ -27,11 +27,10 @@ import {
   LoaderCircle,
   PenSquare,
   Plus,
-  SquarePen,
   SquarePlus,
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Education, User } from "@/app/generated/prisma";
+import { Education } from "@/app/generated/prisma";
 import {
   SheetContent,
   SheetDescription,
@@ -52,7 +51,7 @@ const formSchema = z.object({
   onGoing: z.boolean().optional(),
 });
 
-export default function UserEducationSideBar({
+export default function UserEducationSidebar({
   education,
 }: {
   education?: Education;
@@ -116,11 +115,11 @@ export default function UserEducationSideBar({
           <SquarePlus className="ease-in-out duration-200 hover:cursor-pointer hover:text-[var(--app-blue)]" />
         )}
       </SheetTrigger>
-      <SheetContent className="rounded-tl-4xl !min-w-[500px]">
+      <SheetContent className="rounded-tl-4xl w-[400px] md:min-w-[500px]">
         <SheetHeader>
-          <SheetTitle>Personal Info</SheetTitle>
+          <SheetTitle>Education</SheetTitle>
           <SheetDescription>
-            Update your personal information and social media links.
+            Update your education sections by adding your education history.
           </SheetDescription>
         </SheetHeader>
         <SheetDescription asChild>
@@ -148,7 +147,11 @@ export default function UserEducationSideBar({
                 )}
               />
 
-              <div className="grid grid-cols-12 gap-4">
+              {/** major, degree type, gpa */}
+              <div
+                className="md:gap-4
+              grid gap-2"
+              >
                 <div className="col-span-4">
                   <FormField
                     control={form.control}
@@ -213,7 +216,11 @@ export default function UserEducationSideBar({
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-4">
+              {/**start date and end date */}
+              <div
+                className="md:grid-cols-12 md:gap-4
+              grid gap-2"
+              >
                 <div className="col-span-6">
                   <FormField
                     control={form.control}
@@ -298,6 +305,8 @@ export default function UserEducationSideBar({
                   />
                 </div>
               </div>
+
+              {/**do you currently study here? */}
               <FormField
                 control={form.control}
                 name="onGoing"

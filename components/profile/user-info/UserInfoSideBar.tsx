@@ -48,7 +48,7 @@ const formSchema = z.object({
   city: z.string().max(50, "City name must be under 50 characters").optional(),
 });
 
-export default function UserInfoSideBar({ user }: { user: User }) {
+export default function UserInfoSidebar({ user }: { user: User }) {
   const [open, setOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -86,7 +86,7 @@ export default function UserInfoSideBar({ user }: { user: User }) {
       <SheetTrigger>
         <SquarePen className="ease-in-out duration-200 hover:cursor-pointer hover:text-[var(--app-blue)]" />
       </SheetTrigger>
-      <SheetContent className="rounded-tl-4xl !min-w-[500px]">
+      <SheetContent className="rounded-tl-4xl w-[400px] md:min-w-[500px]">
         <SheetHeader>
           <SheetTitle>Personal Info</SheetTitle>
           <SheetDescription>

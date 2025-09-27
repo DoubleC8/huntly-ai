@@ -161,4 +161,8 @@ model Education {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  //each user has a connection to their education
+  //will be used to check for ownership later
+  @@unique([id, userId])
 }
