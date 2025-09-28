@@ -92,6 +92,7 @@ export default function UserEducationSidebar({
       } else {
         await updateUserEducation(values);
         toast.success("Education added successfully!");
+        form.reset();
       }
     } catch (error) {
       console.error("Form submission error", error);
