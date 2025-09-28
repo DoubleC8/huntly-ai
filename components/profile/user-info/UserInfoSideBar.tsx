@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/sheet";
 import { LoaderCircle, Plus, SquarePen } from "lucide-react";
 import { User } from "@/app/generated/prisma";
-import { updateUserPersonalInfo } from "@/app/actions/updateUserInfo";
+import { updateUserPersonalInfo } from "@/app/actions/profile/updateUserInfo";
 import { useState } from "react";
 
 const formSchema = z.object({

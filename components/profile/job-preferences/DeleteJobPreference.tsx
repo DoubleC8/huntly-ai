@@ -1,7 +1,8 @@
 "use client";
 
-import { DeleteUserJobPreference } from "@/app/actions/deleteUserJobPreference";
+import { DeleteUserJobPreference } from "@/app/actions/profile/deleteUserJobPreference";
 import { Button } from "@/components/ui/button";
+import { formatEntry } from "@/lib/utils";
 import { X, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -17,7 +18,7 @@ export default function DeleteJobPrefence({
     setDeleting(true);
     try {
       await DeleteUserJobPreference(preference);
-      toast.success(`"${preference}" deleted!`);
+      toast.success(`"${formatEntry(preference)}" deleted!`);
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to update skills.", {

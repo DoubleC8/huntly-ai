@@ -11,9 +11,13 @@ export function formatPhoneForDisplay(phone: string): string {
   return phoneNumber ? phoneNumber.formatInternational() : phone;
 }
 
-export function formatEntry(entry: string) {
+export function formatEntry(entry: string): string {
   return entry
     .split(" ")
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
+}
+
+export function normalizeEntry(entry: string): string {
+  return entry.trim().toLowerCase().replace(/\s+/g, " ");
 }

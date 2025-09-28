@@ -1,6 +1,7 @@
 "use client";
-import { DeleteUserSkill } from "@/app/actions/deleteUserSkill";
+import { DeleteUserSkill } from "@/app/actions/profile/deleteUserSkill";
 import { Button } from "@/components/ui/button";
+import { formatEntry } from "@/lib/utils";
 import { X, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -12,7 +13,7 @@ export default function DeleteSkill({ skill }: { skill: string }) {
     setDeleting(true);
     try {
       await DeleteUserSkill(skill);
-      toast.success(`"${skill}" deleted!`);
+      toast.success(`"${formatEntry(skill)}" deleted!`);
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to update skills.", {

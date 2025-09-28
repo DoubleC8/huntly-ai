@@ -1,4 +1,6 @@
 import { auth } from "@/auth";
+import AppliedJobs from "@/components/profile/applied-jobs/AppliedJobs";
+import AppliedJobsTable from "@/components/profile/applied-jobs/AppliedJobs";
 import DefaultResume from "@/components/profile/DefaultResume";
 import UserEducation from "@/components/profile/education/UserEducation";
 import UserJobPreferences from "@/components/profile/job-preferences/UserJobPreferences";
@@ -6,6 +8,7 @@ import JobPreferences from "@/components/profile/JobPreferences";
 import JobsTable from "@/components/profile/JobsTable";
 import UserSkills from "@/components/profile/skills/UserSkills";
 import UserInfo from "@/components/profile/user-info/UserInfo";
+import UserResume from "@/components/profile/user-resume/UserResume";
 import { prisma } from "@/lib/prisma";
 
 export default async function ProfilePage() {
@@ -75,69 +78,10 @@ export default async function ProfilePage() {
           <UserJobPreferences jobPreferences={user.jobPreferences} />
 
           {/**user resume section */}
-          <div className="flex flex-col gap-3">
-            <h2 className="font-bold text-xl">Default Resume</h2>
-            {defaultResume ? (
-              <>
-                <DefaultResume resume={user.resumes[0]} />
-
-                <p className="text-muted-foreground text-center">
-                  This is your{" "}
-                  <strong className="text-[var(--app-blue)]">
-                    default resume
-                  </strong>
-                  . It’s the one Huntly AI will use to calculate match scores
-                  when comparing you to job listings. You can change your
-                  default resume at any time in the Resume tab.
-                </p>
-              </>
-            ) : (
-              <div className="flex flex-col gap-2">
-                <p className="text-muted-foreground">
-                  No default resume found. Upload a resume to get started! (
-                  <a
-                    href="/jobs/resume"
-                    className="text-blue-500 hover:text-blue-700 underline"
-                  >
-                    Go to Resume Tab
-                  </a>
-                  )
-                </p>
-              </div>
-            )}
-          </div>
+          <UserResume defaultResume={user.resumes[0]} />
 
           {/**user job table */}
-          <div className="flex flex-col gap-3">
-            <h2 className="font-bold text-xl">Jobs You have Applied to</h2>
-            {user?.jobs?.length ? (
-              <div className="text-muted-foreground text-center flex flex-col gap-3">
-                <JobsTable jobs={user.jobs} />
-                {user.jobs.length > 1 ? (
-                  <p>
-                    You've applied to{" "}
-                    <strong className="text-[var(--app-blue)]">
-                      {user?.jobs.length}
-                    </strong>{" "}
-                    jobs so far! Congrats!
-                  </p>
-                ) : (
-                  <p>
-                    You've applied to{" "}
-                    <strong className="text-[var(--app-blue)]">
-                      {user?.jobs.length}
-                    </strong>{" "}
-                    job so far! Congrats! Keep Going!
-                  </p>
-                )}
-              </div>
-            ) : (
-              <p className="text-muted-foreground">
-                You haven’t applied to any jobs yet. Once you do, they’ll show
-                up here!
-              </p>
-            )}
-          </div>
+          <AppliedJobs appliedJobs={user.jobs} />
         </div>
       </div>
     </div>

@@ -2,12 +2,8 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { normalizeEntry } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
-
-function normalizePreference(preference: string): string {
-  return preference.trim().toLowerCase().replace(/\s+/g, " ");
-}
-
 
 export async function DeleteUserJobPreference(preference: string){
     const session = await auth();
@@ -16,10 +12,11 @@ export async function DeleteUserJobPreference(preference: string){
     const user = await prisma.user.findUnique({
         where: { email: session.user.email },
         select: { jobPreferences: true }
-    })
+    });
 
-    const filtered = user?.jobPreferences.filter(
-        (j) => normalizePreference(j) !== normalizePreference(preference));
+    if(!user) throw new Error("User not found");
+
+    const filtered = user?.jobPreferences.filter((j) => normalizeEntry(j) !== normalizeEntry(preference));
 
     const updatedUser = await prisma.user.update({
         where: {
@@ -31,5 +28,5 @@ export async function DeleteUserJobPreference(preference: string){
     })
 
     revalidatePath("/jobs/profile");
-    return updatedUser.jobPreferences;
+    return updatedUser;
 }

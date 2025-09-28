@@ -24,8 +24,8 @@ import {
 import { LoaderCircle, Plus, SquarePlus } from "lucide-react";
 import { useState } from "react";
 import { TagsInput } from "@/components/ui/TagsInput";
-import { updateUserSkills } from "@/app/actions/updateUserSkills";
-import { updateUserJobPreference } from "@/app/actions/updateUserJobPreferences";
+import { updateUserSkills } from "@/app/actions/profile/updateUserSkills";
+import { updateUserJobPreference } from "@/app/actions/profile/updateUserJobPreferences";
 
 const formSchema = z.object({
   jobPreferences: z
