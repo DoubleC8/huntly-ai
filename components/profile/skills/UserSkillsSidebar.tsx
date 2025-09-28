@@ -55,6 +55,8 @@ export default function UserSkillsSidebar() {
           values.skills?.length ?? 0
         } skills saved to your profile.`,
       });
+
+      form.reset({ skills: [] });
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to update skills.", {
