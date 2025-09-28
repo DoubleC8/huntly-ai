@@ -28,7 +28,7 @@ model User {
   resumes Resume[]
 
   // Job preferences (many-to-many with JobTitle)
-  jobPreferences JobTitle[] @relation("UserPreferences")
+  jobPreferences String[]
 
   // AI-enriched fields
   skills String[] @default([]) // extracted skills from resume
@@ -122,15 +122,6 @@ enum JobStage {
   INTERVIEW
   OFFER
   REJECTED
-}
-
-model JobTitle {
-  id    String @id @default(cuid())
-  title String @unique
-
-  users User[] @relation("UserPreferences")
-
-  @@index([title]) // better search/autocomplete performance
 }
 
 model Resume {

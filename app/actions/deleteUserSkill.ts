@@ -9,7 +9,7 @@ export async function DeleteUserSkill(skill: string){
     if (!session?.user?.email) throw new Error("Unauthorized");
 
     const user = await prisma.user.findUnique({
-        where: { email: session?.user?.email }, 
+        where: { email: session.user.email }, 
         select: { skills: true }
     })
 
@@ -25,5 +25,5 @@ export async function DeleteUserSkill(skill: string){
     })
 
     revalidatePath("/jobs/profile");
-    return updatedUser;
+    return updatedUser.skills;
 }

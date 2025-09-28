@@ -29,5 +29,5 @@ export async function updateUserSkills(skills: string[]) {
 
   revalidatePath("/jobs/profile");
 
-  return updatedUser;
+  return updatedUser.skills;
 }

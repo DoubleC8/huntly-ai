@@ -10,3 +10,10 @@ export function formatPhoneForDisplay(phone: string): string {
   const phoneNumber = parsePhoneNumberFromString(phone);
   return phoneNumber ? phoneNumber.formatInternational() : phone;
 }
+
+export function formatEntry(entry: string) {
+  return entry
+    .split(" ")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}

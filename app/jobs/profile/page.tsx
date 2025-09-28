@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import DefaultResume from "@/components/profile/DefaultResume";
 import UserEducation from "@/components/profile/education/UserEducation";
+import UserJobPreferences from "@/components/profile/job-preferences/UserJobPreferences";
 import JobPreferences from "@/components/profile/JobPreferences";
 import JobsTable from "@/components/profile/JobsTable";
 import UserSkills from "@/components/profile/skills/UserSkills";
@@ -42,7 +43,6 @@ export default async function ProfilePage() {
           },
         },
       },
-      jobPreferences: true,
       education: true,
     },
   });
@@ -72,18 +72,7 @@ export default async function ProfilePage() {
 
           <UserSkills skills={user.skills} />
 
-          {/**user job preferences */}
-          <div className="flex flex-col gap-3">
-            <h2 className="font-bold text-xl">Job Preferences</h2>
-            {user?.jobPreferences.length ? (
-              <JobPreferences />
-            ) : (
-              <p className="text-muted-foreground">
-                No job preferences set yet. Add some job titles you would be
-                interested in and let Huntly Ai find jobs based on these titles!
-              </p>
-            )}
-          </div>
+          <UserJobPreferences jobPreferences={user.jobPreferences} />
 
           {/**user resume section */}
           <div className="flex flex-col gap-3">
@@ -92,12 +81,14 @@ export default async function ProfilePage() {
               <>
                 <DefaultResume resume={user.resumes[0]} />
 
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground text-center">
                   This is your{" "}
-                  <span className="font-semibold">default resume</span>. It’s
-                  the one Huntly AI will use to calculate match scores when
-                  comparing you to job listings. You can change your default
-                  resume at any time in the Resume tab.
+                  <strong className="text-[var(--app-blue)]">
+                    default resume
+                  </strong>
+                  . It’s the one Huntly AI will use to calculate match scores
+                  when comparing you to job listings. You can change your
+                  default resume at any time in the Resume tab.
                 </p>
               </>
             ) : (
@@ -120,19 +111,26 @@ export default async function ProfilePage() {
           <div className="flex flex-col gap-3">
             <h2 className="font-bold text-xl">Jobs You have Applied to</h2>
             {user?.jobs?.length ? (
-              <>
+              <div className="text-muted-foreground text-center flex flex-col gap-3">
                 <JobsTable jobs={user.jobs} />
                 {user.jobs.length > 1 ? (
-                  <p className="text-muted-foreground">
-                    You've applied to {user?.jobs.length} jobs so far! Congrats!
+                  <p>
+                    You've applied to{" "}
+                    <strong className="text-[var(--app-blue)]">
+                      {user?.jobs.length}
+                    </strong>{" "}
+                    jobs so far! Congrats!
                   </p>
                 ) : (
-                  <p className="text-muted-foreground">
-                    You've applied to {user?.jobs.length} job so far! Congrats!
-                    Keep Going!
+                  <p>
+                    You've applied to{" "}
+                    <strong className="text-[var(--app-blue)]">
+                      {user?.jobs.length}
+                    </strong>{" "}
+                    job so far! Congrats! Keep Going!
                   </p>
                 )}
-              </>
+              </div>
             ) : (
               <p className="text-muted-foreground">
                 You haven’t applied to any jobs yet. Once you do, they’ll show

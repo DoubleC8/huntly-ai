@@ -25,9 +25,10 @@ import { LoaderCircle, Plus, SquarePlus } from "lucide-react";
 import { useState } from "react";
 import { TagsInput } from "@/components/ui/TagsInput";
 import { updateUserSkills } from "@/app/actions/updateUserSkills";
+import { updateUserJobPreference } from "@/app/actions/updateUserJobPreferences";
 
 const formSchema = z.object({
-  skills: z
+  jobPreferences: z
     .array(z.string())
     .min(1, {
       error: "Please enter at least one entry.",
@@ -35,31 +36,31 @@ const formSchema = z.object({
     .optional(),
 });
 
-export default function UserSkillsSidebar() {
+export default function UserJobPreferencesSidebar() {
   const [open, setOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      skills: [],
+      jobPreferences: [],
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setUploading(true);
     try {
-      await updateUserSkills(values.skills ?? []);
-      toast.success("Skills added successfully!", {
+      await updateUserJobPreference(values.jobPreferences ?? []);
+      toast.success("Job preferences added successfully!", {
         description: `${
-          values.skills?.length ?? 0
-        } skills saved to your profile.`,
+          values.jobPreferences?.length ?? 0
+        } job preferences added to your profile.`,
       });
 
-      form.reset({ skills: [] });
+      form.reset({ jobPreferences: [] });
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to update skills.", {
+      toast.error("Failed to update job preferences.", {
         description: "Please try again later.",
       });
     } finally {
@@ -77,10 +78,10 @@ export default function UserSkillsSidebar() {
       </SheetTrigger>
       <SheetContent className="rounded-tl-4xl w-[400px] md:min-w-[500px]">
         <SheetHeader>
-          <SheetTitle>Skills</SheetTitle>
+          <SheetTitle>Job Preferences</SheetTitle>
           <SheetDescription>
-            Update your personal skills to help tailor jobs according to your
-            current skills.
+            Update your job preferences and let Huntly Ai find jobs based on
+            these preferences.
           </SheetDescription>
         </SheetHeader>
         <SheetDescription asChild>
@@ -91,20 +92,19 @@ export default function UserSkillsSidebar() {
             >
               <FormField
                 control={form.control}
-                name="skills"
+                name="jobPreferences"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Enter your Skills</FormLabel>
+                    <FormLabel>Enter your Job Preferences.</FormLabel>
                     <FormControl>
                       <TagsInput
                         value={field.value ?? []}
                         onValueChange={field.onChange}
-                        placeholder="Enter your Skills"
+                        placeholder="Enter your job preferences"
                       />
                     </FormControl>
                     <FormDescription>
-                      Add skills as tags to highlight your technical and
-                      professional expertise.
+                      Add job preferences to improve your Huntly Ai experience
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -117,7 +117,9 @@ export default function UserSkillsSidebar() {
                   ) : (
                     <Plus className="mr-1" />
                   )}
-                  {uploading ? "Adding skills..." : "Add Skills"}
+                  {uploading
+                    ? "Adding Job Preferences..."
+                    : "Add Job Preferences"}
                 </Button>
               </div>
             </form>
