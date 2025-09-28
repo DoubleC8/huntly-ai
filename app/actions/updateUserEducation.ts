@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
 export async function updateUserEducation(values: {
-  id?: string; // <-- include this for editing existing records
+  id?: string;
   school: string;
   major?: string;
   degree: string;

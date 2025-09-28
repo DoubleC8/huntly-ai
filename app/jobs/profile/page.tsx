@@ -71,6 +71,20 @@ export default async function ProfilePage() {
           <UserEducation education={user.education} />
 
           <UserSkills skills={user.skills} />
+
+          {/**user job preferences */}
+          <div className="flex flex-col gap-3">
+            <h2 className="font-bold text-xl">Job Preferences</h2>
+            {user?.jobPreferences.length ? (
+              <JobPreferences />
+            ) : (
+              <p className="text-muted-foreground">
+                No job preferences set yet. Add some job titles you would be
+                interested in and let Huntly Ai find jobs based on these titles!
+              </p>
+            )}
+          </div>
+
           {/**user resume section */}
           <div className="flex flex-col gap-3">
             <h2 className="font-bold text-xl">Default Resume</h2>
@@ -123,19 +137,6 @@ export default async function ProfilePage() {
               <p className="text-muted-foreground">
                 You haven’t applied to any jobs yet. Once you do, they’ll show
                 up here!
-              </p>
-            )}
-          </div>
-
-          {/**user job preferences */}
-          <div className="flex flex-col gap-3">
-            <h2 className="font-bold text-xl">Job Preferences</h2>
-            {user?.jobPreferences.length ? (
-              <JobPreferences />
-            ) : (
-              <p className="text-muted-foreground">
-                No job preferences set yet. Add some job titles you would be
-                interested in and let Huntly Ai find jobs based on these titles!
               </p>
             )}
           </div>

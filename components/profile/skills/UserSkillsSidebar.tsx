@@ -24,6 +24,7 @@ import {
 import { LoaderCircle, Plus, SquarePlus } from "lucide-react";
 import { useState } from "react";
 import { TagsInput } from "@/components/ui/TagsInput";
+import { updateUserSkills } from "@/app/actions/updateUserSkills";
 
 const formSchema = z.object({
   skills: z
@@ -45,17 +46,25 @@ export default function UserSkillsSidebar() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setUploading(true);
     try {
-      console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      );
+      await updateUserSkills(values.skills ?? []);
+      toast.success("Skills added successfully!", {
+        description: `${
+          values.skills?.length ?? 0
+        } skills saved to your profile.`,
+      });
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
+      toast.error("Failed to update skills.", {
+        description: "Please try again later.",
+      });
+    } finally {
+      setUploading(false);
+      setTimeout(() => {
+        setOpen(false);
+      }, 1000);
     }
   }
 
@@ -88,7 +97,7 @@ export default function UserSkillsSidebar() {
                       <TagsInput
                         value={field.value ?? []}
                         onValueChange={field.onChange}
-                        placeholder="Enter your tags"
+                        placeholder="Enter your skills"
                       />
                     </FormControl>
                     <FormDescription>

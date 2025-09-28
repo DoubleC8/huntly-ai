@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import UserSkillsSidebar from "./UserSkillsSidebar";
+import DeleteSkill from "./DeleteSkill";
 
-export default function UserSkills({ skills }: { skills: String[] }) {
+export default function UserSkills({ skills }: { skills: string[] }) {
   return (
     <div className="h-fit flex flex-col gap-3">
       <div className="flex items-center justify-between w-full">
@@ -16,6 +17,7 @@ export default function UserSkills({ skills }: { skills: String[] }) {
             <div key={index} className="flex flex-col gap-2">
               <Badge className="flex items-center text-[var(--background)] bg-[var(--app-dark-purple)] gap-3">
                 {skill}
+                <DeleteSkill skill={skill} />
               </Badge>
             </div>
           ))

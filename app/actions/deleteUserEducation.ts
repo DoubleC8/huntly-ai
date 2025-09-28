@@ -2,7 +2,6 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { Education } from "@/app/generated/prisma";
 import { revalidatePath } from "next/cache";
 
 
