@@ -25,7 +25,10 @@ export default function DefaultResume({ resume }: { resume: Resume }) {
             Target Job Title
           </TableHead>
 
-          <TableHead className="text-end font-semibold text-[var(--background)] bg-[var(--app-blue)]">
+          <TableHead
+            className="lg:rounded-none lg:text-end
+          rounded-tr-2xl text-center font-semibold text-[var(--background)] bg-[var(--app-blue)]"
+          >
             Link
           </TableHead>
 
