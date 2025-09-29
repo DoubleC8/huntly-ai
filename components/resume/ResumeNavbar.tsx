@@ -1,15 +1,12 @@
 import { PartyPopper } from "lucide-react";
-import ResumeUploadClient from "./ResumeUploadClient";
-import { Resume } from "@/app/generated/prisma";
+import AddResumeButton from "./AddResumeButton";
 
 export default function ResumeNavbar({
   email,
   resumeCount,
-  setResumes,
 }: {
   email: string;
   resumeCount: number;
-  setResumes: React.Dispatch<React.SetStateAction<Resume[]>>;
 }) {
   return (
     <div className="desktopAppPageNav">
@@ -23,25 +20,23 @@ export default function ResumeNavbar({
             set!
           </p>
         ) : (
-          <p
-            className="md:text-base
+          <div className="w-full flex items-center justify-between">
+            <p
+              className="md:text-base
               text-sm font-semibold text-muted-foreground"
-          >
-            <span
-              style={{
-                color: resumeCount === 5 ? "var(--app-blue)" : "",
-              }}
             >
-              {resumeCount}
-            </span>
-            <span className="text-[var(--app-blue)]"> / 5 </span>Resumes Left
-          </p>
+              <span
+                style={{
+                  color: resumeCount === 5 ? "var(--app-blue)" : "",
+                }}
+              >
+                {resumeCount}
+              </span>
+              <span className="text-[var(--app-blue)]"> / 5 </span>Resumes Left
+            </p>
+            <AddResumeButton resumeCount={resumeCount} email={email} />
+          </div>
         )}
-        <ResumeUploadClient
-          email={email}
-          resumeCount={resumeCount}
-          setResumes={setResumes}
-        />
       </div>
     </div>
   );

@@ -13,14 +13,9 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { Resume } from "@/app/generated/prisma";
 import { toast } from "sonner";
+import { deleteUserResume } from "@/app/actions/resume/delete/deleteUserResume";
 
-export default function DeleteResumeButton({
-  resume,
-  setResumes,
-}: {
-  resume: Resume;
-  setResumes: React.Dispatch<React.SetStateAction<Resume[]>>;
-}) {
+export default function DeleteResumeButton({ resume }: { resume: Resume }) {
   const { id, publicUrl } = resume;
   const [deleting, setDeleting] = useState(false);
   const [open, setOpen] = useState(false);
@@ -34,27 +29,10 @@ export default function DeleteResumeButton({
 
     try {
       const filePath = publicUrl.split("/resumes/")[1];
-
-      const res = await fetch(`/api/resumes/${resume.id}`, {
-        method: "DELETE",
-        body: JSON.stringify({ filePath }),
-      });
-
-      if (res.ok) {
-        setResumes((prev) => prev.filter((r) => r.id !== resume.id));
-        setOpen(false);
-        toast.success("Resume successfully deleted.");
-      } else {
-        toast.error("Unable to delete resume.", {
-          description: "Please try again later.",
-        });
-        console.error("Failed to delete resume.");
-      }
-    } catch (error) {
-      console.error("Unexpected error in handleDelete: ", error);
-      toast.error("Delete fauled", {
-        description: "Please try again.",
-      });
+      await deleteUserResume(id, filePath);
+      toast.success("Resume deleted!");
+    } catch (err) {
+      toast.error("Failed to delete resume");
     } finally {
       setDeleting(false);
     }

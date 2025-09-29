@@ -1,6 +1,6 @@
 import { Resume } from "@/app/generated/prisma";
 
-import DefaultResume from "../DefaultResume";
+import DefaultResume from "./DefaultResume";
 import Link from "next/link";
 
 export default function UserResume({

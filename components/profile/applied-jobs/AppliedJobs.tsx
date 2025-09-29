@@ -1,5 +1,5 @@
 import { Job } from "@/app/generated/prisma";
-import JobsTable from "../JobsTable";
+import JobsTable from "./JobsTable";
 import Link from "next/link";
 
 export default function AppliedJobs({ jobs }: { jobs: Job[] }) {

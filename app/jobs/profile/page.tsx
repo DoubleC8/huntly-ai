@@ -55,7 +55,6 @@ export default async function ProfilePage() {
   }
 
   const defaultResume = user.resumes[0];
-  console.log(user);
   return (
     <div className="page">
       <div className="pageTitleContainer">

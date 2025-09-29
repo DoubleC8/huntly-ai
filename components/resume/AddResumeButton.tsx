@@ -23,20 +23,17 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { resumeFileSchema } from "@/lib/validations/resume";
-import { Resume } from "@/app/generated/prisma";
+import { updateUserResume } from "@/app/actions/resume/update/updateUserResume";
 
-export default function ResumeUploadClient({
-  email,
+export default function AddResumeButton({
   resumeCount,
-  setResumes,
+  email,
 }: {
-  email: string;
   resumeCount: number;
-  setResumes: React.Dispatch<React.SetStateAction<Resume[]>>;
+  email: string;
 }) {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [resumeUrl, setResumeUrl] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
   const handleUpload = async () => {
@@ -78,34 +75,19 @@ export default function ResumeUploadClient({
 
       const { data } = supabase.storage.from("resumes").getPublicUrl(filePath);
       const publicUrl = data?.publicUrl;
-
       if (!publicUrl) {
-        console.error("No public URL found.");
         toast.error("URL generation failed");
         return;
       }
-
-      setResumeUrl(publicUrl);
-
-      const res = await fetch("/api/resumes", {
-        method: "POST",
-        body: JSON.stringify({ resumeUrl: publicUrl, fileName: file.name }),
+      const newResume = await updateUserResume({
+        resumeUrl: publicUrl,
+        fileName: file.name,
       });
-
-      if (!res.ok) {
-        console.error("Failed to save resume metadata:", await res.text());
-        toast.error("Upload succeeded but saving failed.");
-        return;
-      }
 
       toast.success("Resume uploaded.", {
         description: "Sit back and watch the magic happen.",
       });
 
-      const newResume: Resume = await res.json();
-
-      setResumes((prev) => [newResume, ...prev]);
-      setOpen(false);
       setFile(null);
     } catch (error) {
       console.error("Unexpected error in handleUpload:", error);
@@ -114,6 +96,9 @@ export default function ResumeUploadClient({
       });
     } finally {
       setUploading(false);
+      setTimeout(() => {
+        setOpen(false);
+      }, 1000);
     }
   };
 
@@ -136,12 +121,7 @@ export default function ResumeUploadClient({
           className="flex items-center gap-2"
           disabled={resumeCount >= 5}
         >
-          <span
-            className="md:block
-          hidden"
-          >
-            Add Resume
-          </span>{" "}
+          <span className="hidden md:block">Add Resume</span>
           <Plus size={16} />
         </Button>
       </DialogTrigger>
@@ -158,7 +138,6 @@ export default function ResumeUploadClient({
 
         <div className="flex flex-col items-center gap-4">
           <FileText size={55} />
-
           <div className="w-full space-y-2">
             <Label htmlFor="resume-upload">Select PDF</Label>
             <Input
@@ -169,9 +148,11 @@ export default function ResumeUploadClient({
             />
           </div>
         </div>
+
         <p className="text-xs text-muted-foreground text-center">
           Files should be in PDF format and must not exceed 10MB in size.
         </p>
+
         <DialogFooter>
           <Button
             onClick={handleUpload}

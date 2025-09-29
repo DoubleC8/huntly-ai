@@ -20,7 +20,7 @@ export async function updateUserPersonalInfo(values: {
     ? normalizePhoneNumber(values.phoneNumber)
     : null;
 
-    const user = await prisma.user.update({
+    const updatedUser = await prisma.user.update({
         where: {email: session.user.email}, 
         data: {
             githubUrl: values.githubUrl || null,
@@ -32,5 +32,5 @@ export async function updateUserPersonalInfo(values: {
     })
 
     revalidatePath("/jobs/profile")
-    return user;
+    return updatedUser;
 }

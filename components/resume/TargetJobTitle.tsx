@@ -1,108 +1,99 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { LoaderCircle, Plus, SquarePen } from "lucide-react";
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Plus, SquarePen } from "lucide-react";
+import { useState } from "react";
+import { updateUserResumeJobTitle } from "@/app/actions/resume/update/updateUserResume";
 
-interface JobTitleProps {
-  resumeId: string;
-  initialJobTitle: string | null;
-}
+const formSchema = z.object({
+  targetJobTitle: z.string().trim().max(50).optional(),
+});
 
 export default function TargetJobTitle({
+  resumeJobTitle,
   resumeId,
-  initialJobTitle,
-}: JobTitleProps) {
-  const [targetJobTitle, setTargetJobTitle] = useState(initialJobTitle ?? "");
-  const [localTargetJobTitle, setLocalTargetJobTitle] = useState(
-    initialJobTitle ?? ""
-  );
-  const [editMode, setEditMode] = useState(!initialJobTitle);
-  const [isPending, startTransition] = useTransition();
-  const [lastSavedTargetJobTitle, setLastSavedTargetJobTitle] =
-    useState(targetJobTitle);
+}: {
+  resumeJobTitle: string;
+  resumeId: string;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-  const handleSave = async () => {
-    if (targetJobTitle === lastSavedTargetJobTitle) {
-      setEditMode(false);
-      return;
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      targetJobTitle: resumeJobTitle ?? "",
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setUploading(true);
+    try {
+      await updateUserResumeJobTitle({
+        targetJobTitle: values.targetJobTitle ?? "",
+        resumeId,
+      });
+
+      toast.success(`Target job title set to: ${values.targetJobTitle}!`);
+    } catch (error) {
+      console.error("Form submission error", error);
+      toast.error("Failed to update job title");
+    } finally {
+      setUploading(false);
+      setIsEditing(false);
     }
-
-    startTransition(async () => {
-      try {
-        const res = await fetch(`/api/resumes/${resumeId}/target-title`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ targetJobTitle }),
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          if (
-            res.status === 400 &&
-            data?.issues?.targetJobTitle?._errors?.length > 0
-          ) {
-            toast.error("Validation Error", {
-              description: data.issues.targetJobTitle._errors[0],
-            });
-          } else {
-            toast.error("Failed to update job title.", {
-              description: data?.error || "Please try again later",
-            });
-          }
-          return;
-        }
-
-        toast.success("Successfully updated job title!");
-        setLastSavedTargetJobTitle(targetJobTitle);
-        setLocalTargetJobTitle(targetJobTitle);
-        setEditMode(false);
-      } catch (error) {
-        console.error("Failed to update job title:", error);
-        toast.error("Failed to update job title.", {
-          description: "Please try again later",
-        });
-      }
-    });
-  };
+  }
 
   return (
-    <div className="flex items-center gap-2 min-w-9/10 w-9/10 max-w-9/10">
-      {editMode ? (
-        <Input
-          value={targetJobTitle}
-          onChange={(e) => setTargetJobTitle(e.target.value)}
-          onBlur={handleSave}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              handleSave();
-            }
-          }}
-          placeholder="Target Job Title..."
-          className="w-full"
-        />
+    <div className="flex items-center justify-between w-full">
+      {isEditing ? (
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex w-full items-center justify-between gap-2"
+          >
+            <FormField
+              control={form.control}
+              name="targetJobTitle"
+              render={({ field }) => (
+                <FormItem className="flex-grow">
+                  <FormControl>
+                    <Input
+                      placeholder="Enter Job Title"
+                      type="text"
+                      {...field}
+                      className="w-full"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" disabled={uploading}>
+              <Plus />
+            </Button>
+          </form>
+        </Form>
       ) : (
-        <p className="text-sm text-muted-foreground w-full p-2">
-          {lastSavedTargetJobTitle || "No job title set."}
-        </p>
-      )}
-
-      {editMode ? (
-        <Button onClick={handleSave} disabled={isPending} size="sm">
-          {isPending ? (
-            <LoaderCircle className="animate-spin w-4 h-4" />
-          ) : (
-            <Plus className="w-4 h-4" />
-          )}
-        </Button>
-      ) : (
-        <Button onClick={() => setEditMode(true)} size="sm">
-          <SquarePen className="w-4 h-4" />
-        </Button>
+        <div className="flex items-center justify-between min-w-full">
+          <p>{resumeJobTitle || "No Job Title Set"}</p>
+          <SquarePen
+            className="cursor-pointer ease-in-out duration-200 hover:text-[var(--app-blue)]"
+            onClick={() => setIsEditing(true)}
+          />
+        </div>
       )}
     </div>
   );
