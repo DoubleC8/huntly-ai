@@ -6,7 +6,7 @@ import { Job, JobStage } from "@/app/generated/prisma";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { toast } from "sonner";
-import { updateJobStage } from "@/app/actions/updateJobStage";
+import { updateJobStage } from "@/app/actions/job-post/updateJobStage";
 import { useState } from "react";
 import useIsLargeScreen from "@/hooks/useIsLargeScreen";
 import ErrorBoundary from "../ui/ErrorBoundary";

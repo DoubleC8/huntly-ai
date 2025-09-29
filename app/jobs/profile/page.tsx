@@ -1,11 +1,7 @@
 import { auth } from "@/auth";
 import AppliedJobs from "@/components/profile/applied-jobs/AppliedJobs";
-import AppliedJobsTable from "@/components/profile/applied-jobs/AppliedJobs";
-import DefaultResume from "@/components/profile/DefaultResume";
 import UserEducation from "@/components/profile/education/UserEducation";
 import UserJobPreferences from "@/components/profile/job-preferences/UserJobPreferences";
-import JobPreferences from "@/components/profile/JobPreferences";
-import JobsTable from "@/components/profile/JobsTable";
 import UserSkills from "@/components/profile/skills/UserSkills";
 import UserInfo from "@/components/profile/user-info/UserInfo";
 import UserResume from "@/components/profile/user-resume/UserResume";
@@ -67,7 +63,7 @@ export default async function ProfilePage() {
       </div>
 
       <div className="pageContainer">
-        <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-5 flex flex-col gap-5">
+        <div className="bg-[var(--background)] h-fit  rounded-3xl shadow-md p-5 flex flex-col gap-5">
           {/**user info section */}
           <UserInfo user={user} />
 
@@ -78,10 +74,10 @@ export default async function ProfilePage() {
           <UserJobPreferences jobPreferences={user.jobPreferences} />
 
           {/**user resume section */}
-          <UserResume defaultResume={user.resumes[0]} />
+          <UserResume defaultResume={defaultResume} />
 
           {/**user job table */}
-          <AppliedJobs appliedJobs={user.jobs} />
+          <AppliedJobs jobs={user.jobs} />
         </div>
       </div>
     </div>

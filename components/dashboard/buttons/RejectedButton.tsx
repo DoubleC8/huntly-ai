@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { setJobAsRejected } from "@/app/actions/setJobAsRejected";
+import { setJobAsRejected } from "@/app/actions/job-post/setJobAsRejected";
 import { STAGE_ORDER } from "@/app/constants/jobStage";
 
 export default function RejectedButton({

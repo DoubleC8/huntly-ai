@@ -39,7 +39,7 @@ import {
   SheetTrigger,
   Sheet,
 } from "@/components/ui/sheet";
-import { updateUserEducation } from "@/app/actions/profile/updateUserEducation";
+import { updateUserEducation } from "@/app/actions/profile/update/updateUserEducation";
 
 const formSchema = z.object({
   school: z.string().min(1, "School name is required").max(150),

@@ -1,6 +1,7 @@
 import { Resume } from "@/app/generated/prisma";
 
 import DefaultResume from "../DefaultResume";
+import Link from "next/link";
 
 export default function UserResume({
   defaultResume,
@@ -23,18 +24,18 @@ export default function UserResume({
           </p>
         </>
       ) : (
-        <div className="flex flex-col gap-2">
-          <p className="text-muted-foreground">
-            No default resume found. Upload a resume to get started! (
-            <a
-              href="/jobs/resume"
-              className="text-blue-500 hover:text-blue-700 underline"
-            >
-              Go to Resume Tab
-            </a>
-            )
-          </p>
-        </div>
+        <p className="text-muted-foreground">
+          No <strong className="text-[var(--app-blue)]">Default Resume</strong>{" "}
+          found. Add one to get started.
+          <br /> Go to{" "}
+          <Link
+            href={"/jobs/resume"}
+            className="ease-in-out duration-200 hover:cursor-pointer hover:text-[var(--app-blue)]"
+          >
+            Resume Page
+          </Link>
+          .
+        </p>
       )}
     </div>
   );

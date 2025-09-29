@@ -24,7 +24,7 @@ import {
 import { LoaderCircle, Plus, SquarePlus } from "lucide-react";
 import { useState } from "react";
 import { TagsInput } from "@/components/ui/TagsInput";
-import { updateUserSkills } from "@/app/actions/profile/updateUserSkills";
+import { updateUserSkills } from "@/app/actions/profile/update/updateUserSkills";
 
 const formSchema = z.object({
   skills: z

@@ -1,5 +1,5 @@
 "use client";
-import { DeleteUserSkill } from "@/app/actions/profile/deleteUserSkill";
+import { DeleteUserSkill } from "@/app/actions/profile/delete/deleteUserSkill";
 import { Button } from "@/components/ui/button";
 import { formatEntry } from "@/lib/utils";
 import { X, LoaderCircle } from "lucide-react";

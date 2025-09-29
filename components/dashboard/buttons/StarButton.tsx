@@ -1,7 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { STAGE_ORDER } from "@/app/constants/jobStage";
-import { toggleWishlist } from "@/app/actions/toggleWishlist";
+import { toggleWishlist } from "@/app/actions/job-post/toggleWishlist";
 import { toast } from "sonner";
 import { Star } from "lucide-react";
 import { JobStage } from "@/app/generated/prisma";

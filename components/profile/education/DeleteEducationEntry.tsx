@@ -13,7 +13,7 @@ import { useState } from "react";
 import { Education } from "@/app/generated/prisma";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { DeleteUserEducation } from "@/app/actions/profile/deleteUserEducation";
+import { DeleteUserEducation } from "@/app/actions/profile/delete/deleteUserEducation";
 
 export default function DeleteEducationEntry({
   education,

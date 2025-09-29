@@ -1,6 +1,6 @@
 "use client";
 
-import { DeleteUserJobPreference } from "@/app/actions/profile/deleteUserJobPreference";
+import { DeleteUserJobPreference } from "@/app/actions/profile/delete/deleteUserJobPreference";
 import { Button } from "@/components/ui/button";
 import { formatEntry } from "@/lib/utils";
 import { X, LoaderCircle } from "lucide-react";

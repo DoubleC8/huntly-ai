@@ -9,7 +9,7 @@ import { Job, JobStage } from "@/app/generated/prisma";
 import { Button } from "../ui/button";
 import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { updateJobStage } from "@/app/actions/updateJobStage";
+import { updateJobStage } from "@/app/actions/job-post/updateJobStage";
 import { toast } from "sonner";
 import { STAGE_ORDER } from "@/app/constants/jobStage";
 import { formatJobDate, formatSalary } from "@/lib/date-utils";
