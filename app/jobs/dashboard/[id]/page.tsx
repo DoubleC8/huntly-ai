@@ -269,20 +269,20 @@ export default async function Page({ params }: PageProps) {
         {/**apply/go back to dashboard button */}
         <div
           className="
-        w-full flex gap-1 mx-auto justify-center"
+        w-full flex gap-3 mx-auto justify-center "
         >
           <a
             href={job.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="md:w-1/4
+            className="md:w-1/6
             w-1/2"
           >
             <Button className="w-full">Apply Now</Button>
           </a>
           <Link
             href="/jobs/dashboard"
-            className="md:w-1/4 
+            className="md:w-1/6 
           w-1/2"
           >
             <Button variant="outline" className="w-full">

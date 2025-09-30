@@ -27,7 +27,7 @@ export default function AddNoteButton({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={hasNote ? "noted" : "secondary"} className="w-full">
+        <Button variant={hasNote ? "noted" : "secondary"}>
           {hasNote ? "View Job Note" : "Add a Job Note"}
         </Button>
       </DialogTrigger>
@@ -46,7 +46,7 @@ export default function AddNoteButton({
           jobId={jobId}
           initialNote={currentNote}
           compact={true}
-          onNoteChange={(newNote) => setCurrentNote(newNote)} // 🔑 update parent state
+          onNoteChange={(newNote) => setCurrentNote(newNote)}
         />
       </DialogContent>
     </Dialog>
