@@ -49,7 +49,9 @@ export default function TargetJobTitle({
       toast.success(`Target job title set to: ${values.targetJobTitle}!`);
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to update job title");
+      toast.error("Failed to update job title", {
+        description: "Please try again later.",
+      });
     } finally {
       setUploading(false);
       setIsEditing(false);

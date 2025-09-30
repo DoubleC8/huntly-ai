@@ -1,24 +1,33 @@
 .
 ├── app
 │   ├── actions
-│   │   ├── setJobAsRejected.ts
-│   │   ├── setJobAsWishlist.ts
-│   │   ├── toggleWishlist.ts
-│   │   └── updateJobStage.ts
+│   │   ├── job-post
+│   │   │   ├── setJobAsRejected.ts
+│   │   │   ├── toggleWishlist.ts
+│   │   │   └── updateJobStage.ts
+│   │   ├── profile
+│   │   │   ├── delete
+│   │   │   │   ├── deleteUserEducation.ts
+│   │   │   │   ├── deleteUserJobPreference.ts
+│   │   │   │   └── deleteUserSkill.ts
+│   │   │   └── update
+│   │   │       ├── updateUserEducation.ts
+│   │   │       ├── updateUserInfo.ts
+│   │   │       ├── updateUserJobPreferences.ts
+│   │   │       └── updateUserSkills.ts
+│   │   └── resume
+│   │       ├── delete
+│   │       │   └── deleteUserResume.ts
+│   │       └── update
+│   │           └── updateUserResume.ts
 │   ├── api
 │   │   ├── auth
 │   │   │   └── [...nextauth]
 │   │   │       └── route.ts
-│   │   ├── jobs
-│   │   │   └── [id]
-│   │   │       └── note
-│   │   │           └── route.ts
-│   │   └── resumes
-│   │       ├── [id]
-│   │       │   ├── route.ts
-│   │       │   └── target-title
-│   │       │       └── route.ts
-│   │       └── route.ts
+│   │   └── jobs
+│   │       └── [id]
+│   │           └── note
+│   │               └── route.ts
 │   ├── constants
 │   │   └── jobStage.ts
 │   ├── favicon.ico
@@ -125,34 +134,60 @@
 │   │   └── style
 │   │       └── navbar.css
 │   ├── profile
-│   │   ├── JobPreferences.tsx
-│   │   └── JobsTable.tsx
+│   │   ├── applied-jobs
+│   │   │   ├── AppliedJobs.tsx
+│   │   │   └── JobsTable.tsx
+│   │   ├── education
+│   │   │   ├── DeleteEducationEntry.tsx
+│   │   │   ├── UserEducation.tsx
+│   │   │   ├── UserEducationCard.tsx
+│   │   │   └── UserEducationSidebar.tsx
+│   │   ├── job-preferences
+│   │   │   ├── DeleteJobPreference.tsx
+│   │   │   ├── UserJobPreferences.tsx
+│   │   │   └── UserJobPreferencesSidebar.tsx
+│   │   ├── skills
+│   │   │   ├── DeleteSkill.tsx
+│   │   │   ├── UserSkills.tsx
+│   │   │   └── UserSkillsSidebar.tsx
+│   │   ├── user-info
+│   │   │   ├── UserInfo.tsx
+│   │   │   └── UserInfoSidebar.tsx
+│   │   └── user-resume
+│   │       ├── DefaultResume.tsx
+│   │       └── UserResume.tsx
 │   ├── resume
-│   │   ├── DeleteResumeButton.tsx
-│   │   ├── ResumeDashboardClient.tsx
+│   │   ├── buttons
+│   │   │   ├── AddResumeButton.tsx
+│   │   │   ├── DeleteResumeButton.tsx
+│   │   │   └── MakeResumeDefaultButton.tsx
 │   │   ├── ResumeNavbar.tsx
 │   │   ├── ResumeTable.tsx
-│   │   ├── ResumeUploadClient.tsx
 │   │   └── TargetJobTitle.tsx
-│   └── ui
-│       ├── badge.tsx
-│       ├── button.tsx
-│       ├── card.tsx
-│       ├── carousel.tsx
-│       ├── chart.tsx
-│       ├── command.tsx
-│       ├── dialog.tsx
-│       ├── ErrorBoundary.tsx
-│       ├── form.tsx
-│       ├── input.tsx
-│       ├── label.tsx
-│       ├── popover.tsx
-│       ├── select.tsx
-│       ├── sheet.tsx
-│       ├── skeleton.tsx
-│       ├── sonner.tsx
-│       ├── table.tsx
-│       └── textarea.tsx
+│   ├── ui
+│   │   ├── badge.tsx
+│   │   ├── button.tsx
+│   │   ├── calendar.tsx
+│   │   ├── card.tsx
+│   │   ├── carousel.tsx
+│   │   ├── chart.tsx
+│   │   ├── checkbox.tsx
+│   │   ├── command.tsx
+│   │   ├── dialog.tsx
+│   │   ├── ErrorBoundary.tsx
+│   │   ├── form.tsx
+│   │   ├── input.tsx
+│   │   ├── label.tsx
+│   │   ├── pagination.tsx
+│   │   ├── popover.tsx
+│   │   ├── select.tsx
+│   │   ├── sheet.tsx
+│   │   ├── skeleton.tsx
+│   │   ├── sonner.tsx
+│   │   ├── table.tsx
+│   │   ├── TagsInput.tsx
+│   │   └── textarea.tsx
+│   └── UserInfoSideBar.tsx
 ├── components.json
 ├── eslint.config.mjs
 ├── hooks
@@ -160,6 +195,7 @@
 ├── lib
 │   ├── auth-actions.ts
 │   ├── date-utils.ts
+│   ├── phone-utils.ts
 │   ├── prisma.ts
 │   ├── supabase
 │   │   ├── client.ts
@@ -199,6 +235,16 @@
 │   │   │   └── migration.sql
 │   │   ├── 20250922012500_changed_decimal_back_to_number
 │   │   │   └── migration.sql
+│   │   ├── 20250923173346_added_personal_info_to_user
+│   │   │   └── migration.sql
+│   │   ├── 20250924181243_added_edu_model_and_added_it_to_user
+│   │   │   └── migration.sql
+│   │   ├── 20250927001027_add_compound_key_education
+│   │   │   └── migration.sql
+│   │   ├── 20250928202123_remove_jobtitle
+│   │   │   └── migration.sql
+│   │   ├── 20250928205603_remove_job_title_id
+│   │   │   └── migration.sql
 │   │   └── migration_lock.toml
 │   └── schema.prisma
 ├── public
@@ -216,4 +262,4 @@
 ├── tsconfig.json
 └── tsconfig.tsbuildinfo
 
-59 directories, 158 files
+75 directories, 188 files

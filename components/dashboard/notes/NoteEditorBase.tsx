@@ -1,141 +1,116 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { SquarePen } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { updateUserJobNote } from "@/app/actions/job-post/updateJob";
 
-export interface NoteEditorBaseProps {
-  jobId: string;
-  initialNote: string | null;
-  onFinish?: (updatedNote: string) => void;
-  compact?: boolean; // if true, simplifies UI for modals
-}
+const formSchema = z.object({
+  jobNote: z.string().max(1000).optional(),
+});
 
 export default function NoteEditorBase({
   jobId,
   initialNote,
-  onFinish,
-  compact = false,
-}: NoteEditorBaseProps) {
+  compact,
+}: {
+  jobId: string;
+  initialNote: string;
+  compact: boolean;
+}) {
   const [note, setNote] = useState(initialNote ?? "");
   const [editMode, setEditMode] = useState(!initialNote);
-  const [isPending, startTransition] = useTransition();
-  const [lastSavedNote, setLastSavedNote] = useState(initialNote ?? "");
 
-  const handleSave = () => {
-    if (note.length > 1000) {
-      toast.error("Note is too long", {
-        description: "Notes must be under 1000 characters.",
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { jobNote: note },
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      await updateUserJobNote({
+        jobNote: values.jobNote ?? "",
+        jobId,
       });
-      return;
-    }
-
-    if (note === lastSavedNote) {
+      setNote(values.jobNote ?? "");
+      toast.success("Job Note updated successfully!");
+    } catch (error) {
+      console.error("Form submission error", error);
+      toast.error("Failed to update job note.", {
+        description: "Please try again later.",
+      });
+    } finally {
       setEditMode(false);
-      onFinish?.(note);
-      return;
     }
-
-    startTransition(async () => {
-      try {
-        const res = await fetch(`/api/jobs/${jobId}/note`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ note }),
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          if (res.status === 400 && data?.issues?.note?._errors.length > 0) {
-            toast.error("Validation Error", {
-              description: data.issues.note._errors[0],
-            });
-          } else {
-            toast.error("Failed to update note.", {
-              description: data?.error || "Please try again later",
-            });
-          }
-          return;
-        }
-
-        toast.success("Note updated!");
-        setLastSavedNote(note);
-        setEditMode(false);
-        onFinish?.(note);
-      } catch (err) {
-        toast.error("Failed to update note.");
-      }
-    });
-  };
-
-  if (editMode) {
-    return (
-      <div className="flex flex-col gap-3 w-full">
-        <Textarea
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          onBlur={handleSave}
-          placeholder='e.g. "Follow up next week", "Tailor resume for a frontend role"...'
-          rows={4}
-          disabled={isPending}
-        />
-        <div
-          className={cn(
-            "text-xs text-right mt-1",
-            note.length > 1000 ? "text-destructive" : "text-muted-foreground"
-          )}
-        >
-          {note.length} / 1000
-        </div>
-        <div className="flex gap-3 items-center justify-center">
-          <Button onClick={handleSave} disabled={isPending}>
-            {isPending ? "Saving..." : "Save Note"}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setEditMode(false);
-              onFinish?.(note);
-            }}
-          >
-            Cancel
-          </Button>
-        </div>
-      </div>
-    );
   }
 
   return (
     <div className="flex flex-col gap-3">
-      {note ? (
+      {!editMode ? (
         <>
-          <p className="whitespace-pre-wrap border rounded-md p-3 text-sm bg-muted text-muted-foreground">
-            {note}
-          </p>
+          {note ? (
+            <p className="whitespace-pre-line">{note}</p>
+          ) : (
+            <p className="text-muted-foreground italic">No note yet.</p>
+          )}
           <Button
-            className={`${compact ? "w-full" : "md:w-1/4 w-1/2 mx-auto"}`}
+            variant="outline"
+            size={compact ? "sm" : "default"}
             onClick={() => setEditMode(true)}
           >
-            <SquarePen className="mr-2" />
-            Edit Note
+            {note ? "Edit Note" : "Add Note"}
           </Button>
         </>
       ) : (
-        <>
-          <p className="text-muted-foreground">
-            This space is looking a little empty… Jot down application tips,
-            follow-ups, or why this role stands out!
-          </p>
-          <Button
-            className={`${compact ? "w-full" : "md:w-1/4 w-1/2 mx-auto"}`}
-            onClick={() => setEditMode(true)}
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-3"
           >
-            Add Note
-          </Button>
-        </>
+            <FormField
+              control={form.control}
+              name="jobNote"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Textarea
+                      placeholder="E.G. 'Interview next week', 'Tailor Resume to better fit this position', etc.."
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Capture your thoughts on the job: key responsibilities,
+                    relevant skills, and specific aspects that interest you.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex gap-2">
+              <Button type="submit">Save Note</Button>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setEditMode(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </Form>
       )}
     </div>
   );

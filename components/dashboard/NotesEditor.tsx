@@ -25,7 +25,7 @@ export default function NotesButton({ jobId, initialNote }: NotesEditorProps) {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant={hasNote ? "noted" : "secondary"} className="w-full">
-          {hasNote ? "View Notes" : "Add Note"}
+          {hasNote ? "View Job Note" : "Add a Job Note"}
         </Button>
       </DialogTrigger>
 
@@ -35,16 +35,11 @@ export default function NotesButton({ jobId, initialNote }: NotesEditorProps) {
           <DialogDescription>
             {hasNote
               ? "You can update your note about this job anytime."
-              : "Jot down ideas, next steps, or reminders about this job. Notes are private and saved instantly."}
+              : "Notes are private and saved instantly."}
           </DialogDescription>
         </DialogHeader>
 
-        <NoteEditorBase
-          jobId={jobId}
-          initialNote={currentNote}
-          onFinish={(updatedNote) => setCurrentNote(updatedNote)}
-          compact
-        />
+        <NoteEditorBase jobId={jobId} initialNote={currentNote} compact />
       </DialogContent>
     </Dialog>
   );
