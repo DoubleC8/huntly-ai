@@ -9,14 +9,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import NoteEditorBase from "./notes/NoteEditorBase";
+import NoteEditorBase from "../notes/NoteEditorBase";
 
 interface NotesEditorProps {
   jobId: string;
   initialNote: string | null;
 }
 
-export default function NotesButton({ jobId, initialNote }: NotesEditorProps) {
+export default function AddNoteButton({
+  jobId,
+  initialNote,
+}: NotesEditorProps) {
   const [currentNote, setCurrentNote] = useState(initialNote ?? "");
 
   const hasNote = currentNote.trim() !== "";
@@ -42,7 +45,7 @@ export default function NotesButton({ jobId, initialNote }: NotesEditorProps) {
         <NoteEditorBase
           jobId={jobId}
           initialNote={currentNote}
-          compact
+          compact={true}
           onNoteChange={(newNote) => setCurrentNote(newNote)} // 🔑 update parent state
         />
       </DialogContent>

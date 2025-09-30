@@ -27,7 +27,7 @@ export default function NoteEditorBase({
   onNoteChange,
 }: {
   jobId: string;
-  initialNote: string;
+  initialNote: string | null;
   compact: boolean;
   onNoteChange?: (note: string) => void;
 }) {
@@ -35,7 +35,7 @@ export default function NoteEditorBase({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { jobNote: initialNote },
+    defaultValues: { jobNote: initialNote ?? "" },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -45,7 +45,7 @@ export default function NoteEditorBase({
         jobId,
       });
 
-      onNoteChange?.(values.jobNote ?? ""); // 🔑 update parent immediately
+      onNoteChange?.(values.jobNote ?? "");
       toast.success("Job Note saved!");
     } catch (error) {
       console.error("Form submission error", error);
@@ -58,15 +58,16 @@ export default function NoteEditorBase({
   }
 
   return !editMode ? (
-    <div className="flex flex-col gap-2">
-      <p className="whitespace-pre-line">
-        {initialNote || "No note yet. Click edit to add one."}
+    <div className="flex flex-col gap-3">
+      <p>
+        {initialNote || (
+          <span className="text-muted-foreground">
+            Looks pretty empty in here... Click 'Add Note' to capture your
+            initial thoughts.
+          </span>
+        )}
       </p>
-      <Button
-        variant="outline"
-        size={compact ? "sm" : "default"}
-        onClick={() => setEditMode(true)}
-      >
+      <Button onClick={() => setEditMode(true)}>
         {initialNote ? "Edit Note" : "Add Note"}
       </Button>
     </div>
@@ -88,14 +89,16 @@ export default function NoteEditorBase({
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                Capture your thoughts on the job.
+              <FormDescription className="text-center">
+                Use this space to track key information about the role,
+                including interview preparation, follow-up reminders, or
+                thoughts on salary and benefits.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <div className="flex gap-2">
+        <div className="flex gap-2 justify-center">
           <Button type="submit">Save</Button>
           <Button
             type="button"

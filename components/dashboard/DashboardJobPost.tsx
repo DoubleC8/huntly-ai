@@ -11,9 +11,9 @@ import { Job } from "@/app/generated/prisma";
 import { STAGE_COLORS, STAGE_LABELS } from "@/app/constants/jobStage";
 import Link from "next/link";
 import StarButton from "./buttons/StarButton";
-import NotesButton from "./NotesEditor";
 import { formatJobDate, formatSalary } from "@/lib/date-utils";
 import RejectedButton from "./buttons/RejectedButton";
+import AddNoteButton from "./buttons/AddNoteButton";
 
 export default function DashboardJobPost({ job }: { job: Job }) {
   return (
@@ -117,7 +117,7 @@ export default function DashboardJobPost({ job }: { job: Job }) {
               className="md:w-1/2 lg:w-1/4
             w-full"
             >
-              <NotesButton jobId={job.id} initialNote={job.note || ""} />
+              <AddNoteButton jobId={job.id} initialNote={job.note || ""} />
             </div>
             {/** view job button */}
             <Link
