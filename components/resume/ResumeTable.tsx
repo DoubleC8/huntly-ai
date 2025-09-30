@@ -10,12 +10,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDistanceToNow as formatFn } from "date-fns";
-import DeleteResumeButton from "./DeleteResumeButton";
+
 import { ExternalLink, HeartCrack, Star } from "lucide-react";
 import TargetJobTitle from "./TargetJobTitle";
 import { Card, CardContent, CardDescription, CardFooter } from "../ui/card";
-import AddResumeButton from "./AddResumeButton";
+import AddResumeButton from "./buttons/AddResumeButton";
 import ResumeNavbar from "./ResumeNavbar";
+import DeleteResumeButton from "./buttons/DeleteResumeButton";
+import MakeResumeDefaultButton from "./buttons/MakeResumeDefaultButton";
 
 export default function ResumeTable({
   resumes,
@@ -29,7 +31,7 @@ export default function ResumeTable({
       <div className="my-auto">
         <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
           <CardContent className="flex flex-col items-center gap-3">
-            <HeartCrack />
+            <HeartCrack className="text-[var(--app-red)]" />
             <p>No resumes uploaded yet</p>
             <CardDescription>
               Upload a resume to start applying for jobs and tracking your
@@ -82,32 +84,16 @@ export default function ResumeTable({
                   {/* Resume name + star */}
                   <TableCell className={isLast ? "rounded-bl-2xl" : ""}>
                     <div className="flex items-center gap-3">
-                      <button
-                        className="hover:cursor-pointer disabled:cursor-not-allowed"
-                        title={
-                          resume.isDefault
-                            ? "Already default"
-                            : "Set as default resume"
-                        }
-                      >
-                        {resume.isDefault ? (
-                          <Star
-                            fill="yellow"
-                            className="text-[var(--app-yellow)]"
-                          />
-                        ) : (
-                          <Star className="hover:text-[var(--app-yellow)]" />
-                        )}
-                      </button>
+                      <MakeResumeDefaultButton resume={resume} />
                       {resume.isDefault ? (
                         <p>
                           {resume.fileName.split(".")[0]}{" "}
-                          <span className="hidden md:inline-block text-[var(--app-blue)]">
+                          <span className="text-[var(--app-blue)]">
                             (Default)
                           </span>
                         </p>
                       ) : (
-                        <p>{resume.fileName.split(".")[0]}</p>
+                        <p> {resume.fileName.split(".")[0]}</p>
                       )}
                     </div>
                   </TableCell>

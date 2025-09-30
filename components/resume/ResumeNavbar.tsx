@@ -1,5 +1,5 @@
 import { PartyPopper } from "lucide-react";
-import AddResumeButton from "./AddResumeButton";
+import AddResumeButton from "./buttons/AddResumeButton";
 
 export default function ResumeNavbar({
   email,

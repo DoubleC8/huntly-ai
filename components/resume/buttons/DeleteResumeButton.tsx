@@ -9,11 +9,11 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "../ui/button";
 import { useState } from "react";
 import { Resume } from "@/app/generated/prisma";
 import { toast } from "sonner";
 import { deleteUserResume } from "@/app/actions/resume/delete/deleteUserResume";
+import { Button } from "@/components/ui/button";
 
 export default function DeleteResumeButton({ resume }: { resume: Resume }) {
   const { id, publicUrl } = resume;
@@ -24,7 +24,6 @@ export default function DeleteResumeButton({ resume }: { resume: Resume }) {
     if (!resume) {
       return;
     }
-
     setDeleting(true);
 
     try {

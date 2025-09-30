@@ -4,7 +4,6 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-
 export async function updateUserResume({
   resumeUrl,
   fileName,
@@ -54,6 +53,39 @@ export async function updateUserResumeJobTitle(values: {
       targetJobTitle: values.targetJobTitle
     }
   })
+
+  revalidatePath("/jobs/resume");
+  return updatedResume;
+}
+
+export async function makeResumeDefault( id: string ){
+  const session = await auth();
+  if (!session?.user?.email) { throw new Error("Unauthorized"); }
+
+  const resume = await prisma.resume.findUnique({ where: { id: id }});
+  if(!resume) {throw new Error("Resume not found")}
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    select: { id: true }
+  })
+
+  if (!user || resume.userId !== user.id) {
+    throw new Error("Forbidden");
+  }
+
+  await prisma.resume.updateMany({
+    where: { userId: user.id },
+    data: { isDefault: false },
+  })
+
+
+  const updatedResume = await prisma.resume.update({
+    where: { id: id },
+    data: {
+      isDefault: true
+    }
+  });
 
   revalidatePath("/jobs/resume");
   return updatedResume;

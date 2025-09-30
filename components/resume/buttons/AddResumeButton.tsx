@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "../ui/label";
+import { Label } from "../../ui/label";
 import {
   FileText,
   LoaderCircle,
@@ -128,16 +128,16 @@ export default function AddResumeButton({
 
       <DialogContent className="md:min-w-1/2 sm:max-w-md rounded-xl shadow-md flex flex-col justify-between">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center">
-            Upload Your Resume
+          <DialogTitle className="font-semibold text-center">
+            Upload your Resume
           </DialogTitle>
-          <DialogDescription className="text-center font-semibold flex items-center justify-center gap-1 text-muted-foreground">
+          <DialogDescription className="text-center flex items-center justify-center gap-1 text-muted-foreground">
             Watch the magic happen <WandSparkles size={14} />
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col items-center gap-4">
-          <FileText size={55} />
+          <FileText size={55} className="text-[var(--app-blue)]" />
           <div className="w-full space-y-2">
             <Label htmlFor="resume-upload">Select PDF</Label>
             <Input

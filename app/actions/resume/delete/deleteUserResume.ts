@@ -7,9 +7,7 @@ import { revalidatePath } from "next/cache";
 
 export async function deleteUserResume(id: string, filePath: string) {
   const session = await auth();
-  if (!session?.user?.email) {
-    throw new Error("Unauthorized");
-  }
+  if (!session?.user?.email) { throw new Error("Unauthorized"); }
 
   // 1. Delete from Supabase Storage
   const supabase = createClient();

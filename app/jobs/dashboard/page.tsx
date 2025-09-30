@@ -108,7 +108,7 @@ export default async function DashboardPage({
           <div className="my-auto">
             <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
               <CardContent className="flex flex-col items-center gap-3">
-                <Frown />
+                <Frown className="text-[var(--app-blue)]" />
                 <p>No Recommended Jobs Yet?</p>
                 <CardDescription>
                   Try Adding your Resume and Check Back Later!
