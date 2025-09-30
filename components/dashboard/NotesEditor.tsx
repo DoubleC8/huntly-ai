@@ -39,7 +39,12 @@ export default function NotesButton({ jobId, initialNote }: NotesEditorProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <NoteEditorBase jobId={jobId} initialNote={currentNote} compact />
+        <NoteEditorBase
+          jobId={jobId}
+          initialNote={currentNote}
+          compact
+          onNoteChange={(newNote) => setCurrentNote(newNote)} // 🔑 update parent state
+        />
       </DialogContent>
     </Dialog>
   );

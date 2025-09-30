@@ -32,4 +32,5 @@ export async function updateUserJobNote(values: {
 
     revalidatePath("/jobs/dashboard");
     revalidatePath(`/jobs/dashboard/${values.jobId}`)
+    return updatedJob;
 }
