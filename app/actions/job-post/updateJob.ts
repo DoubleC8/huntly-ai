@@ -25,6 +25,10 @@ export async function updateUserJobNote(values: {
         throw new Error("Forbidden");
     }
 
+    if(values.jobNote.trim().length > 1000){
+        throw new Error("Note too long");
+    }
+
     const updatedJob = await prisma.job.update({
         where: {id: values.jobId },
         data: { note: values.jobNote }
@@ -32,5 +36,5 @@ export async function updateUserJobNote(values: {
 
     revalidatePath("/jobs/dashboard");
     revalidatePath(`/jobs/dashboard/${values.jobId}`)
-    return updatedJob;
+    return updatedJob.note;
 }

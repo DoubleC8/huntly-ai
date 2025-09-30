@@ -20,28 +20,29 @@ import { LoaderCircle, Plus, SquarePen } from "lucide-react";
 const formSchema = z.object({
   jobNote: z
     .string()
-    .min(5, "Note must be atleast 5 characters long.")
-    .max(1000)
+    .min(5, "Error: Note must be atleast 5 characters long.")
+    .max(1000, "Error: Note must be under 1000 characters long.")
     .optional(),
 });
 
 export default function NoteEditorBase({
   jobId,
-  initialNote,
+  note,
   compact,
   onNoteChange,
 }: {
   jobId: string;
-  initialNote: string | null;
+  note: string;
   compact: boolean;
   onNoteChange?: (note: string) => void;
 }) {
   const [uploading, setUploading] = useState(false);
-  const [editMode, setEditMode] = useState(!initialNote);
+  const [editMode, setEditMode] = useState(!note);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { jobNote: initialNote ?? "" },
+    defaultValues: { jobNote: note },
+    values: { jobNote: note },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -67,7 +68,7 @@ export default function NoteEditorBase({
 
   return !editMode ? (
     <div className="flex flex-col gap-3">
-      <p>{initialNote}</p>
+      <p>{form.watch("jobNote") || "No note yet"}</p>
       <Button
         onClick={() => setEditMode(true)}
         className={compact ? "w-1/2 mx-auto" : "w-1/6 mx-auto"}
@@ -96,9 +97,20 @@ export default function NoteEditorBase({
                   {...field}
                 />
               </FormControl>
-              <FormDescription className="text-center">
-                Use this space to track key information about the role.
-              </FormDescription>
+              <div className="flex items-center justify-between">
+                <FormDescription>
+                  Use this space to track key information about the role.
+                </FormDescription>
+                <p
+                  className={
+                    (form.watch("jobNote")?.length ?? 0) > 1000
+                      ? "text-[var(--app-red)] text-sm"
+                      : "text-muted-foreground text-sm"
+                  }
+                >
+                  {form.watch("jobNote")?.length ?? 0}/1000
+                </p>
+              </div>
               <FormMessage />
             </FormItem>
           )}
@@ -110,7 +122,7 @@ export default function NoteEditorBase({
             ) : (
               <Plus className="mr-1" />
             )}
-            {uploading ? "Adding Note..." : "Add Note"}
+            {uploading ? "Saving..." : note ? "Update Note" : "Add Note"}
           </Button>
           <Button
             type="button"

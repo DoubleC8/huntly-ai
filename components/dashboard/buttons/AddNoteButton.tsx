@@ -44,9 +44,9 @@ export default function AddNoteButton({
 
         <NoteEditorBase
           jobId={jobId}
-          initialNote={currentNote}
+          note={currentNote}
           compact={true}
-          onNoteChange={(newNote) => setCurrentNote(newNote)}
+          onNoteChange={setCurrentNote}
         />
       </DialogContent>
     </Dialog>
