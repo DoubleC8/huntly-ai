@@ -5,9 +5,7 @@ import { Ghost, HeartCrack, LoaderCircle } from "lucide-react";
 import { JobStage } from "@/app/generated/prisma";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -29,12 +27,12 @@ export default function RejectedButton({
   const handleReject = () => {
     startTransition(async () => {
       try {
-        const updatedJob = await setJobAsRejected(jobId);
+        await setJobAsRejected(jobId);
         toast.success("Job has been masked as Rejected.", {
           description:
             "This job has been removed from your active applications.",
         });
-      } catch (error) {
+      } catch {
         toast.error("Failed to add job to rejected list.", {
           description: "Please try again later.",
         });

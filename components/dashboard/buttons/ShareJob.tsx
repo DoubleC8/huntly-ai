@@ -10,7 +10,7 @@ export default function ShareJobButton({
 }: {
   jobSourceUrl: string;
 }) {
-  const [isCopied, setIsCopied] = useState(false);
+  const [, setIsCopied] = useState(false);
 
   const handleCopy = async () => {
     try {

@@ -22,7 +22,7 @@ export default function JobColumn({
 }) {
   const Icon = icon;
 
-  const { setNodeRef, isOver } = useDroppable({
+  const { setNodeRef } = useDroppable({
     id: id.toUpperCase(),
   });
 

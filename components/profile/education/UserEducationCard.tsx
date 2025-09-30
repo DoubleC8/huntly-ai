@@ -1,7 +1,7 @@
 import { Education } from "@/app/generated/prisma";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
-import { PenSquare, School } from "lucide-react";
+import { School } from "lucide-react";
 import DeleteEducationEntry from "./DeleteEducationEntry";
 import { format } from "date-fns";
 import UserEducationSidebar from "./UserEducationSidebar";

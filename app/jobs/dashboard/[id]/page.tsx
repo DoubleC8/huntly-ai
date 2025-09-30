@@ -179,8 +179,8 @@ export default async function Page({ params }: PageProps) {
             <p>{job.description}</p>
           ) : (
             <p className="text-muted-foreground">
-              Our AI is still hasn't gotten the jobs description, try checking
-              back later!
+              Our AI is still hasn&apos;t gotten the jobs description, try
+              checking back later!
             </p>
           )}
         </div>

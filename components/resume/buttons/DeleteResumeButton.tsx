@@ -30,7 +30,7 @@ export default function DeleteResumeButton({ resume }: { resume: Resume }) {
       const filePath = publicUrl.split("/resumes/")[1];
       await deleteUserResume(id, filePath);
       toast.success("Resume deleted!");
-    } catch (err) {
+    } catch {
       toast.error("Failed to delete resume");
     } finally {
       setDeleting(false);

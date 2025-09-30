@@ -7,5 +7,7 @@ export default function JobPageNotes({
   jobId: string;
   initialNote: string | null;
 }) {
-  return <NoteEditorBase jobId={jobId} initialNote={initialNote} />;
+  return (
+    <NoteEditorBase jobId={jobId} note={initialNote ?? ""} compact={false} />
+  );
 }

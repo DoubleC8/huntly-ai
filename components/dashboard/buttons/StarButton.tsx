@@ -28,7 +28,7 @@ export default function StarButton({
             ? "Job added to Wishlist!"
             : "Job removed from Wishlist."
         );
-      } catch (error) {
+      } catch {
         setIsWishlisted((prev) => !prev);
         toast.error("Failed to toggle wishlist.", {
           description: "Please try again later.",

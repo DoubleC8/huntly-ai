@@ -49,7 +49,7 @@ export default function AppTrackerColumns({
     }
 
     // Skip if dropped into same column
-    const sourceStage = Object.entries(columns).find(([_, jobs]) =>
+    const sourceStage = Object.entries(columns).find(([, jobs]) =>
       jobs.find((j) => j.id === jobId)
     )?.[0] as JobStage;
 
@@ -76,7 +76,7 @@ export default function AppTrackerColumns({
           description: "Congrats!",
         }
       );
-    } catch (err) {
+    } catch {
       toast.error("Failed to update job stage. Reverting...");
 
       setColumns((prev) => {

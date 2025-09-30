@@ -1,7 +1,6 @@
 import { auth } from "@/auth";
 import ResumeTable from "@/components/resume/ResumeTable";
 import { prisma } from "@/lib/prisma";
-import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 
 export default async function ResumePage() {
   const session = await auth();

@@ -26,12 +26,12 @@ export function ResumeMatchScore({ matchScore }: ResumeMatchScoreProps) {
   const matchMessage =
     score >= 80 ? "Great Match" : score >= 50 ? "Decent Match" : "Needs Work";
 
-  const matchSuggestion =
-    score >= 80
-      ? "Looks strong! Your resume aligns well with this role."
-      : score >= 50
-      ? "You might want to tweak your summary or highlight relevant skills."
-      : "Try tailoring your resume to better match the job description.";
+  // const matchSuggestion =
+  //   score >= 80
+  //     ? "Looks strong! Your resume aligns well with this role."
+  //     : score >= 50
+  //     ? "You might want to tweak your summary or highlight relevant skills."
+  //     : "Try tailoring your resume to better match the job description.";
 
   const chartData = [
     {

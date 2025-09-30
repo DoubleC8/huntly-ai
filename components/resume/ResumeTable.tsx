@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { formatDistanceToNow as formatFn } from "date-fns";
 
-import { ExternalLink, HeartCrack, Star } from "lucide-react";
+import { ExternalLink, HeartCrack } from "lucide-react";
 import TargetJobTitle from "./TargetJobTitle";
 import { Card, CardContent, CardDescription, CardFooter } from "../ui/card";
 import AddResumeButton from "./buttons/AddResumeButton";

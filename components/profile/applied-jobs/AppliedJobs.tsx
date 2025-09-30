@@ -11,13 +11,13 @@ export default function AppliedJobs({ jobs }: { jobs: Job[] }) {
           <JobsTable jobs={jobs} />
           {jobs.length > 1 ? (
             <p className="text-muted-foreground text-center">
-              You've applied to{" "}
+              You&apos;ve applied to{" "}
               <strong className="text-[var(--app-blue)]">{jobs.length}</strong>{" "}
               jobs so far! Congrats!
             </p>
           ) : (
             <p className="text-muted-foreground text-center">
-              You've applied to{" "}
+              You&apos;ve applied to{" "}
               <strong className="text-[var(--app-blue)]">{jobs.length}</strong>{" "}
               job so far! Congrats! Keep Going!
             </p>

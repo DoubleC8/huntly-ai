@@ -1,7 +1,6 @@
 "use client";
 
 import { Star } from "lucide-react";
-import { useState } from "react";
 import { Resume } from "@/app/generated/prisma";
 import { toast } from "sonner";
 import { makeResumeDefault } from "@/app/actions/resume/update/updateUserResume";
@@ -21,7 +20,7 @@ export default function MakeResumeDefaultButton({
       toast.success(`${resume.fileName.split(".")[0]} set as Default Resume.`, {
         description: "This resume will be used to get your match score.",
       });
-    } catch (err) {
+    } catch {
       toast.error(
         `Failed to make ${
           resume.fileName.split(".")[0]

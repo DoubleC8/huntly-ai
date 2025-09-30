@@ -79,7 +79,7 @@ export default function AddResumeButton({
         toast.error("URL generation failed");
         return;
       }
-      const newResume = await updateUserResume({
+      await updateUserResume({
         resumeUrl: publicUrl,
         fileName: file.name,
       });

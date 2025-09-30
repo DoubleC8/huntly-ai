@@ -36,7 +36,7 @@ export async function updateUserArrayEntry(
 
   if (!user) throw new Error("User not found");
 
-  const currentValues = (user as any)[field] as string[];
+  const currentValues = (user as Record<string, unknown>)[field] as string[];
   let updatedValues: string[];
 
   switch (mode) {

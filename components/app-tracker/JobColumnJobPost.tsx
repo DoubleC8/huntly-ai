@@ -51,7 +51,7 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
         window.location.reload();
       }, 3000);
       return () => clearTimeout(timer);
-    } catch (err) {
+    } catch {
       toast.error("Failed to update job stage.");
     }
   };
