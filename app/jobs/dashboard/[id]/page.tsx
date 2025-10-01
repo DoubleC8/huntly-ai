@@ -26,6 +26,7 @@ import RejectedButton from "@/components/dashboard/buttons/RejectedButton";
 import { STAGE_ORDER } from "@/app/constants/jobStage";
 import InterviewingButton from "@/components/dashboard/buttons/InterviewingButton";
 import OfferedPostitionButton from "@/components/dashboard/buttons/OfferedPositionButon";
+import { JobStage } from "@/app/generated/prisma";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -82,7 +83,27 @@ export default async function Page({ params }: PageProps) {
 
   const applied =
     job.stage === null ||
-    STAGE_ORDER.indexOf(job.stage) <= STAGE_ORDER.indexOf("APPLIED");
+    STAGE_ORDER.indexOf(job.stage) >= STAGE_ORDER.indexOf("APPLIED");
+
+  let message: string;
+
+  switch (job.stage) {
+    case JobStage.WISHLIST:
+      message = "You have Wishlisted this Job.";
+      break;
+    case JobStage.APPLIED:
+      message = "You have Applied for this Job.";
+      break;
+    case JobStage.INTERVIEW:
+      message = "You are currently Interviewing for this Job.";
+      break;
+    case JobStage.OFFER:
+      message =
+        "You have have been offered a position at this company. Go Celebrate!";
+      break;
+    default:
+      message = "Try applying to this job today!";
+  }
 
   return (
     <div className="pageContainer">
@@ -98,6 +119,8 @@ export default async function Page({ params }: PageProps) {
             jobStage={job.stage}
           />
         </div>
+
+        {/**job stage buttons */}
         <div className="flex items-center gap-3">
           <StarButton
             jobTitle={job.title}
@@ -336,13 +359,7 @@ export default async function Page({ params }: PageProps) {
               </Button>
             </Link>
           </div>
-          <p className="text-muted-foreground text-center">
-            {applied
-              ? "You have already Applied for this Job."
-              : job.stage === "REJECTED"
-              ? "You have marked this job as rejected."
-              : ""}
-          </p>
+          <p className="text-muted-foreground text-center">{message}</p>
         </div>
       </div>
     </div>
