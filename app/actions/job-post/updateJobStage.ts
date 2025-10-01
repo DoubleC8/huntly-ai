@@ -4,6 +4,7 @@ import {auth} from "@/auth"
 import { prisma } from '@/lib/prisma';
 import { JobStage } from '@/app/generated/prisma';
 import { revalidatePath } from 'next/cache';
+import { validateJobOwnership } from "@/lib/utils";
 
 export async function updateJobStage(jobId: string, newStage: JobStage){
     const session = await auth();
@@ -40,7 +41,27 @@ export async function updateJobStage(jobId: string, newStage: JobStage){
     })
 
     //this keeps our data fresh, so that the user can see the change in real time
-    revalidatePath('/jobs/app-tracker');
+    revalidatePath("/jobs/app-tracker");
+    revalidatePath("/jobs/dashboard");
+    revalidatePath(`/jobs/dashboard/${jobId}`);
 
     return updated;
+}
+
+export async function setJobAsRejected(jobId: string) {
+  const session = await auth();
+  if (!session?.user?.email) throw new Error("Unauthorized");
+
+  await validateJobOwnership(jobId, session.user.email);
+
+  return updateJobStage(jobId, JobStage.REJECTED);
+}
+
+export async function setJobAsApplied(jobId: string){
+    const session = await auth();
+     if (!session?.user?.email) throw new Error("Unauthorized");
+
+     await validateJobOwnership(jobId, session.user.email);
+
+     return updateJobStage(jobId, JobStage.APPLIED);
 }

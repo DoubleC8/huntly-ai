@@ -7,9 +7,13 @@ import { Star } from "lucide-react";
 import { JobStage } from "@/app/generated/prisma";
 
 export default function StarButton({
+  jobTitle,
+  jobCompany,
   jobId,
   jobStage,
 }: {
+  jobTitle: string;
+  jobCompany: string;
   jobId: string;
   jobStage: JobStage | null;
 }) {
@@ -25,8 +29,8 @@ export default function StarButton({
         setIsWishlisted(updatedJob.stage === "WISHLIST");
         toast.success(
           updatedJob.stage === "WISHLIST"
-            ? "Job added to Wishlist!"
-            : "Job removed from Wishlist."
+            ? `${jobTitle} at ${jobCompany} added to Wishlist!`
+            : `${jobTitle} at ${jobCompany} removed from Wishlist.`
         );
       } catch {
         setIsWishlisted((prev) => !prev);
@@ -38,11 +42,11 @@ export default function StarButton({
   };
 
   // Only show star if job is not yet applied or earlier
-  const showStar =
+  const showButton =
     jobStage === null ||
     STAGE_ORDER.indexOf(jobStage) < STAGE_ORDER.indexOf("APPLIED");
 
-  if (!showStar) return null;
+  if (!showButton) return null;
 
   return jobStage === null ||
     STAGE_ORDER.indexOf(jobStage) < STAGE_ORDER.indexOf("APPLIED") ? (
@@ -58,7 +62,7 @@ export default function StarButton({
           className="text-[var(--app-yellow)] hover:cursor-pointer ease-in-out duration-200"
         />
       ) : (
-        <Star className="hover:text-[var(--app-yellow)] hover:cursor-pointer ease-in-out duration-200" />
+        <Star className="text-muted-foreground ease-in-out duration-200 hover:text-[var(--app-yellow)] hover:cursor-pointer" />
       )}
     </button>
   ) : null;

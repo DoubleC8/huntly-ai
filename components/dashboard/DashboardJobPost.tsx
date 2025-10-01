@@ -14,6 +14,7 @@ import StarButton from "./buttons/StarButton";
 import { formatJobDate, formatSalary } from "@/lib/date-utils";
 import RejectedButton from "./buttons/RejectedButton";
 import AddNoteButton from "./buttons/AddNoteButton";
+import AppliedButton from "./buttons/AppliedButton";
 
 export default function DashboardJobPost({ job }: { job: Job }) {
   return (
@@ -66,8 +67,26 @@ export default function DashboardJobPost({ job }: { job: Job }) {
               )}
             </div>
           </div>
-          <StarButton jobId={job.id} jobStage={job.stage} />
-          <RejectedButton jobId={job.id} jobStage={job.stage} />
+          <div className="flex items-center gap-3">
+            <StarButton
+              jobTitle={job.title}
+              jobCompany={job.company}
+              jobId={job.id}
+              jobStage={job.stage}
+            />
+            <AppliedButton
+              jobTitle={job.title}
+              jobCompany={job.company}
+              jobId={job.id}
+              jobStage={job.stage}
+            />
+            <RejectedButton
+              jobTitle={job.title}
+              jobCompany={job.company}
+              jobId={job.id}
+              jobStage={job.stage}
+            />
+          </div>
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-1">

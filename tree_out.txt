@@ -4,6 +4,7 @@
 │   │   ├── job-post
 │   │   │   ├── setJobAsRejected.ts
 │   │   │   ├── toggleWishlist.ts
+│   │   │   ├── updateJob.ts
 │   │   │   └── updateJobStage.ts
 │   │   ├── profile
 │   │   │   ├── delete
@@ -21,13 +22,9 @@
 │   │       └── update
 │   │           └── updateUserResume.ts
 │   ├── api
-│   │   ├── auth
-│   │   │   └── [...nextauth]
-│   │   │       └── route.ts
-│   │   └── jobs
-│   │       └── [id]
-│   │           └── note
-│   │               └── route.ts
+│   │   └── auth
+│   │       └── [...nextauth]
+│   │           └── route.ts
 │   ├── constants
 │   │   └── jobStage.ts
 │   ├── favicon.ico
@@ -104,6 +101,8 @@
 │   │   └── JobColumnJobPost.tsx
 │   ├── dashboard
 │   │   ├── buttons
+│   │   │   ├── AddNoteButton.tsx
+│   │   │   ├── AppliedButton.tsx
 │   │   │   ├── RejectedButton.tsx
 │   │   │   ├── ShareJob.tsx
 │   │   │   └── StarButton.tsx
@@ -115,7 +114,6 @@
 │   │   ├── JobPageNotes.tsx
 │   │   ├── notes
 │   │   │   └── NoteEditorBase.tsx
-│   │   ├── NotesEditor.tsx
 │   │   └── RecommendedJobs.tsx
 │   ├── landing
 │   │   ├── Footer.tsx
@@ -202,8 +200,6 @@
 │   │   └── server.ts
 │   ├── utils.ts
 │   └── validations
-│       ├── dashboard.tsx
-│       ├── jobNotes.ts
 │       └── resume.ts
 ├── middleware.ts
 ├── next-env.d.ts
@@ -262,4 +258,4 @@
 ├── tsconfig.json
 └── tsconfig.tsbuildinfo
 
-75 directories, 188 files
+72 directories, 187 files

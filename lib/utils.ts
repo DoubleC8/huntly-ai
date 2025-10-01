@@ -65,3 +65,13 @@ export async function updateUserArrayEntry(
 
   return updatedUser[field] as string[];
 }
+
+export async function validateJobOwnership(jobId: string, userEmail: string){
+  const user = await prisma.user.findUnique({ where: { email: userEmail } });
+  if (!user) throw new Error("User not found");
+
+  const job = await prisma.job.findUnique({where: { id: jobId }});
+  if(!job || job.userId !== user.id) throw new Error("Unauthorized job access");
+
+  return job;
+}

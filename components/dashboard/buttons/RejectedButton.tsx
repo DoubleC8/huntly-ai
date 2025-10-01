@@ -1,7 +1,7 @@
 "use client";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { Ghost, HeartCrack, LoaderCircle } from "lucide-react";
+import { HeartCrack, LoaderCircle, Trash2 } from "lucide-react";
 import { JobStage } from "@/app/generated/prisma";
 import {
   Dialog,
@@ -12,13 +12,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { setJobAsRejected } from "@/app/actions/job-post/setJobAsRejected";
+
 import { STAGE_ORDER } from "@/app/constants/jobStage";
+import { setJobAsRejected } from "@/app/actions/job-post/updateJobStage";
 
 export default function RejectedButton({
+  jobTitle,
+  jobCompany,
   jobId,
   jobStage,
 }: {
+  jobTitle: string;
+  jobCompany: string;
   jobId: string;
   jobStage: JobStage | null;
 }) {
@@ -28,10 +33,13 @@ export default function RejectedButton({
     startTransition(async () => {
       try {
         await setJobAsRejected(jobId);
-        toast.success("Job has been masked as Rejected.", {
-          description:
-            "This job has been removed from your active applications.",
-        });
+        toast.success(
+          `${jobTitle} at ${jobCompany} has been marked as rejected.`,
+          {
+            description:
+              "This job has been removed from your active applications.",
+          }
+        );
       } catch {
         toast.error("Failed to add job to rejected list.", {
           description: "Please try again later.",
@@ -40,17 +48,17 @@ export default function RejectedButton({
     });
   };
 
-  const showGhost =
+  const showButton =
     jobStage === null ||
     STAGE_ORDER.indexOf("APPLIED") <= STAGE_ORDER.indexOf(jobStage);
 
-  if (!showGhost) return null;
+  if (!showButton) return null;
 
   return jobStage === null ||
     STAGE_ORDER.indexOf("APPLIED") <= STAGE_ORDER.indexOf(jobStage) ? (
     <Dialog>
-      <DialogTrigger asChild title="Mark Job as Rejected">
-        <Ghost className="text-muted-foreground ease-in-out duration-200 hover:text-[var(--app-red)] hover:cursor-pointer" />
+      <DialogTrigger asChild title="Mark Job as rejected">
+        <Trash2 className="text-muted-foreground ease-in-out duration-200 hover:text-[var(--app-red)] hover:cursor-pointer" />
       </DialogTrigger>
 
       <DialogContent>

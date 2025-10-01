@@ -21,6 +21,9 @@ import StarButton from "@/components/dashboard/buttons/StarButton";
 import JobPageNotes from "@/components/dashboard/JobPageNotes";
 import { ResumeMatchScore } from "@/components/dashboard/charts/ResumeMatchScore";
 import { Badge } from "@/components/ui/badge";
+import AppliedButton from "@/components/dashboard/buttons/AppliedButton";
+import RejectedButton from "@/components/dashboard/buttons/RejectedButton";
+import { STAGE_ORDER } from "@/app/constants/jobStage";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -75,17 +78,46 @@ export default async function Page({ params }: PageProps) {
     );
   }
 
+  const applied =
+    job.stage === null ||
+    STAGE_ORDER.indexOf(job.stage) <= STAGE_ORDER.indexOf("APPLIED");
+
   return (
     <div className="pageContainer">
       <div
-        className="md:justify-end
+        className="md:justify-between
       flex w-full gap-3 items-center justify-center"
       >
-        <StarButton jobId={job.id} jobStage={job.stage} />
-        <ShareJobButton jobSourceUrl={job?.sourceUrl} />
-        <a target="_blank" href={`${job.sourceUrl}`} rel="noopener noreferrer">
-          <Button className="w-40">Apply Now</Button>
-        </a>
+        <div>
+          <RejectedButton
+            jobTitle={job.title}
+            jobCompany={job.company}
+            jobId={job.id}
+            jobStage={job.stage}
+          />
+        </div>
+        <div className="flex items-center gap-3">
+          <StarButton
+            jobTitle={job.title}
+            jobCompany={job.company}
+            jobId={job.id}
+            jobStage={job.stage}
+          />
+          <AppliedButton
+            jobTitle={job.title}
+            jobCompany={job.company}
+            jobId={job.id}
+            jobStage={job.stage}
+          />
+          <ShareJobButton jobSourceUrl={job?.sourceUrl} />
+          <a
+            target="_blank"
+            href={`${job.sourceUrl}`}
+            rel="noopener noreferrer"
+          >
+            <Button className="w-40">Apply Now</Button>
+          </a>
+        </div>
       </div>
       <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-3 flex flex-col gap-3 justify-between">
         {/**header */}
@@ -179,8 +211,8 @@ export default async function Page({ params }: PageProps) {
             <p>{job.description}</p>
           ) : (
             <p className="text-muted-foreground">
-              Our AI is still hasn&apos;t gotten the jobs description, try
-              checking back later!
+              Our AI is still hasnt gotten the jobs description, try checking
+              back later!
             </p>
           )}
         </div>
@@ -267,28 +299,36 @@ export default async function Page({ params }: PageProps) {
           <JobPageNotes jobId={job.id} initialNote={job.note} />
         </div>
         {/**apply/go back to dashboard button */}
-        <div
-          className="
-        w-full flex gap-3 mx-auto justify-center "
-        >
-          <a
-            href={job.sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="md:w-1/6
+        <div className="w-full flex flex-col justify-center gap-3">
+          <div className="w-full flex gap-3 mx-auto justify-center ">
+            <a
+              href={job.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="md:w-1/6
             w-1/2"
-          >
-            <Button className="w-full">Apply Now</Button>
-          </a>
-          <Link
-            href="/jobs/dashboard"
-            className="md:w-1/6 
+            >
+              <Button className="w-full">
+                {applied ? "View Job" : "Apply Now"}
+              </Button>
+            </a>
+            <Link
+              href="/jobs/dashboard"
+              className="md:w-1/6 
           w-1/2"
-          >
-            <Button variant="outline" className="w-full">
-              Back to Dashboard
-            </Button>
-          </Link>
+            >
+              <Button variant="outline" className="w-full">
+                Back to Dashboard
+              </Button>
+            </Link>
+          </div>
+          <p className="text-muted-foreground text-center">
+            {applied
+              ? "You have already Applied for this Job."
+              : job.stage === "REJECTED"
+              ? "You have marked this job as rejected."
+              : ""}
+          </p>
         </div>
       </div>
     </div>

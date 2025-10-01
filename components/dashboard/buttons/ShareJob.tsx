@@ -14,11 +14,13 @@ export default function ShareJobButton({
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(jobSourceUrl);
+      await navigator.clipboard.writeText(
+        "Check out this job I just found: " + jobSourceUrl
+      );
       setIsCopied(true);
 
       toast.success("Job link copied!", {
-        description: "Now go share it with your friends",
+        description: "Now go share it with your friends!",
       });
 
       setTimeout(() => setIsCopied(false), 3000);
