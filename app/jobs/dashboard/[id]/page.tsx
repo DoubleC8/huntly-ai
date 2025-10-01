@@ -24,6 +24,8 @@ import { Badge } from "@/components/ui/badge";
 import AppliedButton from "@/components/dashboard/buttons/AppliedButton";
 import RejectedButton from "@/components/dashboard/buttons/RejectedButton";
 import { STAGE_ORDER } from "@/app/constants/jobStage";
+import InterviewingButton from "@/components/dashboard/buttons/InterviewingButton";
+import OfferedPostitionButton from "@/components/dashboard/buttons/OfferedPositionButon";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -104,6 +106,18 @@ export default async function Page({ params }: PageProps) {
             jobStage={job.stage}
           />
           <AppliedButton
+            jobTitle={job.title}
+            jobCompany={job.company}
+            jobId={job.id}
+            jobStage={job.stage}
+          />
+          <InterviewingButton
+            jobTitle={job.title}
+            jobCompany={job.company}
+            jobId={job.id}
+            jobStage={job.stage}
+          />
+          <OfferedPostitionButton
             jobTitle={job.title}
             jobCompany={job.company}
             jobId={job.id}

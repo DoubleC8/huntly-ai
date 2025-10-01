@@ -15,6 +15,8 @@ import { formatJobDate, formatSalary } from "@/lib/date-utils";
 import RejectedButton from "./buttons/RejectedButton";
 import AddNoteButton from "./buttons/AddNoteButton";
 import AppliedButton from "./buttons/AppliedButton";
+import InterviewingButton from "./buttons/InterviewingButton";
+import OfferedPostitionButton from "./buttons/OfferedPositionButon";
 
 export default function DashboardJobPost({ job }: { job: Job }) {
   return (
@@ -75,6 +77,18 @@ export default function DashboardJobPost({ job }: { job: Job }) {
               jobStage={job.stage}
             />
             <AppliedButton
+              jobTitle={job.title}
+              jobCompany={job.company}
+              jobId={job.id}
+              jobStage={job.stage}
+            />
+            <InterviewingButton
+              jobTitle={job.title}
+              jobCompany={job.company}
+              jobId={job.id}
+              jobStage={job.stage}
+            />
+            <OfferedPostitionButton
               jobTitle={job.title}
               jobCompany={job.company}
               jobId={job.id}

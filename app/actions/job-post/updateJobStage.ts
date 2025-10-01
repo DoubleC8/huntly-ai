@@ -65,3 +65,21 @@ export async function setJobAsApplied(jobId: string){
 
      return updateJobStage(jobId, JobStage.APPLIED);
 }
+
+export async function setJobAsInterviewing(jobId: string){
+    const session = await auth();
+    if(!session?.user?.email) throw new Error("Unauthorized");
+
+    await validateJobOwnership(jobId, session.user.email);
+
+    return updateJobStage(jobId, JobStage.INTERVIEW);
+}
+
+export async function setJobasOfferedPostion(jobId: string){
+    const session = await auth();
+    if(!session?.user?.email) throw new Error("Unauthorized");
+
+    await validateJobOwnership(jobId, session.user.email);
+
+    return updateJobStage(jobId, JobStage.OFFER);
+}

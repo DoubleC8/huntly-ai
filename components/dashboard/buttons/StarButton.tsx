@@ -18,7 +18,9 @@ export default function StarButton({
   jobStage: JobStage | null;
 }) {
   const [isPending, startTransition] = useTransition();
-  const [isWishlisted, setIsWishlisted] = useState(jobStage === "WISHLIST");
+  const [isWishlisted, setIsWishlisted] = useState(
+    jobStage === JobStage.WISHLIST
+  );
 
   const handleStarClick = () => {
     setIsWishlisted((prev) => !prev);
@@ -48,8 +50,7 @@ export default function StarButton({
 
   if (!showButton) return null;
 
-  return jobStage === null ||
-    STAGE_ORDER.indexOf(jobStage) < STAGE_ORDER.indexOf("APPLIED") ? (
+  return (
     <button
       onClick={handleStarClick}
       disabled={isPending}
@@ -65,5 +66,5 @@ export default function StarButton({
         <Star className="text-muted-foreground ease-in-out duration-200 hover:text-[var(--app-yellow)] hover:cursor-pointer" />
       )}
     </button>
-  ) : null;
+  );
 }

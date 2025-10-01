@@ -18,7 +18,7 @@ export default function AppliedButton({
   jobStage: JobStage | null;
 }) {
   const [isPending, startTransition] = useTransition();
-  const [isApplied, setIsApplied] = useState(jobStage === "APPLIED");
+  const [isApplied, setIsApplied] = useState(jobStage === JobStage.APPLIED);
 
   const handleApply = () => [
     startTransition(async () => {
@@ -40,11 +40,10 @@ export default function AppliedButton({
 
   const showButton =
     jobStage === null ||
-    STAGE_ORDER.indexOf(jobStage) <= STAGE_ORDER.indexOf("APPLIED");
+    STAGE_ORDER.indexOf(jobStage) < STAGE_ORDER.indexOf(JobStage.APPLIED);
   if (!showButton) return null;
 
-  return jobStage === null ||
-    STAGE_ORDER.indexOf(jobStage) <= STAGE_ORDER.indexOf("APPLIED") ? (
+  return (
     <button
       onClick={handleApply}
       disabled={isPending || isApplied}
@@ -59,5 +58,5 @@ export default function AppliedButton({
         <CircleCheck className="text-muted-foreground ease-in-out duration-200 hover:text-[var(--app-dark-purple)] hover:cursor-pointer" />
       )}
     </button>
-  ) : null;
+  );
 }
