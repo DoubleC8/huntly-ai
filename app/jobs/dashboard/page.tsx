@@ -1,7 +1,6 @@
 import { auth } from "@/auth";
-import { Frown, Search } from "lucide-react";
+import { Frown } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import RecommendedJobs from "@/components/dashboard/RecommendedJobs";
 import {
@@ -11,11 +10,12 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import Link from "next/link";
+import DashboardNavbar from "./DashboardNavbar";
 
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const session = await auth();
 
@@ -50,101 +50,37 @@ export default async function DashboardPage({
   }
 
   //query if any
-  const { q } = await searchParams;
-  const query = q as string | undefined;
+  const { search, location, employment, remoteType, salaryMin } = searchParams;
 
-  //getting all jobs attached to the user
   const jobs = await prisma.job.findMany({
     where: {
       userId: user.id,
       stage: "DEFAULT",
-      ...(query && {
+      ...(search && {
         OR: [
-          { title: { contains: query, mode: "insensitive" } },
-          { company: { contains: query, mode: "insensitive" } },
-          { aiSummary: { contains: query, mode: "insensitive" } },
-          { description: { contains: query, mode: "insensitive" } },
+          { title: { contains: search as string, mode: "insensitive" } },
+          { company: { contains: search as string, mode: "insensitive" } },
+          { aiSummary: { contains: search as string, mode: "insensitive" } },
+          { description: { contains: search as string, mode: "insensitive" } },
         ],
       }),
+      ...(location && {
+        location: { contains: location as string, mode: "insensitive" },
+      }),
+      ...(employment && { employment: employment as string }),
+      ...(remoteType && { remoteType: remoteType as string }),
+      ...(salaryMin && { salaryMin: { gte: Number(salaryMin) } }),
     },
-    orderBy: {
-      postedAt: "desc",
-    },
+    orderBy: { postedAt: "desc" },
   });
 
   return (
     <div className="pageContainer">
-      {/**conditionally render jobs */}
+      <DashboardNavbar />
       {jobs.length === 0 ? (
-        query ? (
-          <>
-            <form className="flex w-full justify-between gap-3">
-              <div className="w-full flex gap-2">
-                <Input
-                  type="text"
-                  name="q"
-                  placeholder="Search for a Job"
-                  className="bg-[var(--background)] h-9"
-                />
-                <Button type="submit">
-                  <span
-                    className="md:block
-          hidden"
-                  >
-                    Search
-                  </span>
-                  <Search />
-                </Button>
-              </div>
-            </form>
-            <div className="flex flex-col gap-3 justify-center items-center my-auto">
-              <Frown />
-              <p className="text-muted-foreground text-center">
-                No jobs matched your search.
-              </p>
-            </div>
-          </>
-        ) : (
-          <div className="my-auto">
-            <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
-              <CardContent className="flex flex-col items-center gap-3">
-                <Frown className="text-[var(--app-blue)]" />
-                <p>No Recommended Jobs Yet?</p>
-                <CardDescription>
-                  Try Adding your Resume and Check Back Later!
-                </CardDescription>
-              </CardContent>
-              <CardFooter className="mx-auto">
-                <Link href="/jobs/resume" className="mx-auto">
-                  <Button className="w-full">Add Resume</Button>
-                </Link>
-              </CardFooter>
-            </Card>
-          </div>
-        )
+        <p>No jobs found</p>
       ) : (
-        <>
-          <form className="flex w-full justify-between gap-3">
-            <div className="w-full flex gap-2">
-              <Input
-                type="text"
-                name="q"
-                placeholder="Search for a Job"
-                className="bg-[var(--background)] h-9"
-              />
-              <Button type="submit">
-                <span
-                  className="md:block
-          hidden"
-                >
-                  Search
-                </span>
-                <Search />
-              </Button>
-            </div>
-          </form>
-          <RecommendedJobs jobs={jobs} />
-        </>
+        <RecommendedJobs jobs={jobs} />
       )}
     </div>
   );

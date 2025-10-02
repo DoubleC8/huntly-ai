@@ -73,7 +73,7 @@ export default async function ApplicationTrackerPage() {
         className="
       pageContainer !min-h-[94vh]"
       >
-        <AppTrackerNavbar />
+        {/* <AppTrackerNavbar /> */}
         <AppTrackerColumns
           wishlist={wishlistJobs}
           applied={appliedJobs}

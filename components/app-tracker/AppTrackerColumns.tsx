@@ -111,7 +111,7 @@ export default function AppTrackerColumns({
 function Layout({ columns }: { columns: Record<JobStage, Job[]> }) {
   return (
     <div
-      className="lg:flex-row lg:justify-between lg:h-[85vh]
+      className="lg:flex-row lg:justify-between lg:h-[90vh]
     relative w-full flex flex-col gap-3 "
     >
       <JobColumn
