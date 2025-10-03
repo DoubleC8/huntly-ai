@@ -25,9 +25,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Check, ChevronsUpDown, Search } from "lucide-react";
+import { Check, ChevronsUpDown, LoaderCircle, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useTransition, useEffect } from "react";
 
 const formSchema = z.object({
   employment: z.string().optional(),
@@ -39,6 +40,9 @@ const formSchema = z.object({
 
 export default function DashboardNavbar() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+
   const employmentTypes = [
     {
       label: "Full Time",
@@ -64,8 +68,8 @@ export default function DashboardNavbar() {
       value: "In-Person",
     },
     {
-      label: "Online",
-      value: "Online",
+      label: "Remote",
+      value: "Remote",
     },
     {
       label: "Hybrid",
@@ -76,23 +80,49 @@ export default function DashboardNavbar() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      search: "",
-      salaryMin: "",
-      location: "",
+      search: searchParams.get("search") ?? "",
+      location: searchParams.get("location") ?? "",
+      employment: searchParams.get("employment") ?? "",
+      remoteType: searchParams.get("remoteType") ?? "",
+      salaryMin: searchParams.get("salaryMin") ?? "",
     },
     mode: "onChange",
   });
 
+  // Update form when URL changes
+  useEffect(() => {
+    form.reset({
+      search: searchParams.get("search") ?? "",
+      location: searchParams.get("location") ?? "",
+      employment: searchParams.get("employment") ?? "",
+      remoteType: searchParams.get("remoteType") ?? "",
+      salaryMin: searchParams.get("salaryMin") ?? "",
+    });
+  }, [searchParams, form]);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     const params = new URLSearchParams();
 
-    if (values.search) params.set("search", values.search);
-    if (values.location) params.set("location", values.location);
-    if (values.employment) params.set("employment", values.employment);
-    if (values.remoteType) params.set("remoteType", values.remoteType);
-    if (values.salaryMin) params.set("salaryMin", values.salaryMin);
+    // Handle all form fields
+    if (values.search) {
+      params.set("search", values.search);
+    }
+    if (values.location) {
+      params.set("location", values.location);
+    }
+    if (values.employment) {
+      params.set("employment", values.employment);
+    }
+    if (values.remoteType) {
+      params.set("remoteType", values.remoteType);
+    }
+    if (values.salaryMin) {
+      params.set("salaryMin", values.salaryMin);
+    }
 
-    router.push(`/jobs/dashboard?${params.toString()}`);
+    startTransition(() => {
+      router.push(`/jobs/dashboard?${params.toString()}`);
+    });
   }
 
   return (
@@ -308,11 +338,22 @@ export default function DashboardNavbar() {
 
         {/**search button */}
         <Button type="submit" className="h-9">
-          <Search
-            className="md:block
+          {isPending ? (
+            <LoaderCircle
+              className="md:block
+          hidden animate-spin"
+            />
+          ) : (
+            <Search
+              className="md:block
           hidden"
-          />
-          <p className="md:hidden">Search</p>
+            />
+          )}
+          {isPending ? (
+            <LoaderCircle className="md:hidden animate-spin" />
+          ) : (
+            <p className="md:hidden">Search</p>
+          )}
         </Button>
       </form>
     </Form>
