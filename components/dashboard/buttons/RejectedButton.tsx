@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { STAGE_ORDER } from "@/app/constants/jobStage";
-import { setJobAsRejected } from "@/app/actions/job-post/updateJobStage";
+import { updateJob } from "@/app/actions/job-post/updateJob";
 
 export default function RejectedButton({
   jobTitle,
@@ -32,7 +32,11 @@ export default function RejectedButton({
   const handleReject = () => {
     startTransition(async () => {
       try {
-        await setJobAsRejected(jobId);
+        await updateJob({
+          type: "setStage",
+          jobId,
+          stage: JobStage.REJECTED,
+        });
         toast.success(
           `${jobTitle} at ${jobCompany} has been marked as rejected.`,
           {

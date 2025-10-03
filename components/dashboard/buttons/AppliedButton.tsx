@@ -4,8 +4,8 @@ import { toast } from "sonner";
 import { JobStage } from "@/app/generated/prisma";
 import { STAGE_ORDER } from "@/app/constants/jobStage";
 import { CircleCheck, LoaderCircle } from "lucide-react";
-import { setJobAsApplied } from "@/app/actions/job-post/updateJobStage";
 import { Button } from "@/components/ui/button";
+import { updateJob } from "@/app/actions/job-post/updateJob";
 
 export default function AppliedButton({
   jobTitle,
@@ -26,7 +26,11 @@ export default function AppliedButton({
   const handleApply = () => [
     startTransition(async () => {
       try {
-        await setJobAsApplied(jobId);
+        await updateJob({
+          type: "setStage",
+          jobId,
+          stage: JobStage.APPLIED,
+        });
         toast.success(
           `${jobTitle} at ${jobCompany} has been marked as Applied.`,
           {

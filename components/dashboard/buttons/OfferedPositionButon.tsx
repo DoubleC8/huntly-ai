@@ -4,8 +4,8 @@ import { toast } from "sonner";
 import { JobStage } from "@/app/generated/prisma";
 import { STAGE_ORDER } from "@/app/constants/jobStage";
 import { LoaderCircle, PartyPopper } from "lucide-react";
-import { setJobasOfferedPostion } from "@/app/actions/job-post/updateJobStage";
 import { Button } from "@/components/ui/button";
+import { updateJob } from "@/app/actions/job-post/updateJob";
 
 export default function OfferedPostitionButton({
   jobTitle,
@@ -28,7 +28,11 @@ export default function OfferedPostitionButton({
   const handlePositionOffer = () => [
     startTransition(async () => {
       try {
-        await setJobasOfferedPostion(jobId);
+        await updateJob({
+          type: "setStage",
+          jobId,
+          stage: JobStage.OFFER,
+        });
         toast.success(
           `${jobTitle} at ${jobCompany} has been marked as Interviewing.`,
           {

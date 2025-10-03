@@ -45,7 +45,6 @@ export default function AddNoteButton({
         <NoteEditorBase
           jobId={jobId}
           note={currentNote}
-          compact={true}
           onNoteChange={setCurrentNote}
         />
       </DialogContent>

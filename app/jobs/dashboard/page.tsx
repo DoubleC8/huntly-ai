@@ -64,10 +64,6 @@ export default async function DashboardPage({
   const { search, location, employment, remoteType, salaryMin }: SearchParams =
     resolvedSearchParams;
 
-  const page = Number(resolvedSearchParams.page) || 1;
-  const limit = 10;
-  const skip = (page - 1) * limit;
-
   const searchQuery = typeof search === "string" ? search.trim() : "";
   const locationQuery = typeof location === "string" ? location.trim() : "";
 
@@ -90,32 +86,7 @@ export default async function DashboardPage({
       ...(salaryMin && { salaryMin: { gte: Number(salaryMin) } }),
     },
     orderBy: { postedAt: "desc" },
-    skip,
-    take: limit,
   });
-
-  // const totalJobs = await prisma.job.count({
-  //   where: {
-  //     userId: user.id,
-  //     stage: "DEFAULT",
-  //     ...(searchQuery && {
-  //       OR: [
-  //         { title: { contains: searchQuery, mode: "insensitive" } },
-  //         { company: { contains: searchQuery, mode: "insensitive" } },
-  //         { aiSummary: { contains: searchQuery, mode: "insensitive" } },
-  //       ],
-  //     }),
-  //     ...(locationQuery && {
-  //       location: { contains: locationQuery, mode: "insensitive" },
-  //     }),
-  //     ...(employment && { employment: employment as string }),
-  //     ...(remoteType && { remoteType: remoteType as string }),
-  //     ...(salaryMin && { salaryMin: { gte: Number(salaryMin) } }),
-  //   },
-  //   orderBy: { postedAt: "desc" },
-  //   skip,
-  //   take: limit,
-  // });
 
   return (
     <div className="pageContainer">

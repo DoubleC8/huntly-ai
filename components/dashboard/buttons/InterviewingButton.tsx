@@ -4,8 +4,8 @@ import { toast } from "sonner";
 import { JobStage } from "@/app/generated/prisma";
 import { STAGE_ORDER } from "@/app/constants/jobStage";
 import { CircleUser, LoaderCircle } from "lucide-react";
-import { setJobAsInterviewing } from "@/app/actions/job-post/updateJobStage";
 import { Button } from "@/components/ui/button";
+import { updateJob } from "@/app/actions/job-post/updateJob";
 
 export default function InterviewingButton({
   jobTitle,
@@ -28,7 +28,11 @@ export default function InterviewingButton({
   const handleInterviewing = () => [
     startTransition(async () => {
       try {
-        await setJobAsInterviewing(jobId);
+        await updateJob({
+          type: "setStage",
+          jobId,
+          stage: JobStage.INTERVIEW,
+        });
         toast.success(
           `${jobTitle} at ${jobCompany} has been marked as Interviewing.`,
           {

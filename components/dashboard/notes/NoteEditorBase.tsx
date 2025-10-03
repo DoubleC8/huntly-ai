@@ -14,8 +14,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { updateUserJobNote } from "@/app/actions/job-post/updateJob";
 import { LoaderCircle, Plus, SquarePen } from "lucide-react";
+import { updateJob } from "@/app/actions/job-post/updateJob";
 
 const formSchema = z.object({
   jobNote: z
@@ -47,9 +47,10 @@ export default function NoteEditorBase({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setUploading(true);
     try {
-      await updateUserJobNote({
-        jobNote: values.jobNote ?? "",
+      const updatedJob = await updateJob({
+        type: "setNote",
         jobId,
+        note: values.jobNote ?? "",
       });
 
       onNoteChange?.(values.jobNote ?? "");
@@ -70,7 +71,7 @@ export default function NoteEditorBase({
       <p>{form.watch("jobNote") || "No note yet"}</p>
       <Button
         onClick={() => setEditMode(true)}
-        className="md:w-1/6 
+        className="md:w-1/3 
         w-1/2 mx-auto"
       >
         <div className="flex items-center gap-2">
@@ -115,11 +116,14 @@ export default function NoteEditorBase({
             </FormItem>
           )}
         />
-        <div className="flex justify-center gap-3">
+        <div
+          className="md:flex-row
+        flex flex-col items-center justify-center gap-3"
+        >
           <Button
             type="submit"
-            className="md:w-1/6 
-        w-1/3"
+            className="md:w-1/3 
+        w-1/2"
           >
             {uploading ? (
               <LoaderCircle className="animate-spin mr-1" />
@@ -132,8 +136,8 @@ export default function NoteEditorBase({
             type="button"
             variant="outline"
             onClick={() => setEditMode(false)}
-            className="md:w-1/6 
-        w-1/3"
+            className="md:w-1/3 
+        w-1/2"
           >
             Cancel
           </Button>

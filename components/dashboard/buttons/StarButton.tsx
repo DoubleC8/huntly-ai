@@ -1,10 +1,10 @@
 "use client";
 import { useState, useTransition } from "react";
 import { STAGE_ORDER } from "@/app/constants/jobStage";
-import { toggleWishlist } from "@/app/actions/job-post/toggleWishlist";
 import { toast } from "sonner";
 import { Star } from "lucide-react";
 import { JobStage } from "@/app/generated/prisma";
+import { updateJob } from "@/app/actions/job-post/updateJob";
 
 export default function StarButton({
   jobTitle,
@@ -27,7 +27,7 @@ export default function StarButton({
 
     startTransition(async () => {
       try {
-        const updatedJob = await toggleWishlist(jobId);
+        const updatedJob = await updateJob({ type: "toggleWishlist", jobId });
         setIsWishlisted(updatedJob.stage === "WISHLIST");
         toast.success(
           updatedJob.stage === "WISHLIST"
