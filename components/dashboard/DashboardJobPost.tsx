@@ -81,18 +81,21 @@ export default function DashboardJobPost({ job }: { job: Job }) {
               jobCompany={job.company}
               jobId={job.id}
               jobStage={job.stage}
+              compact={true}
             />
             <InterviewingButton
               jobTitle={job.title}
               jobCompany={job.company}
               jobId={job.id}
               jobStage={job.stage}
+              compact={true}
             />
             <OfferedPostitionButton
               jobTitle={job.title}
               jobCompany={job.company}
               jobId={job.id}
               jobStage={job.stage}
+              compact={true}
             />
             <RejectedButton
               jobTitle={job.title}

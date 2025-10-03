@@ -27,6 +27,7 @@ import { STAGE_ORDER } from "@/app/constants/jobStage";
 import InterviewingButton from "@/components/dashboard/buttons/InterviewingButton";
 import OfferedPostitionButton from "@/components/dashboard/buttons/OfferedPositionButon";
 import { JobStage } from "@/app/generated/prisma";
+import { formatEntry } from "@/lib/utils";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -133,18 +134,21 @@ export default async function Page({ params }: PageProps) {
             jobCompany={job.company}
             jobId={job.id}
             jobStage={job.stage}
+            compact={false}
           />
           <InterviewingButton
             jobTitle={job.title}
             jobCompany={job.company}
             jobId={job.id}
             jobStage={job.stage}
+            compact={false}
           />
           <OfferedPostitionButton
             jobTitle={job.title}
             jobCompany={job.company}
             jobId={job.id}
             jobStage={job.stage}
+            compact={false}
           />
           <ShareJobButton jobSourceUrl={job?.sourceUrl} />
           <a
@@ -296,11 +300,16 @@ export default async function Page({ params }: PageProps) {
             <h1 className="font-bold text-2xl">Skills</h1>
           </div>
           {job.skills?.length ? (
-            <ul className="list-disc ml-5 space-y-3">
+            <div className="flex gap-2">
               {job.skills.map((skill, index) => (
-                <li key={index}>{skill}</li>
+                <Badge
+                  key={index}
+                  className="bg-[var(--app-dark-purple)] text-[var(--background)]"
+                >
+                  {formatEntry(skill)}
+                </Badge>
               ))}
-            </ul>
+            </div>
           ) : (
             <p className="text-muted-foreground">
               Our skill scanner might’ve blinked — give it a sec to catch up!
@@ -316,8 +325,11 @@ export default async function Page({ params }: PageProps) {
           {job.tags.length ? (
             <div className="flex gap-2">
               {job.tags.map((tag, index) => (
-                <Badge key={index} variant="outline">
-                  {tag}
+                <Badge
+                  key={index}
+                  className="bg-[var(--app-light-blue)] text-[var(--background)]"
+                >
+                  {formatEntry(tag)}
                 </Badge>
               ))}
             </div>

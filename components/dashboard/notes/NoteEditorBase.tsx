@@ -28,12 +28,11 @@ const formSchema = z.object({
 export default function NoteEditorBase({
   jobId,
   note,
-  compact,
+
   onNoteChange,
 }: {
   jobId: string;
   note: string;
-  compact: boolean;
   onNoteChange?: (note: string) => void;
 }) {
   const [uploading, setUploading] = useState(false);
@@ -71,7 +70,8 @@ export default function NoteEditorBase({
       <p>{form.watch("jobNote") || "No note yet"}</p>
       <Button
         onClick={() => setEditMode(true)}
-        className={compact ? "w-1/2 mx-auto" : "w-1/6 mx-auto"}
+        className="md:w-1/6 
+        w-1/2 mx-auto"
       >
         <div className="flex items-center gap-2">
           <SquarePen />
@@ -116,7 +116,11 @@ export default function NoteEditorBase({
           )}
         />
         <div className="flex justify-center gap-3">
-          <Button type="submit" className={compact ? "w-1/3" : "w-1/6"}>
+          <Button
+            type="submit"
+            className="md:w-1/6 
+        w-1/3"
+          >
             {uploading ? (
               <LoaderCircle className="animate-spin mr-1" />
             ) : (
@@ -128,7 +132,8 @@ export default function NoteEditorBase({
             type="button"
             variant="outline"
             onClick={() => setEditMode(false)}
-            className={compact ? "w-1/3" : "w-1/6"}
+            className="md:w-1/6 
+        w-1/3"
           >
             Cancel
           </Button>

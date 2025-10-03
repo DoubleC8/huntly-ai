@@ -3,19 +3,22 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { JobStage } from "@/app/generated/prisma";
 import { STAGE_ORDER } from "@/app/constants/jobStage";
-import { PartyPopper } from "lucide-react";
+import { LoaderCircle, PartyPopper } from "lucide-react";
 import { setJobasOfferedPostion } from "@/app/actions/job-post/updateJobStage";
+import { Button } from "@/components/ui/button";
 
 export default function OfferedPostitionButton({
   jobTitle,
   jobCompany,
   jobId,
   jobStage,
+  compact,
 }: {
   jobTitle: string;
   jobCompany: string;
   jobId: string;
   jobStage: JobStage;
+  compact: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
   const [isOfferedPostion, setIsOfferedPosition] = useState(
@@ -46,15 +49,15 @@ export default function OfferedPostitionButton({
 
   if (!showButton) return null;
 
-  return (
+  return compact ? (
     <button
       onClick={handlePositionOffer}
       disabled={isPending || isOfferedPostion}
       aria-pressed={isOfferedPostion}
       title={
         isOfferedPostion
-          ? "You were given a position at this Job."
-          : "Mark this job as Offered Postion"
+          ? "You were offered a position"
+          : "Mark this job as Offered"
       }
     >
       {isOfferedPostion ? (
@@ -63,5 +66,26 @@ export default function OfferedPostitionButton({
         <PartyPopper className="text-muted-foreground ease-in-out duration-200 hover:text-[var(--app-light-blue)] hover:cursor-pointer" />
       )}
     </button>
+  ) : (
+    <Button
+      onClick={handlePositionOffer}
+      disabled={isPending || isOfferedPostion}
+      aria-pressed={isOfferedPostion}
+      title={
+        isOfferedPostion
+          ? "You were offered a position"
+          : "Mark this job as Offered"
+      }
+      className="md:block
+      hidden w-40"
+    >
+      {isPending ? (
+        <LoaderCircle className="animate-spin" />
+      ) : isOfferedPostion ? (
+        "Offered Position"
+      ) : (
+        "Mark as Offered"
+      )}
+    </Button>
   );
 }

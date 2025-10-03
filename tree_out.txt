@@ -2,7 +2,6 @@
 ├── app
 │   ├── actions
 │   │   ├── job-post
-│   │   │   ├── setJobAsRejected.ts
 │   │   │   ├── toggleWishlist.ts
 │   │   │   ├── updateJob.ts
 │   │   │   └── updateJobStage.ts
@@ -68,6 +67,7 @@
 │   │   │   │   └── page.tsx
 │   │   │   ├── applied
 │   │   │   │   └── page.tsx
+│   │   │   ├── DashboardNavbar.tsx
 │   │   │   ├── interview
 │   │   │   │   └── page.tsx
 │   │   │   ├── layout.tsx
@@ -103,6 +103,8 @@
 │   │   ├── buttons
 │   │   │   ├── AddNoteButton.tsx
 │   │   │   ├── AppliedButton.tsx
+│   │   │   ├── InterviewingButton.tsx
+│   │   │   ├── OfferedPositionButon.tsx
 │   │   │   ├── RejectedButton.tsx
 │   │   │   ├── ShareJob.tsx
 │   │   │   └── StarButton.tsx
@@ -258,4 +260,4 @@
 ├── tsconfig.json
 └── tsconfig.tsbuildinfo
 
-72 directories, 187 files
+72 directories, 189 files

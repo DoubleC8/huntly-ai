@@ -27,7 +27,7 @@ export default function AddNoteButton({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={hasNote ? "noted" : "secondary"}>
+        <Button variant={hasNote ? "noted" : "secondary"} className="w-full">
           {hasNote ? "View Job Note" : "Add a Job Note"}
         </Button>
       </DialogTrigger>
