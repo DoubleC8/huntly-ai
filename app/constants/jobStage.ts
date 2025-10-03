@@ -12,7 +12,7 @@ export const STAGE_COLORS: Record<JobStage, string> = {
 };
 
 export const STAGE_LABELS: Record<JobStage, string> = {
-   DEFAULT: "Default",
+  DEFAULT: "Default",
   WISHLIST: "Wishlisted",
   APPLIED: "Applied",
   INTERVIEW: "Interviewing",
@@ -21,10 +21,10 @@ export const STAGE_LABELS: Record<JobStage, string> = {
 };
 
 export const STAGE_ORDER: JobStage[] = [
-  "DEFAULT",
-  "WISHLIST",
-  "APPLIED",
-  "INTERVIEW",
-  "OFFER",
-  "REJECTED",
+  JobStage.DEFAULT,
+  JobStage.WISHLIST,
+  JobStage.APPLIED,
+  JobStage.INTERVIEW,
+  JobStage.OFFER,
+  JobStage.REJECTED,
 ];

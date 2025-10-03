@@ -7,16 +7,16 @@ import {
 import { Building, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Job } from "@/app/generated/prisma";
+import { Job, JobStage } from "@/app/generated/prisma";
 import { STAGE_COLORS, STAGE_LABELS } from "@/app/constants/jobStage";
 import Link from "next/link";
 import StarButton from "./buttons/StarButton";
 import { formatJobDate, formatSalary } from "@/lib/date-utils";
 import RejectedButton from "./buttons/RejectedButton";
 import AddNoteButton from "./buttons/AddNoteButton";
-import AppliedButton from "./buttons/AppliedButton";
 import InterviewingButton from "./buttons/InterviewingButton";
 import OfferedPostitionButton from "./buttons/OfferedPositionButon";
+import AppliedButton from "./buttons/AppliedButton";
 
 export default function DashboardJobPost({ job }: { job: Job }) {
   return (

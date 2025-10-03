@@ -33,7 +33,7 @@ export default class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         this.props.fallback ?? (
-          <div className="pageContainer justify-center">
+          <div className="w-full h-full flex flex-col items-center justify-center my-auto">
             <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
               <CardContent className="flex flex-col items-center gap-3">
                 <ServerCrash className="text-[var(--app-blue)]" />
