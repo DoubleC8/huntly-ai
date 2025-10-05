@@ -77,7 +77,7 @@ export default function AppliedButton({
       hidden w-40 bg-[var(--app-dark-purple)] hover:bg-[var(--app-dark-purple)]/85"
     >
       {isPending ? (
-        <LoaderCircle className="animate-spin" />
+        <LoaderCircle className="animate-spin mx-auto" />
       ) : isApplied ? (
         "Applied"
       ) : (

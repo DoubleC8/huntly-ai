@@ -9,7 +9,6 @@ import { Job, JobStage } from "@/app/generated/prisma";
 import { Button } from "../ui/button";
 import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { updateJobStage } from "@/app/actions/job-post/updateJobStage";
 import { toast } from "sonner";
 import { STAGE_ORDER } from "@/app/constants/jobStage";
 import { formatJobDate, formatSalary } from "@/lib/date-utils";
@@ -24,37 +23,37 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
       },
     });
 
-  const moveJobStage = async (direction: "up" | "down") => {
-    const currentIndex = STAGE_ORDER.indexOf(job.stage as JobStage);
-    const newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+  // const moveJobStage = async (direction: "up" | "down") => {
+  //   const currentIndex = STAGE_ORDER.indexOf(job.stage as JobStage);
+  //   const newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
 
-    if (newIndex < 0 || newIndex >= STAGE_ORDER.length) return;
+  //   if (newIndex < 0 || newIndex >= STAGE_ORDER.length) return;
 
-    const newStage = STAGE_ORDER[newIndex];
+  //   const newStage = STAGE_ORDER[newIndex];
 
-    if (!newStage) {
-      console.error("Invalid stage index:", newIndex);
-      return;
-    }
+  //   if (!newStage) {
+  //     console.error("Invalid stage index:", newIndex);
+  //     return;
+  //   }
 
-    try {
-      await updateJobStage(job.id, newStage);
-      toast.success(
-        `Moved job to the ${
-          newStage.charAt(0).toUpperCase() + newStage.slice(1).toLowerCase()
-        } column.`,
-        {
-          description: "Congrats!",
-        }
-      );
-      const timer = setTimeout(() => {
-        window.location.reload();
-      }, 3000);
-      return () => clearTimeout(timer);
-    } catch {
-      toast.error("Failed to update job stage.");
-    }
-  };
+  //   try {
+  //     await updateJobStage(job.id, newStage);
+  //     toast.success(
+  //       `Moved job to the ${
+  //         newStage.charAt(0).toUpperCase() + newStage.slice(1).toLowerCase()
+  //       } column.`,
+  //       {
+  //         description: "Congrats!",
+  //       }
+  //     );
+  //     const timer = setTimeout(() => {
+  //       window.location.reload();
+  //     }, 3000);
+  //     return () => clearTimeout(timer);
+  //   } catch {
+  //     toast.error("Failed to update job stage.");
+  //   }
+  // };
 
   return (
     <Card
@@ -97,9 +96,7 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
         <span
           className="lg:hidden
           block"
-        >
-          <RejectedButton jobId={job.id} jobStage={job.stage} />
-        </span>
+        ></span>
       </CardHeader>
       <CardContent className="flex justify-start p-0">
         <div className="font-medium text-xs text-muted-foreground">
@@ -121,7 +118,7 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
         className="md:gap-3 md:justify-center
        flex items-center justify-between"
       >
-        <Button className="lg:hidden" onClick={() => moveJobStage("up")}>
+        <Button className="lg:hidden">
           <ChevronUp />
         </Button>
         <div className="flex items-center gap-3 mx-auto">
@@ -132,10 +129,10 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
             className="lg:block
           hidden"
           >
-            <RejectedButton jobId={job.id} jobStage={job.stage} />
+            ={" "}
           </span>
         </div>
-        <Button className="lg:hidden" onClick={() => moveJobStage("down")}>
+        <Button className="lg:hidden">
           <ChevronDown />
         </Button>
       </CardFooter>

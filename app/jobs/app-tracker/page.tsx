@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import AppTrackerColumns from "@/components/app-tracker/AppTrackerColumns";
-import AppTrackerNavbar from "@/components/app-tracker/AppTrackerNavbar";
 import AppTrackerTitle from "@/components/app-tracker/AppTrackerTitle";
 import { prisma } from "@/lib/prisma";
 

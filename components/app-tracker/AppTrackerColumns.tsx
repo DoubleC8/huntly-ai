@@ -6,7 +6,6 @@ import { Job, JobStage } from "@/app/generated/prisma";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { toast } from "sonner";
-import { updateJobStage } from "@/app/actions/job-post/updateJobStage";
 import { useState } from "react";
 import useIsLargeScreen from "@/hooks/useIsLargeScreen";
 import ErrorBoundary from "../ui/ErrorBoundary";
@@ -65,91 +64,92 @@ export default function AppTrackerColumns({
       return updated;
     });
 
-    try {
-      await updateJobStage(jobId, destinationStage);
-      toast.success(
-        `Moved job to the ${
-          destinationStage.charAt(0).toUpperCase() +
-          destinationStage.slice(1).toLowerCase()
-        } column.`,
-        {
-          description: "Congrats!",
-        }
-      );
-    } catch {
-      toast.error("Failed to update job stage. Reverting...");
+    //   try {
+    //     await updateJobStage(jobId, destinationStage);
+    //     toast.success(
+    //       `Moved job to the ${
+    //         destinationStage.charAt(0).toUpperCase() +
+    //         destinationStage.slice(1).toLowerCase()
+    //       } column.`,
+    //       {
+    //         description: "Congrats!",
+    //       }
+    //     );
+    //   } catch {
+    //     toast.error("Failed to update job stage. Reverting...");
 
-      setColumns((prev) => {
-        const updated = { ...prev };
-        updated[destinationStage] = updated[destinationStage].filter(
-          (j) => j.id !== jobId
-        );
-        updated[sourceStage] = [draggedJob, ...updated[sourceStage]];
-        return updated;
-      });
-    }
+    //     setColumns((prev) => {
+    //       const updated = { ...prev };
+    //       updated[destinationStage] = updated[destinationStage].filter(
+    //         (j) => j.id !== jobId
+    //       );
+    //       updated[sourceStage] = [draggedJob, ...updated[sourceStage]];
+    //       return updated;
+    //     });
+    //   }
+    // };
+
+    //checks if the screen is large, if it is then allow drag and drop else disable it
+    return isLargeScreen ? (
+      <ErrorBoundary>
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+          modifiers={[restrictToWindowEdges]}
+        >
+          <Layout columns={columns} />
+        </DndContext>
+      </ErrorBoundary>
+    ) : (
+      <ErrorBoundary>
+        <Layout columns={columns} />
+      </ErrorBoundary>
+    );
   };
 
-  //checks if the screen is large, if it is then allow drag and drop else disable it
-  return isLargeScreen ? (
-    <ErrorBoundary>
-      <DndContext
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-        modifiers={[restrictToWindowEdges]}
-      >
-        <Layout columns={columns} />
-      </DndContext>
-    </ErrorBoundary>
-  ) : (
-    <ErrorBoundary>
-      <Layout columns={columns} />
-    </ErrorBoundary>
-  );
-}
-
-function Layout({ columns }: { columns: Record<JobStage, Job[]> }) {
-  return (
-    <div
-      className="lg:flex-row lg:justify-between lg:h-[90vh]
+  function Layout({ columns }: { columns: Record<JobStage, Job[]> }) {
+    return (
+      <div
+        className="lg:flex-row lg:justify-between lg:h-[90vh]
     relative w-full flex flex-col gap-3 "
-    >
-      <JobColumn
-        id="WISHLIST"
-        jobs={columns.WISHLIST}
-        title="Wishlist"
-        color="--app-purple"
-        icon={Star}
-        total_jobs={columns.WISHLIST.length}
-        description="Jobs you’re interested in but haven’t applied to yet. Start building your wishlist!"
-      />
-      <JobColumn
-        id="APPLIED"
-        jobs={columns.APPLIED}
-        title="Applied"
-        color="--app-dark-purple"
-        icon={CircleCheck}
-        total_jobs={columns.APPLIED.length}
-        description="Track jobs you've submitted an application to. Try applying to one today!"
-      />
-      <JobColumn
-        id="INTERVIEW"
-        jobs={columns.INTERVIEW}
-        title="Interview"
-        color="--app-blue"
-        icon={CircleUserRound}
-        total_jobs={columns.INTERVIEW.length}
-        description="Once you’ve landed an interview, it will show up here. Keep pushing!"
-      />
-      <JobColumn
-        id="OFFER"
-        jobs={columns.OFFER}
-        title="Offer"
-        color="--app-light-blue"
-        icon={PartyPopper}
-        total_jobs={columns.OFFER.length}
-        description="Congrats! Companies that have offered you a position will appear here. Time to celebrate!"
-      />
-    </div>
-  );
+      >
+        <JobColumn
+          id="WISHLIST"
+          jobs={columns.WISHLIST}
+          title="Wishlist"
+          color="--app-purple"
+          icon={Star}
+          total_jobs={columns.WISHLIST.length}
+          description="Jobs you’re interested in but haven’t applied to yet. Start building your wishlist!"
+        />
+        <JobColumn
+          id="APPLIED"
+          jobs={columns.APPLIED}
+          title="Applied"
+          color="--app-dark-purple"
+          icon={CircleCheck}
+          total_jobs={columns.APPLIED.length}
+          description="Track jobs you've submitted an application to. Try applying to one today!"
+        />
+        <JobColumn
+          id="INTERVIEW"
+          jobs={columns.INTERVIEW}
+          title="Interview"
+          color="--app-blue"
+          icon={CircleUserRound}
+          total_jobs={columns.INTERVIEW.length}
+          description="Once you’ve landed an interview, it will show up here. Keep pushing!"
+        />
+        <JobColumn
+          id="OFFER"
+          jobs={columns.OFFER}
+          title="Offer"
+          color="--app-light-blue"
+          icon={PartyPopper}
+          total_jobs={columns.OFFER.length}
+          description="Congrats! Companies that have offered you a position will appear here. Time to celebrate!"
+        />
+      </div>
+    );
+  }
 }
