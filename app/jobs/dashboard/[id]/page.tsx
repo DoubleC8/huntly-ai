@@ -62,6 +62,7 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <div className="pageContainer">
+      {/**contains buttons  */}
       <JobPageNavbar
         jobTitle={job.title}
         jobCompany={job.company}
@@ -70,6 +71,7 @@ export default async function Page({ params }: PageProps) {
         jobSourceUrl={job.sourceUrl}
       />
       <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-3 flex flex-col gap-3 justify-between">
+        {/**job header, contains job image, rank score, ai summary etc... */}
         <JobPageHeader
           jobTitle={job.title}
           jobCompany={job.company}
@@ -80,7 +82,7 @@ export default async function Page({ params }: PageProps) {
           jobEmployment={job.employment}
           jobRemoteType={job.remoteType}
         />
-        {/**description */}
+        {/**description contains job description, responsibilities, etc */}
         <JobPageDescription
           jobDescription={job.description}
           jobResponsibilities={job.responsibilities}

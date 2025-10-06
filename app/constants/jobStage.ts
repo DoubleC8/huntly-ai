@@ -21,6 +21,15 @@ export const STAGE_LABELS: Record<JobStage, string> = {
   REJECTED: "Rejected",
 };
 
+export const STAGE_MESSAGES: Record<JobStage, string> = {
+  WISHLIST: "You have Wishlisted this Job.",
+  APPLIED: "You have Applied for this Job.",
+  INTERVIEW: "You are currently Interviewing for this Job.",
+  OFFER: "You have have been offered a position at this company. Go Celebrate!", 
+  REJECTED: "This job didn't work out. Keep pushing forward in your search!",
+  DEFAULT: "Try applying to this job today!"
+}
+
 export const STAGE_ICONS: Record<JobStage, React.ComponentType<{ className?: string }>> = {
   DEFAULT: Dot,
   WISHLIST: Star,

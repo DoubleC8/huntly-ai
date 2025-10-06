@@ -6,6 +6,7 @@ import RejectedButton from "../buttons/RejectedButton";
 import ShareJobButton from "../buttons/ShareJob";
 import StarButton from "../buttons/StarButton";
 import { JobStage } from "@/app/generated/prisma";
+import { STAGE_MESSAGES } from "@/app/constants/jobStage";
 
 export default function JobPageNavbar({
   jobTitle,
@@ -33,6 +34,19 @@ export default function JobPageNavbar({
           jobStage={jobStage}
         />
       </div>
+
+      <p
+        className="md:block 
+      text-muted-foreground hidden"
+      >
+        <span
+          className={
+            jobStage === JobStage.REJECTED ? "text-[var(--app-red)]" : ""
+          }
+        >
+          {STAGE_MESSAGES[jobStage]}
+        </span>
+      </p>
 
       {/**job stage buttons */}
       <div className="flex items-center gap-3">

@@ -1,5 +1,5 @@
 "use client";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { HeartCrack, LoaderCircle, Trash2 } from "lucide-react";
 import { JobStage } from "@/app/generated/prisma";
@@ -28,6 +28,7 @@ export default function RejectedButton({
   jobStage: JobStage | null;
 }) {
   const [isPending, startTransition] = useTransition();
+  const [open, setOpen] = useState(false);
 
   const handleReject = () => {
     startTransition(async () => {
@@ -48,9 +49,16 @@ export default function RejectedButton({
         toast.error("Failed to add job to rejected list.", {
           description: "Please try again later.",
         });
+      } finally {
+        setTimeout(() => {
+          setOpen(false);
+        }, 1000);
       }
     });
   };
+
+  // Don't show the reject button if the job is already rejected
+  if (jobStage === JobStage.REJECTED) return null;
 
   const showButton =
     jobStage === null ||
@@ -58,9 +66,13 @@ export default function RejectedButton({
 
   if (!showButton) return null;
 
-  return jobStage === null ||
-    STAGE_ORDER.indexOf("APPLIED") <= STAGE_ORDER.indexOf(jobStage) ? (
-    <Dialog>
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        setOpen(true);
+      }}
+    >
       <DialogTrigger asChild title="Mark Job as rejected">
         <Trash2 className="text-muted-foreground ease-in-out duration-200 hover:text-[var(--app-red)] hover:cursor-pointer" />
       </DialogTrigger>
@@ -96,5 +108,5 @@ export default function RejectedButton({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  ) : null;
+  );
 }

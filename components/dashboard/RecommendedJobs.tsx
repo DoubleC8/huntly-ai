@@ -2,7 +2,7 @@
 
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import { Job } from "@/app/generated/prisma";
-import DashboardJobPost from "./DashboardJobPost";
+import DashboardJobPost from "./job-post/DashboardJobPost";
 
 export default function RecommendedJobs({ jobs }: { jobs: Job[] }) {
   return (
