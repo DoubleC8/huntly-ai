@@ -92,7 +92,7 @@ export default function UpdateJobStageDropdown({
           const Icon = STAGE_ICONS[stage];
           return (
             <SelectItem key={stage} value={stage}>
-              <Icon className={`text-[var(${STAGE_COLORS[selectedStage]})]`} />
+              <Icon className={`text-[var(${STAGE_COLORS[stage]})]`} />
               {STAGE_LABELS[stage]}
             </SelectItem>
           );

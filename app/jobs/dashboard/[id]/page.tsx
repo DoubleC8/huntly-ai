@@ -62,7 +62,7 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <div className="pageContainer">
-      {/**contains buttons  */}
+      {/**contains buttons and dropdown  */}
       <JobPageNavbar
         jobTitle={job.title}
         jobCompany={job.company}
