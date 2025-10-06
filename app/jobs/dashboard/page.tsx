@@ -74,6 +74,7 @@ export default async function DashboardPage({
     employment,
     remoteType,
     salaryMin: salaryMin ? Number(salaryMin) : undefined,
+    paginated: false,
   });
 
   return (

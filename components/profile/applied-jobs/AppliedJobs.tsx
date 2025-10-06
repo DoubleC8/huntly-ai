@@ -1,14 +1,16 @@
 import { Job } from "@/app/generated/prisma";
 import JobsTable from "./JobsTable";
 import Link from "next/link";
+import { AppliedJobsPaginationBar } from "./AppliedJobsPaginationBar";
 
 export default function AppliedJobs({ jobs }: { jobs: Job[] }) {
   return (
     <div className="flex flex-col gap-3">
       <h2 className="font-bold text-xl">Jobs You have Applied to</h2>
       {jobs.length ? (
-        <>
+        <div className="flex flex-col items-center gap-3">
           <JobsTable jobs={jobs} />
+          <AppliedJobsPaginationBar />
           {jobs.length > 1 ? (
             <p className="text-muted-foreground text-center">
               You&apos;ve applied to{" "}
@@ -22,7 +24,7 @@ export default function AppliedJobs({ jobs }: { jobs: Job[] }) {
               job so far! Congrats! Keep Going!
             </p>
           )}
-        </>
+        </div>
       ) : (
         <p className="text-muted-foreground">
           You haven’t applied to any jobs yet. Once you do, they’ll show up
