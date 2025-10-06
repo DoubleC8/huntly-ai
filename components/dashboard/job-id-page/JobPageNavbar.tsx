@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
-import AppliedButton from "../buttons/AppliedButton";
-import InterviewingButton from "../buttons/InterviewingButton";
-import OfferedPostitionButton from "../buttons/OfferedPositionButon";
 import RejectedButton from "../buttons/RejectedButton";
 import ShareJobButton from "../buttons/ShareJob";
 import StarButton from "../buttons/StarButton";
 import { JobStage } from "@/app/generated/prisma";
 import { STAGE_MESSAGES } from "@/app/constants/jobStage";
+import UpdateJobStageButton from "../buttons/UpdateJobStageButton";
+import UpdateJobStageDropdown from "../buttons/UpdateJobStageDropdown";
 
 export default function JobPageNavbar({
   jobTitle,
@@ -56,26 +55,11 @@ export default function JobPageNavbar({
           jobId={jobId}
           jobStage={jobStage}
         />
-        <AppliedButton
+        <UpdateJobStageDropdown
           jobTitle={jobTitle}
           jobCompany={jobCompany}
           jobId={jobId}
           jobStage={jobStage}
-          compact={false}
-        />
-        <InterviewingButton
-          jobTitle={jobTitle}
-          jobCompany={jobCompany}
-          jobId={jobId}
-          jobStage={jobStage}
-          compact={false}
-        />
-        <OfferedPostitionButton
-          jobTitle={jobTitle}
-          jobCompany={jobCompany}
-          jobId={jobId}
-          jobStage={jobStage}
-          compact={false}
         />
         <ShareJobButton jobSourceUrl={jobSourceUrl} />
         <a target="_blank" href={`${jobSourceUrl}`} rel="noopener noreferrer">

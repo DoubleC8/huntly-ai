@@ -1,14 +1,14 @@
 "use client";
+
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { JobStage } from "@/app/generated/prisma";
 import {
   STAGE_COLORS,
   STAGE_LABELS,
-  STAGE_ORDER,
+  STAGE_ICONS,
 } from "@/app/constants/jobStage";
-import { CircleCheck, LoaderCircle, LucideIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { LoaderCircle } from "lucide-react";
 import { updateJob } from "@/app/actions/job-post/updateJob";
 
 export default function UpdateJobStageButton({
@@ -16,28 +16,36 @@ export default function UpdateJobStageButton({
   jobCompany,
   jobId,
   jobStage,
-  compact = false,
-  targetJobStage, // optional now
-  Icon,
 }: {
   jobTitle: string;
   jobCompany: string;
   jobId: string;
   jobStage: JobStage | null;
-  compact?: boolean;
-  targetJobStage?: JobStage;
-  Icon: LucideIcon;
 }) {
   const [isPending, startTransition] = useTransition();
-  const [currentStage, setCurrentStage] = useState<JobStage | null>(jobStage);
 
-  // If target not given, pick the "next stage" in STAGE_ORDER
-  const currentIndex = STAGE_ORDER.indexOf(currentStage ?? JobStage.DEFAULT);
-  const nextStage =
-    targetJobStage ??
-    (currentIndex >= 0 && currentIndex < STAGE_ORDER.length - 1
-      ? STAGE_ORDER[currentIndex + 1]
-      : JobStage.DEFAULT); // fallback if at end
+  const allowedStages: JobStage[] = [
+    JobStage.APPLIED,
+    JobStage.INTERVIEW,
+    JobStage.OFFER,
+  ];
+
+  const initialStage =
+    jobStage && allowedStages.includes(jobStage) ? jobStage : JobStage.DEFAULT;
+
+  const [currentStage, setCurrentStage] = useState<JobStage>(initialStage);
+
+  let nextStage: JobStage;
+
+  if (currentStage === JobStage.DEFAULT || currentStage === JobStage.WISHLIST) {
+    nextStage = JobStage.APPLIED;
+  } else {
+    const currentIndex = allowedStages.indexOf(currentStage);
+    nextStage =
+      currentIndex >= 0 && currentIndex < allowedStages.length - 1
+        ? allowedStages[currentIndex + 1]
+        : JobStage.OFFER;
+  }
 
   const handleUpdateJobStage = () => {
     startTransition(async () => {
@@ -61,47 +69,27 @@ export default function UpdateJobStageButton({
     });
   };
 
-  const isTargetStage = currentStage === nextStage;
+  // The icon should show the NEXT stage — not current one
+  const isMaxStage = currentStage === JobStage.OFFER;
+  const NextIcon = STAGE_ICONS[nextStage];
 
-  return compact ? (
+  return (
     <button
       onClick={handleUpdateJobStage}
-      disabled={isPending || isTargetStage}
-      aria-pressed={isTargetStage}
+      disabled={isPending || isMaxStage}
+      aria-pressed={isMaxStage}
       className="transition-colors"
       style={{
-        color: isTargetStage
+        color: isMaxStage
           ? `var(${STAGE_COLORS[nextStage]})`
           : "var(--muted-foreground)",
       }}
     >
       {isPending ? (
         <LoaderCircle className="animate-spin" />
-      ) : isTargetStage ? (
-        <Icon />
       ) : (
-        <Icon className="hover:opacity-80" />
+        <NextIcon className="hover:opacity-80" />
       )}
     </button>
-  ) : (
-    <Button
-      onClick={handleUpdateJobStage}
-      disabled={isPending || isTargetStage}
-      aria-pressed={isTargetStage}
-      style={{
-        backgroundColor: isTargetStage
-          ? `var(${STAGE_COLORS[nextStage]})`
-          : "var(--app-dark-purple)",
-      }}
-      className="hidden md:block w-40 hover:opacity-85"
-    >
-      {isPending ? (
-        <LoaderCircle className="animate-spin" />
-      ) : isTargetStage ? (
-        STAGE_LABELS[nextStage]
-      ) : (
-        `Mark as ${STAGE_LABELS[nextStage]}`
-      )}
-    </Button>
   );
 }

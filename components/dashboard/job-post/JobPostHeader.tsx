@@ -1,11 +1,10 @@
 import { formatJobDate } from "@/lib/date-utils";
 import Image from "next/image";
 import StarButton from "../buttons/StarButton";
-import AppliedButton from "../buttons/AppliedButton";
-import InterviewingButton from "../buttons/InterviewingButton";
-import OfferedPostitionButton from "../buttons/OfferedPositionButon";
 import RejectedButton from "../buttons/RejectedButton";
 import { JobStage } from "@/app/generated/prisma";
+import UpdateJobStageButton from "../buttons/UpdateJobStageButton";
+import UpdateJobStageDropdown from "../buttons/UpdateJobStageDropdown";
 
 export default function JobPostHeader({
   jobCompany,
@@ -58,26 +57,11 @@ export default function JobPostHeader({
           jobId={jobId}
           jobStage={jobStage}
         />
-        <AppliedButton
+        <UpdateJobStageButton
           jobTitle={jobTitle}
           jobCompany={jobCompany}
           jobId={jobId}
           jobStage={jobStage}
-          compact={true}
-        />
-        <InterviewingButton
-          jobTitle={jobTitle}
-          jobCompany={jobCompany}
-          jobId={jobId}
-          jobStage={jobStage}
-          compact={true}
-        />
-        <OfferedPostitionButton
-          jobTitle={jobTitle}
-          jobCompany={jobCompany}
-          jobId={jobId}
-          jobStage={jobStage}
-          compact={true}
         />
         <RejectedButton
           jobTitle={jobTitle}
