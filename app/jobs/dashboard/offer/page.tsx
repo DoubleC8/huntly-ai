@@ -1,12 +1,12 @@
 import { auth } from "@/auth";
 import RecommendedJobs from "@/components/dashboard/RecommendedJobs";
-import { prisma } from "@/lib/prisma";
 import { JobStage } from "@/app/generated/prisma";
 import DashboardCard from "@/components/dashboard/DashboardCard";
+import { getUserByEmail } from "@/lib/queries/userQueries";
+import { getJobsByStage } from "@/lib/queries/jobQueries";
 
 export default async function offeredJobsPage() {
   const session = await auth();
-
   //extra security, we have middleware but this is just incase it doesnt work for some reason
   if (!session) {
     return (
@@ -16,7 +16,6 @@ export default async function offeredJobsPage() {
       </div>
     );
   }
-
   if (!session.user?.email) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
@@ -25,10 +24,7 @@ export default async function offeredJobsPage() {
     );
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  });
-
+  const user = await getUserByEmail(session.user.email);
   if (!user) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
@@ -37,22 +33,14 @@ export default async function offeredJobsPage() {
     );
   }
 
-  const jobs = await prisma.job.findMany({
-    where: {
-      userId: user.id,
-      stage: JobStage.OFFER,
-    },
-    orderBy: {
-      postedAt: "desc",
-    },
-  });
+  const jobs = await getJobsByStage(user.id, JobStage.OFFER);
 
   return (
     <div className="pageContainer">
       {jobs.length === 0 ? (
         <DashboardCard
-          message="No offers yet — but don’t worry!"
-          description="Keep up the momentum and check back here for updates."
+          message="No offers yet, but don’t worry!"
+          description="Keep up the momentum and dont give up!"
         />
       ) : (
         <RecommendedJobs jobs={jobs} />

@@ -5,11 +5,11 @@ import UserJobPreferences from "@/components/profile/job-preferences/UserJobPref
 import UserSkills from "@/components/profile/skills/UserSkills";
 import UserInfo from "@/components/profile/user-info/UserInfo";
 import UserResume from "@/components/profile/user-resume/UserResume";
-import { prisma } from "@/lib/prisma";
+import { getDefaultResume } from "@/lib/queries/resumeQueries";
+import { getUserProfileData } from "@/lib/queries/userQueries";
 
 export default async function ProfilePage() {
   const session = await auth();
-
   if (!session) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
@@ -18,7 +18,6 @@ export default async function ProfilePage() {
       </div>
     );
   }
-
   if (!session.user?.email) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
@@ -27,25 +26,7 @@ export default async function ProfilePage() {
     );
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-    include: {
-      resumes: {
-        where: {
-          isDefault: true,
-        },
-      },
-      jobs: {
-        where: {
-          stage: {
-            in: ["APPLIED", "INTERVIEW", "OFFER", "REJECTED"],
-          },
-        },
-      },
-      education: true,
-    },
-  });
-
+  const user = await getUserProfileData(session.user.email);
   if (!user) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
@@ -54,7 +35,8 @@ export default async function ProfilePage() {
     );
   }
 
-  const defaultResume = user.resumes[0];
+  const defaultResume = await getDefaultResume(user.id);
+
   return (
     <div className="page">
       <div className="pageTitleContainer">
@@ -73,7 +55,7 @@ export default async function ProfilePage() {
           <UserJobPreferences jobPreferences={user.jobPreferences} />
 
           {/**user resume section */}
-          <UserResume defaultResume={defaultResume} />
+          <UserResume defaultResume={defaultResume ?? user.resumes[0]} />
 
           {/**user job table */}
           <AppliedJobs jobs={user.jobs} />

@@ -122,8 +122,8 @@ export default function NoteEditorBase({
         >
           <Button
             type="submit"
-            className="md:w-1/3 
-        w-1/2"
+            className="md:w-1/6
+            w-1/2"
           >
             {uploading ? (
               <LoaderCircle className="animate-spin mr-1" />
@@ -136,8 +136,8 @@ export default function NoteEditorBase({
             type="button"
             variant="outline"
             onClick={() => setEditMode(false)}
-            className="md:w-1/3 
-        w-1/2"
+            className="md:w-1/6
+            w-1/2"
           >
             Cancel
           </Button>

@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import DashboardNavbar from "./DashboardNavbar";
+import { getUserByEmail } from "@/lib/queries/userQueries";
+import { searchJobs } from "@/lib/queries/jobQueries";
 
 interface SearchParams {
   search?: string;
@@ -46,10 +48,8 @@ export default async function DashboardPage({
     );
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-    select: { id: true },
-  });
+  //await since its a promise
+  const user = await getUserByEmail(session.user.email);
 
   if (!user) {
     return (
@@ -67,25 +67,13 @@ export default async function DashboardPage({
   const searchQuery = typeof search === "string" ? search.trim() : "";
   const locationQuery = typeof location === "string" ? location.trim() : "";
 
-  const jobs = await prisma.job.findMany({
-    where: {
-      userId: user.id,
-      stage: "DEFAULT",
-      ...(searchQuery && {
-        OR: [
-          { title: { contains: searchQuery, mode: "insensitive" } },
-          { company: { contains: searchQuery, mode: "insensitive" } },
-          { aiSummary: { contains: searchQuery, mode: "insensitive" } },
-        ],
-      }),
-      ...(locationQuery && {
-        location: { contains: locationQuery, mode: "insensitive" },
-      }),
-      ...(employment && { employment: employment as string }),
-      ...(remoteType && { remoteType: remoteType as string }),
-      ...(salaryMin && { salaryMin: { gte: Number(salaryMin) } }),
-    },
-    orderBy: { postedAt: "desc" },
+  const jobs = await searchJobs({
+    userId: user.id,
+    searchQuery,
+    locationQuery,
+    employment,
+    remoteType,
+    salaryMin: salaryMin ? Number(salaryMin) : undefined,
   });
 
   return (

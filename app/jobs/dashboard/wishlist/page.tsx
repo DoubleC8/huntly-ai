@@ -1,12 +1,12 @@
 import { auth } from "@/auth";
 import RecommendedJobs from "@/components/dashboard/RecommendedJobs";
-import { prisma } from "@/lib/prisma";
 import { JobStage } from "@/app/generated/prisma";
 import DashboardCard from "@/components/dashboard/DashboardCard";
+import { getUserByEmail } from "@/lib/queries/userQueries";
+import { getJobsByStage } from "@/lib/queries/jobQueries";
 
 export default async function wishlistedJobsPage() {
   const session = await auth();
-
   //extra security, we have middleware but this is just incase it doesnt work for some reason
   if (!session) {
     return (
@@ -16,7 +16,6 @@ export default async function wishlistedJobsPage() {
       </div>
     );
   }
-
   if (!session.user?.email) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
@@ -25,10 +24,7 @@ export default async function wishlistedJobsPage() {
     );
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  });
-
+  const user = await getUserByEmail(session.user.email);
   if (!user) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
@@ -37,15 +33,7 @@ export default async function wishlistedJobsPage() {
     );
   }
 
-  const jobs = await prisma.job.findMany({
-    where: {
-      userId: user.id,
-      stage: JobStage.WISHLIST,
-    },
-    orderBy: {
-      postedAt: "desc",
-    },
-  });
+  const jobs = await getJobsByStage(user.id, JobStage.WISHLIST);
 
   return (
     <div className="pageContainer">

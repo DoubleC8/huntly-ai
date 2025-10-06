@@ -2,9 +2,7 @@
 ├── app
 │   ├── actions
 │   │   ├── job-post
-│   │   │   ├── toggleWishlist.ts
-│   │   │   ├── updateJob.ts
-│   │   │   └── updateJobStage.ts
+│   │   │   └── updateJob.ts
 │   │   ├── profile
 │   │   │   ├── delete
 │   │   │   │   ├── deleteUserEducation.ts
@@ -102,18 +100,26 @@
 │   ├── dashboard
 │   │   ├── buttons
 │   │   │   ├── AddNoteButton.tsx
-│   │   │   ├── AppliedButton.tsx
-│   │   │   ├── InterviewingButton.tsx
-│   │   │   ├── OfferedPositionButon.tsx
 │   │   │   ├── RejectedButton.tsx
 │   │   │   ├── ShareJob.tsx
-│   │   │   └── StarButton.tsx
+│   │   │   ├── StarButton.tsx
+│   │   │   ├── UpdateJobStageButton.tsx
+│   │   │   └── UpdateJobStageDropdown.tsx
 │   │   ├── charts
 │   │   │   └── ResumeMatchScore.tsx
 │   │   ├── DashboardCard.tsx
-│   │   ├── DashboardJobPost.tsx
 │   │   ├── DashboardTitle.tsx
-│   │   ├── JobPageNotes.tsx
+│   │   ├── job-id-page
+│   │   │   ├── JobPageDescription.tsx
+│   │   │   ├── JobPageFooter.tsx
+│   │   │   ├── JobPageHeader.tsx
+│   │   │   ├── JobPageNavbar.tsx
+│   │   │   └── JobPageNotes.tsx
+│   │   ├── job-post
+│   │   │   ├── DashboardJobPost.tsx
+│   │   │   ├── JobPostDescription.tsx
+│   │   │   ├── JobPostFooter.tsx
+│   │   │   └── JobPostHeader.tsx
 │   │   ├── notes
 │   │   │   └── NoteEditorBase.tsx
 │   │   └── RecommendedJobs.tsx
@@ -260,4 +266,4 @@
 ├── tsconfig.json
 └── tsconfig.tsbuildinfo
 
-72 directories, 189 files
+74 directories, 193 files

@@ -57,24 +57,32 @@ export default function RejectedButton({
     });
   };
 
-  // Don't show the reject button if the job is already rejected
-  if (jobStage === JobStage.REJECTED) return null;
-
   const showButton =
     jobStage === null ||
     STAGE_ORDER.indexOf("APPLIED") <= STAGE_ORDER.indexOf(jobStage);
 
   if (!showButton) return null;
 
-  return (
+  return jobStage === null ||
+    STAGE_ORDER.indexOf("APPLIED") <= STAGE_ORDER.indexOf(jobStage) ? (
     <Dialog
       open={open}
       onOpenChange={() => {
         setOpen(true);
       }}
     >
-      <DialogTrigger asChild title="Mark Job as rejected">
-        <Trash2 className="text-muted-foreground ease-in-out duration-200 hover:text-[var(--app-red)] hover:cursor-pointer" />
+      <DialogTrigger
+        asChild
+        title="Mark Job as rejected"
+        disabled={jobStage === JobStage.REJECTED ? true : false}
+      >
+        <Trash2
+          className={
+            jobStage === JobStage.REJECTED
+              ? "text-[var(--app-red)] hover:cursor-pointer"
+              : "text-muted-foreground ease-in-out duration-200 hover:text-[var(--app-red)] hover:cursor-pointer"
+          }
+        />
       </DialogTrigger>
 
       <DialogContent>
@@ -108,5 +116,5 @@ export default function RejectedButton({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  ) : null;
 }

@@ -77,8 +77,9 @@ export default function UpdateJobStageButton({
     <button
       onClick={handleUpdateJobStage}
       disabled={isPending || isMaxStage}
+      title={`Mark as ${STAGE_LABELS[nextStage]}`}
       aria-pressed={isMaxStage}
-      className="transition-colors"
+      className="transition-colors ease-in-out duration-200 hover:cursor-pointer"
       style={{
         color: isMaxStage
           ? `var(${STAGE_COLORS[nextStage]})`

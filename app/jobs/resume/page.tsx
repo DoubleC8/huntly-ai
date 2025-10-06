@@ -1,6 +1,8 @@
 import { auth } from "@/auth";
 import ResumeTable from "@/components/resume/ResumeTable";
 import { prisma } from "@/lib/prisma";
+import { getResumesByUserId } from "@/lib/queries/resumeQueries";
+import { getUserByEmail } from "@/lib/queries/userQueries";
 
 export default async function ResumePage() {
   const session = await auth();
@@ -23,11 +25,7 @@ export default async function ResumePage() {
     );
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-    //we need this since users have a relationship with the resumes
-    include: { resumes: true },
-  });
+  const user = await getUserByEmail(session.user.email);
 
   if (!user) {
     return (
@@ -36,6 +34,8 @@ export default async function ResumePage() {
       </div>
     );
   }
+
+  const resumes = await getResumesByUserId(user.id);
 
   return (
     <div className="page">
@@ -46,7 +46,7 @@ export default async function ResumePage() {
         className="
             pageContainer !min-h-[94vh]"
       >
-        <ResumeTable resumes={user.resumes} email={user.email} />
+        <ResumeTable resumes={resumes} email={user.email} />
       </div>
     </div>
   );

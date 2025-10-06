@@ -3,7 +3,7 @@ import RejectedButton from "../buttons/RejectedButton";
 import ShareJobButton from "../buttons/ShareJob";
 import StarButton from "../buttons/StarButton";
 import { JobStage } from "@/app/generated/prisma";
-import { STAGE_MESSAGES } from "@/app/constants/jobStage";
+import { STAGE_MESSAGES, STAGE_ORDER } from "@/app/constants/jobStage";
 import UpdateJobStageButton from "../buttons/UpdateJobStageButton";
 import UpdateJobStageDropdown from "../buttons/UpdateJobStageDropdown";
 
@@ -20,6 +20,9 @@ export default function JobPageNavbar({
   jobStage: JobStage;
   jobSourceUrl: string;
 }) {
+  const applied =
+    jobStage === null ||
+    STAGE_ORDER.indexOf(jobStage) >= STAGE_ORDER.indexOf("APPLIED");
   return (
     <div
       className="md:justify-between
@@ -63,7 +66,7 @@ export default function JobPageNavbar({
         />
         <ShareJobButton jobSourceUrl={jobSourceUrl} />
         <a target="_blank" href={`${jobSourceUrl}`} rel="noopener noreferrer">
-          <Button className="w-40">Apply Now</Button>
+          <Button className="w-40">{applied ? "View Job" : "Apply Now"}</Button>
         </a>
       </div>
     </div>

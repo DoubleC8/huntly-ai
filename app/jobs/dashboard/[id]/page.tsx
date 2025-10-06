@@ -6,6 +6,8 @@ import JobPageHeader from "@/components/dashboard/job-id-page/JobPageHeader";
 import JobPageDescription from "@/components/dashboard/job-id-page/JobPageDescription";
 import JobPageNotes from "@/components/dashboard/job-id-page/JobPageNotes";
 import JobPageFooter from "@/components/dashboard/job-id-page/JobPageFooter";
+import { getUserByEmail } from "@/lib/queries/userQueries";
+import { getJobById } from "@/lib/queries/jobQueries";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -13,7 +15,6 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const session = await auth();
-
   if (!session) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
@@ -22,7 +23,6 @@ export default async function Page({ params }: PageProps) {
       </div>
     );
   }
-
   if (!session.user?.email) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
@@ -31,9 +31,7 @@ export default async function Page({ params }: PageProps) {
     );
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  });
+  const user = await getUserByEmail(session.user.email);
 
   if (!user) {
     return (
@@ -44,12 +42,7 @@ export default async function Page({ params }: PageProps) {
   }
 
   const { id } = await params;
-  const job = await prisma.job.findUnique({
-    where: {
-      id,
-    },
-  });
-
+  const job = await getJobById(id);
   if (!job) {
     return (
       <DashboardCard
