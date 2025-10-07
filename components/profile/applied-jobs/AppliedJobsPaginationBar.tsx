@@ -1,36 +1,63 @@
+"use client";
+
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export function AppliedJobsPaginationBar() {
+export function AppliedJobsPaginationBar({
+  currentPage,
+  totalPages,
+}: {
+  currentPage: number;
+  totalPages: number;
+}) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const handleNavigate = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", page.toString());
+    router.push(`?${params.toString()}`);
+  };
+
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious href="#" />
+          <PaginationPrevious
+            href="#"
+            onClick={() => handleNavigate(Math.max(1, currentPage - 1))}
+          />
         </PaginationItem>
+
+        {[...Array(totalPages)].map((_, i) => {
+          const page = i + 1;
+          return (
+            <PaginationItem key={page}>
+              <PaginationLink
+                href="#"
+                isActive={page === currentPage}
+                onClick={() => handleNavigate(page)}
+              >
+                {page}
+              </PaginationLink>
+            </PaginationItem>
+          );
+        })}
+
         <PaginationItem>
-          <PaginationLink href="#">1</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" isActive>
-            2
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">3</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext href="#" />
+          <PaginationNext
+            href="#"
+            onClick={() =>
+              handleNavigate(Math.min(totalPages, currentPage + 1))
+            }
+          />
         </PaginationItem>
       </PaginationContent>
     </Pagination>

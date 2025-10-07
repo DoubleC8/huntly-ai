@@ -49,7 +49,7 @@ export async function updateUserEducation(values: {
     });
   }
 
-  revalidatePath("/jobs/profile"); // or your profile route
+  revalidatePath("/jobs/profile");
 
   return education;
 }

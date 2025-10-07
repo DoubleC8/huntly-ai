@@ -6,27 +6,31 @@ import UserSkills from "@/components/profile/skills/UserSkills";
 import UserInfo from "@/components/profile/user-info/UserInfo";
 import UserResume from "@/components/profile/user-resume/UserResume";
 import { getDefaultResume } from "@/lib/queries/resumeQueries";
-import { getUserProfileData } from "@/lib/queries/userQueries";
+import { getUserProfileWithPaginatedJobs } from "@/lib/queries/userQueries";
 
-export default async function ProfilePage() {
+export default async function ProfilePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const session = await auth();
-  if (!session) {
+  if (!session?.user?.email) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
-        {" "}
         Please Sign In.
       </div>
     );
   }
-  if (!session.user?.email) {
-    return (
-      <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
-        User email not found.
-      </div>
-    );
-  }
 
-  const user = await getUserProfileData(session.user.email);
+  const params = await searchParams;
+  const currentPage = Number(params.page) || 1;
+  const limit = 10;
+
+  const { user, totalJobs } = await getUserProfileWithPaginatedJobs({
+    email: session.user.email,
+    page: currentPage,
+    limit,
+  });
   if (!user) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
@@ -35,7 +39,7 @@ export default async function ProfilePage() {
     );
   }
 
-  const defaultResume = await getDefaultResume(user.id);
+  const defaultResume = (await getDefaultResume(user.id)) ?? user.resumes[0];
 
   return (
     <div className="page">
@@ -44,21 +48,18 @@ export default async function ProfilePage() {
       </div>
 
       <div className="pageContainer">
-        <div className="bg-[var(--background)] h-fit  rounded-3xl shadow-md p-5 flex flex-col gap-5">
-          {/**user info section */}
+        <div className="bg-[var(--background)] h-fit rounded-3xl shadow-md p-5 flex flex-col gap-5">
           <UserInfo user={user} />
-
           <UserEducation education={user.education} />
-
           <UserSkills skills={user.skills} />
-
           <UserJobPreferences jobPreferences={user.jobPreferences} />
+          <UserResume defaultResume={defaultResume} />
 
-          {/**user resume section */}
-          <UserResume defaultResume={defaultResume ?? user.resumes[0]} />
-
-          {/**user job table */}
-          <AppliedJobs jobs={user.jobs} />
+          <AppliedJobs
+            initialJobs={user.jobs}
+            totalJobs={totalJobs}
+            limit={limit}
+          />
         </div>
       </div>
     </div>
