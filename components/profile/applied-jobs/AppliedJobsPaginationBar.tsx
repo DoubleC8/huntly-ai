@@ -28,11 +28,12 @@ export function AppliedJobsPaginationBar({
 
   return (
     <Pagination>
-      <PaginationContent>
+      <PaginationContent className="flex gap-3">
         <PaginationItem>
           <PaginationPrevious
             href="#"
             onClick={() => handleNavigate(Math.max(1, currentPage - 1))}
+            className="bg-[var(--card)]"
           />
         </PaginationItem>
 
@@ -44,6 +45,7 @@ export function AppliedJobsPaginationBar({
                 href="#"
                 isActive={page === currentPage}
                 onClick={() => handleNavigate(page)}
+                className="bg-[var(--card)]"
               >
                 {page}
               </PaginationLink>
@@ -57,6 +59,7 @@ export function AppliedJobsPaginationBar({
             onClick={() =>
               handleNavigate(Math.min(totalPages, currentPage + 1))
             }
+            className="bg-[var(--card)]"
           />
         </PaginationItem>
       </PaginationContent>

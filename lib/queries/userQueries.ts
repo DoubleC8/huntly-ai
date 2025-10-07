@@ -12,7 +12,7 @@ export async function getUserWithJobs(email: string) {
   });
 }
 
-export async function getUserProfileWithPaginatedJobs({
+export async function getUserProfileData({
   email,
   page,
   limit,

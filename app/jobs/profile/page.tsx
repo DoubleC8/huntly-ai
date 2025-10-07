@@ -6,7 +6,7 @@ import UserSkills from "@/components/profile/skills/UserSkills";
 import UserInfo from "@/components/profile/user-info/UserInfo";
 import UserResume from "@/components/profile/user-resume/UserResume";
 import { getDefaultResume } from "@/lib/queries/resumeQueries";
-import { getUserProfileWithPaginatedJobs } from "@/lib/queries/userQueries";
+import { getUserProfileData } from "@/lib/queries/userQueries";
 
 export default async function ProfilePage({
   searchParams,
@@ -26,7 +26,7 @@ export default async function ProfilePage({
   const currentPage = Number(params.page) || 1;
   const limit = 10;
 
-  const { user, totalJobs } = await getUserProfileWithPaginatedJobs({
+  const { user, totalJobs } = await getUserProfileData({
     email: session.user.email,
     page: currentPage,
     limit,

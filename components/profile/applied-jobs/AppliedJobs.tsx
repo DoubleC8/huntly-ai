@@ -8,7 +8,7 @@ import { useEffect, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { LoaderCircle } from "lucide-react";
-import { getPaginatedJobsAction } from "@/app/actions/profile/get/getPaginatedJobs";
+import { getPaginatedJobs } from "@/app/actions/profile/get/getPaginatedJobs";
 
 export default function AppliedJobs({
   initialJobs,
@@ -22,7 +22,7 @@ export default function AppliedJobs({
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
   const [isPending, startTransition] = useTransition();
 
-  const router = useRouter(); // ✅ fixed
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const currentPage = Number(searchParams.get("page")) || 1;
@@ -30,7 +30,7 @@ export default function AppliedJobs({
 
   useEffect(() => {
     startTransition(async () => {
-      const { jobs } = await getPaginatedJobsAction(currentPage, limit);
+      const { jobs } = await getPaginatedJobs(currentPage, limit);
       setJobs(jobs);
     });
   }, [currentPage, limit]);
