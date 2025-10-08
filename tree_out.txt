@@ -8,6 +8,8 @@
 │   │   │   │   ├── deleteUserEducation.ts
 │   │   │   │   ├── deleteUserJobPreference.ts
 │   │   │   │   └── deleteUserSkill.ts
+│   │   │   ├── get
+│   │   │   │   └── getPaginatedJobs.ts
 │   │   │   └── update
 │   │   │       ├── updateUserEducation.ts
 │   │   │       ├── updateUserInfo.ts
@@ -142,6 +144,7 @@
 │   ├── profile
 │   │   ├── applied-jobs
 │   │   │   ├── AppliedJobs.tsx
+│   │   │   ├── AppliedJobsPaginationBar.tsx
 │   │   │   └── JobsTable.tsx
 │   │   ├── education
 │   │   │   ├── DeleteEducationEntry.tsx
@@ -156,6 +159,8 @@
 │   │   │   ├── DeleteSkill.tsx
 │   │   │   ├── UserSkills.tsx
 │   │   │   └── UserSkillsSidebar.tsx
+│   │   ├── ui
+│   │   │   └── JobsTableSkeleton.tsx
 │   │   ├── user-info
 │   │   │   ├── UserInfo.tsx
 │   │   │   └── UserInfoSidebar.tsx
@@ -203,6 +208,10 @@
 │   ├── date-utils.ts
 │   ├── phone-utils.ts
 │   ├── prisma.ts
+│   ├── queries
+│   │   ├── jobQueries.ts
+│   │   ├── resumeQueries.ts
+│   │   └── userQueries.ts
 │   ├── supabase
 │   │   ├── client.ts
 │   │   └── server.ts
@@ -264,6 +273,7 @@
 ├── README.md
 ├── tree_out.txt
 ├── tsconfig.json
-└── tsconfig.tsbuildinfo
+├── tsconfig.tsbuildinfo
+└── types
 
-74 directories, 193 files
+78 directories, 199 files

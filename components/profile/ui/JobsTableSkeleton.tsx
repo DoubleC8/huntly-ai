@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function JobsTableSkeleton({ rows = 5 }: { rows?: number }) {
+export default function JobsTableSkeleton({ rows = 3 }: { rows?: number }) {
   return (
     <div className="w-full">
       <Skeleton className="mx-auto rounded-t-2xl h-13 bg-zinc-300"></Skeleton>

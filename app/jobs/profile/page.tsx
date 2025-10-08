@@ -3,10 +3,14 @@ import AppliedJobs from "@/components/profile/applied-jobs/AppliedJobs";
 import UserEducation from "@/components/profile/education/UserEducation";
 import UserJobPreferences from "@/components/profile/job-preferences/UserJobPreferences";
 import UserSkills from "@/components/profile/skills/UserSkills";
+import JobsTableSkeleton from "@/components/profile/ui/JobsTableSkeleton";
+import UserProfileSkeleton from "@/components/profile/ui/UserProfileSkeleton";
+import UserResumeSkeleton from "@/components/profile/ui/UserResumeSkeleton";
 import UserInfo from "@/components/profile/user-info/UserInfo";
 import UserResume from "@/components/profile/user-resume/UserResume";
 import { getDefaultResume } from "@/lib/queries/resumeQueries";
 import { getUserProfileData } from "@/lib/queries/userQueries";
+import { Suspense } from "react";
 
 export default async function ProfilePage({
   searchParams,
@@ -49,11 +53,25 @@ export default async function ProfilePage({
 
       <div className="pageContainer">
         <div className="bg-[var(--background)] h-fit rounded-3xl shadow-md p-5 flex flex-col gap-5">
-          <UserInfo user={user} />
-          <UserEducation education={user.education} />
-          <UserSkills skills={user.skills} />
-          <UserJobPreferences jobPreferences={user.jobPreferences} />
-          <UserResume defaultResume={defaultResume} />
+          <Suspense fallback={<UserProfileSkeleton />}>
+            <UserInfo user={user} />
+          </Suspense>
+
+          <Suspense fallback={<UserProfileSkeleton />}>
+            <UserEducation education={user.education} />
+          </Suspense>
+
+          <Suspense fallback={<UserProfileSkeleton />}>
+            <UserSkills skills={user.skills} />
+          </Suspense>
+
+          <Suspense fallback={<UserProfileSkeleton />}>
+            <UserJobPreferences jobPreferences={user.jobPreferences} />
+          </Suspense>
+
+          <Suspense fallback={<UserResumeSkeleton />}>
+            <UserResume defaultResume={defaultResume} />
+          </Suspense>
 
           <AppliedJobs
             initialJobs={user.jobs}

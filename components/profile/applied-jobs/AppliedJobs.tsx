@@ -7,7 +7,6 @@ import { AppliedJobsPaginationBar } from "./AppliedJobsPaginationBar";
 import { useEffect, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { LoaderCircle } from "lucide-react";
 import { getPaginatedJobs } from "@/app/actions/profile/get/getPaginatedJobs";
 import JobsTableSkeleton from "../ui/JobsTableSkeleton";
 
