@@ -9,6 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { LoaderCircle } from "lucide-react";
 import { getPaginatedJobs } from "@/app/actions/profile/get/getPaginatedJobs";
+import JobsTableSkeleton from "../ui/JobsTableSkeleton";
 
 export default function AppliedJobs({
   initialJobs,
@@ -56,13 +57,7 @@ export default function AppliedJobs({
       <h2 className="font-bold text-xl">Jobs You have Applied to</h2>
 
       <div className="flex flex-col items-center gap-3">
-        {isPending ? (
-          <div className="flex flex-col items-center justify-center py-8">
-            <LoaderCircle className="animate-spin text-[var(--app-blue)]" />
-          </div>
-        ) : (
-          <JobsTable jobs={jobs} />
-        )}
+        {isPending ? <JobsTableSkeleton /> : <JobsTable jobs={jobs} />}
 
         <AppliedJobsPaginationBar
           currentPage={currentPage}
