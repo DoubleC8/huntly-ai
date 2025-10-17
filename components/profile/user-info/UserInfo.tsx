@@ -5,10 +5,10 @@ import {
   Building2,
   LucideIcon,
   Mail,
-  PanelTop,
   Phone,
   GitBranch,
   ExternalLink,
+  UserRound,
 } from "lucide-react";
 import { formatPhoneForDisplay } from "@/lib/utils";
 import UserInfoSidebar from "./UserInfoSidebar";
@@ -31,7 +31,7 @@ export default function UserInfo({ user }: { user: User }) {
     {
       label: "Portfolio",
       value: user.portfolioUrl,
-      icon: PanelTop,
+      icon: UserRound,
       isLink: true,
     },
     {

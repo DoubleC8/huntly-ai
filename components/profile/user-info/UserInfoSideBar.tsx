@@ -30,11 +30,17 @@ import { useState } from "react";
 const formSchema = z.object({
   githubUrl: z
     .url("Must Be valid URL")
-    .max(150, "GitHub URL must be under 150 characters")
+    .max(150, "URL must be under 150 characters")
+    .refine((url) => url.includes("github.com"), {
+      message: "The link must be a valid GitHub URL.",
+    })
     .optional(),
   linkedInUrl: z
     .url("Must Be valid URL")
-    .max(150, "LinkedIn URL must be under 150 characters")
+    .max(150, "URL must be under 150 characters")
+    .refine((url) => url.includes("linkedin.com"), {
+      message: "The link must be a valid LinkedIn URL.",
+    })
     .optional(),
   portfolioUrl: z
     .url("Must Be valid URL")
@@ -135,8 +141,8 @@ export default function UserInfoSidebar({ user }: { user: User }) {
                       />
                     </FormControl>
                     <FormDescription>
-                      Provide your LinkedIn profile link to share it with
-                      recruiters and to network.
+                      Add your LinkedIn URL for quick access when applications
+                      request it.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
