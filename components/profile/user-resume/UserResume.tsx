@@ -20,7 +20,14 @@ export default function UserResume({
             <strong className="text-[var(--app-blue)]">Default Resume</strong>.
             It’s the one Huntly AI will use to calculate match scores when
             comparing you to job listings. You can change your default resume at
-            any time in the Resume tab.
+            any time on the{" "}
+            <Link
+              href={"/jobs/resume"}
+              className="ease-in-out duration-200 hover:cursor-pointer hover:text-[var(--app-blue)]"
+            >
+              Resume Page
+            </Link>
+            .
           </p>
         </>
       ) : (

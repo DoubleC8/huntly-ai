@@ -41,15 +41,29 @@ import {
 } from "@/components/ui/sheet";
 import { updateUserEducation } from "@/app/actions/profile/update/updateUserEducation";
 
-const formSchema = z.object({
-  school: z.string().min(1, "School name is required").max(150),
-  major: z.string().max(150).optional(),
-  degree: z.string().min(1, "Degree is required").max(150),
-  gpa: z.string().max(10).optional(),
-  startDate: z.date().optional(),
-  endDate: z.date().optional(),
-  onGoing: z.boolean().optional(),
-});
+const formSchema = z
+  .object({
+    school: z.string().min(1, "School name is required").max(150),
+    major: z.string().max(150).optional(),
+    degree: z.string().min(1, "Degree is required").max(150),
+    gpa: z.string().max(10).optional(),
+    startDate: z.date().optional(),
+    endDate: z.date().optional(),
+    onGoing: z.boolean().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.onGoing) return true;
+      if (data.startDate && data.endDate) {
+        return data.startDate <= data.endDate;
+      }
+      return true;
+    },
+    {
+      message: "Start date must be before the end date.",
+      path: ["endDate"],
+    }
+  );
 
 export default function UserEducationSidebar({
   education,
