@@ -1,6 +1,7 @@
 "use client";
 
 import { Resume } from "@/app/generated/prisma";
+import TargetJobTitle from "@/components/resume/TargetJobTitle";
 import {
   Table,
   TableBody,
@@ -50,11 +51,10 @@ export default function DefaultResume({ resume }: { resume: Resume }) {
 
           {/* Target Job Title */}
           <TableCell className="md:table-cell hidden text-muted-foreground">
-            {resume.targetJobTitle ? (
-              <p>{resume.targetJobTitle}</p>
-            ) : (
-              <p>No Target Job Title Set...</p>
-            )}
+            <TargetJobTitle
+              resumeJobTitle={resume.targetJobTitle ?? ""}
+              resumeId={resume.id}
+            />
           </TableCell>
 
           {/* Resume Link */}

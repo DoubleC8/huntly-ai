@@ -23,7 +23,6 @@ export async function DeleteUserField(field: FieldType, value?: string) {
 
     if (field === "email") throw new Error("Cannot Delete Email Field.")
 
-
     const email = session.user.email;
 
     switch (field) {

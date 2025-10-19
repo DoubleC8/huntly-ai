@@ -24,7 +24,7 @@ import {
 import { LoaderCircle, Plus, SquarePlus } from "lucide-react";
 import { useState } from "react";
 import { TagsInput } from "@/components/ui/TagsInput";
-import { updateUserSkills } from "@/app/actions/profile/update/updateUserInfo";
+import { UpdateUserField } from "@/app/actions/profile/update/updateUserInfo";
 
 const formSchema = z.object({
   skills: z
@@ -49,7 +49,7 @@ export default function UserSkillsSidebar() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setUploading(true);
     try {
-      await updateUserSkills(values.skills ?? []);
+      await UpdateUserField("skills", values.skills);
       toast.success("Skills added successfully!", {
         description: `${
           values.skills?.length ?? 0

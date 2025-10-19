@@ -24,8 +24,12 @@ import {
 } from "@/components/ui/sheet";
 import { LoaderCircle, Plus, SquarePen } from "lucide-react";
 import { User } from "@/app/generated/prisma";
-import { updateUserPersonalInfo } from "@/app/actions/profile/update/updateUserInfo";
+
 import { useState } from "react";
+import {
+  UpdateUserField,
+  updateUserPersonalInfo,
+} from "@/app/actions/profile/update/updateUserInfo";
 
 const urlField = (pattern: RegExp, msg: string) =>
   z
@@ -71,9 +75,39 @@ export default function UserInfoSidebar({ user }: { user: User }) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setUploading(true);
     try {
-      await updateUserPersonalInfo(values);
-      console.log(values);
-      toast.success("Information updated successfully!");
+      // compare each field with the original user values
+      const changedEntries = Object.entries(values).filter(([key, value]) => {
+        // normalize both sides to strings for safe comparison
+        const currentValue =
+          (user[key as keyof typeof values] ?? "")?.trim?.() ?? "";
+        const newValue = (value ?? "")?.trim?.() ?? "";
+        return newValue !== currentValue && newValue !== "";
+      });
+
+      // if nothing changed
+      if (changedEntries.length === 0) {
+        toast.info("No values changed.");
+        setUploading(false);
+        return;
+      }
+
+      // convert to object for backend
+      const changedValues = Object.fromEntries(changedEntries);
+
+      // perform update
+      await updateUserPersonalInfo(changedValues);
+
+      // create readable field labels
+      const formattedKeys = changedEntries
+        .map(([key]) =>
+          key
+            .replace(/Url$/, " URL")
+            .replace(/([A-Z])/g, " $1")
+            .trim()
+        )
+        .join(", ");
+
+      toast.success(`Updated ${formattedKeys}!`);
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to update information.", {

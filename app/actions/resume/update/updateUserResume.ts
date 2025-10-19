@@ -88,5 +88,6 @@ export async function makeResumeDefault( id: string ){
   });
 
   revalidatePath("/jobs/resume");
+  revalidatePath("/jobs/profile");
   return updatedResume;
 }

@@ -60,8 +60,21 @@ const formSchema = z
       return true;
     },
     {
-      message: "Start date must be before the end date.",
+      message: "End Date must be after Start Date.",
       path: ["endDate"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.onGoing) return true;
+      if (data.startDate && data.endDate) {
+        return data.startDate >= data.endDate;
+      }
+      return true;
+    },
+    {
+      message: "Start Date must be after End Date.",
+      path: ["startDate"],
     }
   );
 

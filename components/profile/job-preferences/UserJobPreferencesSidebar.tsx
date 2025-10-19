@@ -24,7 +24,7 @@ import {
 import { LoaderCircle, Plus, SquarePlus } from "lucide-react";
 import { useState } from "react";
 import { TagsInput } from "@/components/ui/TagsInput";
-import { updateUserJobPreference } from "@/app/actions/profile/update/updateUserInfo";
+import { UpdateUserField } from "@/app/actions/profile/update/updateUserInfo";
 
 const formSchema = z.object({
   jobPreferences: z
@@ -49,7 +49,7 @@ export default function UserJobPreferencesSidebar() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setUploading(true);
     try {
-      await updateUserJobPreference(values.jobPreferences ?? []);
+      await UpdateUserField("jobPreferences", values.jobPreferences);
       toast.success("Job preferences added successfully!", {
         description: `${
           values.jobPreferences?.length ?? 0
