@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import UserJobPreferencesSidebar from "./UserJobPreferencesSidebar";
-import DeleteJobPrefence from "./DeleteJobPreference";
 import { formatEntry } from "@/lib/utils";
+import DeleteUserFieldButton from "../buttons/DeleteUserFieldButton";
 
 export default function UserJobPreferences({
   jobPreferences,
@@ -21,7 +21,7 @@ export default function UserJobPreferences({
             <div key={index} className="flex flex-col gap-2">
               <Badge className="flex font-semibold items-center text-[var(--background)] bg-[var(--app-light-blue)] gap-3">
                 {formatEntry(job)}
-                <DeleteJobPrefence preference={job} />
+                <DeleteUserFieldButton field="jobPreferences" value={job} />
               </Badge>
             </div>
           ))

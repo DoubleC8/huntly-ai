@@ -13,7 +13,7 @@ import { useState } from "react";
 import { Education } from "@/app/generated/prisma";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { DeleteUserEducation } from "@/app/actions/profile/delete/deleteUserProfileEntry";
+import { DeleteUserField } from "@/app/actions/profile/delete/deleteUserProfileEntry";
 
 export default function DeleteEducationEntry({
   education,
@@ -26,7 +26,7 @@ export default function DeleteEducationEntry({
   async function handleDelete() {
     setDeleting(true);
     try {
-      await DeleteUserEducation(education.id);
+      await DeleteUserField("education", education.id);
       toast.success("Education entry deleted successfully!");
     } catch (error) {
       console.error("Form submission error", error);

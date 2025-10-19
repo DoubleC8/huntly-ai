@@ -5,65 +5,62 @@ import { updateUserArrayEntry } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 
+export type FieldType =     
+  | "email"
+  | "education"
+  | "skills"
+  | "jobPreferences"
+  | "githubUrl"
+  | "linkedInUrl"
+  | "portfolioUrl"
+  | "phoneNumber"
+  | "city";
 
-export async function DeleteProfileEntry(entry: string) {
+
+export async function DeleteUserField(field: FieldType, value?: string) {
     const session = await auth();
     if(!session?.user?.email) throw new Error("Unauthorized");
 
-    
-}
+    if (field === "email") throw new Error("Cannot Delete Email Field.")
 
-export async function DeleteUserSkill(skill: string){
-    const session = await auth();
-    if (!session?.user?.email) throw new Error("Unauthorized");
 
-    const updatedUser = await updateUserArrayEntry(
-        session.user.email,
-        "skills",
-        skill, 
-        "remove"
-    );
+    const email = session.user.email;
 
-    revalidatePath("/jobs/profile");
-    return updatedUser;
-}
+    switch (field) {
+        case "skills":
+        case "jobPreferences":
+        if (!value) throw new Error("Value required");
+        await updateUserArrayEntry(email, field, value, "remove");
+        break;
 
-export async function DeleteUserJobPreference(preference: string){
-    const session = await auth();
-    if (!session?.user?.email) throw new Error("Unauthorized");
+        case "education":
+        if (!value) throw new Error("Education ID required");
+        const user = await prisma.user.findUnique({
+            where: { email },
+            include: { education: true },
+        });
+        if (!user) throw new Error("User not found");
+        await prisma.education.delete({
+            where: {
+            id_userId: { id: value, userId: user.id },
+            },
+        });
+        break;
 
-    const updatedUser = await updateUserArrayEntry(
-        session.user.email, 
-        "jobPreferences", 
-        preference, 
-        "remove"
-    );
+        case "githubUrl":
+        case "linkedInUrl":
+        case "portfolioUrl":
+        case "phoneNumber":
+        case "city":
+        await prisma.user.update({
+            where: { email },
+            data: { [field]: null },
+        });
+        break;
 
-    revalidatePath("/jobs/profile");
-    return updatedUser;
-}
+        default:
+        throw new Error(`Unsupported field type: ${field}`);
+  }
 
-export async function DeleteUserEducation(id: string){
-    const session = await auth();
-    if (!session?.user?.email) throw new Error("Unauthorized");
-
-    const user = await prisma.user.findUnique({
-        where: { email: session?.user?.email}, 
-        include: { education: true }
-    })
-
-    if(!user) throw new Error("User not found")
-
-    const updatedUser = await prisma.education.delete({
-        where: { 
-            id_userId: {
-                id, 
-                userId: user.id
-            }
-        },
-    });
-
-    revalidatePath("/jobs/profile");
-
-    return updatedUser;
+  revalidatePath("/jobs/profile");
 }

@@ -27,31 +27,31 @@ import { User } from "@/app/generated/prisma";
 import { updateUserPersonalInfo } from "@/app/actions/profile/update/updateUserInfo";
 import { useState } from "react";
 
+const urlField = (pattern: RegExp, msg: string) =>
+  z
+    .string()
+    .transform((val) => (val.trim() === "" ? undefined : val))
+    .optional()
+    .refine((val) => !val || pattern.test(val), { message: msg });
+
 const formSchema = z.object({
-  githubUrl: z
-    .url("Must Be valid URL")
-    .max(150, "URL must be under 150 characters")
-    .refine((url) => url.includes("github.com"), {
-      message: "The link must be a valid GitHub URL.",
-    })
-    .optional(),
-  linkedInUrl: z
-    .url("Must Be valid URL")
-    .max(150, "URL must be under 150 characters")
-    .refine((url) => url.includes("linkedin.com"), {
-      message: "The link must be a valid LinkedIn URL.",
-    })
-    .optional(),
-  portfolioUrl: z
-    .url("Must Be valid URL")
-    .max(150, "Portfolio URL must be under 150 characters")
-    .optional(),
+  githubUrl: urlField(/github\.com/, "Must be a valid GitHub URL."),
+  linkedInUrl: urlField(/linkedin\.com/, "Must be a valid LinkedIn URL."),
+  portfolioUrl: urlField(/^https?:\/\//, "Must be a valid URL."),
   phoneNumber: z
     .string()
-    .regex(/^\+?[0-9\s-]{7,20}$/, "Invalid phone number format")
-    .max(20, "Phone number too long")
-    .optional(),
-  city: z.string().max(50, "City name must be under 50 characters").optional(),
+    .transform((val) => (val.trim() === "" ? undefined : val))
+    .optional()
+    .refine((val) => !val || /^\+?[0-9\s-]{7,20}$/.test(val), {
+      message: "Invalid phone number format",
+    }),
+  city: z
+    .string()
+    .transform((val) => (val.trim() === "" ? undefined : val))
+    .optional()
+    .refine((val) => !val || val.length <= 50, {
+      message: "City name must be under 50 characters",
+    }),
 });
 
 export default function UserInfoSidebar({ user }: { user: User }) {

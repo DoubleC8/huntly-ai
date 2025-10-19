@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import UserSkillsSidebar from "./UserSkillsSidebar";
-import DeleteSkill from "./DeleteSkill";
+
 import { formatEntry } from "@/lib/utils";
+import DeleteUserFieldButton from "../buttons/DeleteUserFieldButton";
 
 export default function UserSkills({ skills }: { skills: string[] }) {
   return (
@@ -18,7 +19,7 @@ export default function UserSkills({ skills }: { skills: string[] }) {
             <div key={index} className="flex flex-col gap-2">
               <Badge className="flex font-semibold items-center text-[var(--background)] bg-[var(--app-dark-purple)] gap-3">
                 {formatEntry(skill)}
-                <DeleteSkill skill={skill} />
+                <DeleteUserFieldButton field="skills" value={skill} />
               </Badge>
             </div>
           ))
