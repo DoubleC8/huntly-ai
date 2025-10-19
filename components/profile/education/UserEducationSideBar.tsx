@@ -39,7 +39,7 @@ import {
   SheetTrigger,
   Sheet,
 } from "@/components/ui/sheet";
-import { updateUserEducation } from "@/app/actions/profile/update/updateUserEducation";
+import { updateUserEducation } from "@/app/actions/profile/update/updateUserInfo";
 
 const formSchema = z
   .object({
