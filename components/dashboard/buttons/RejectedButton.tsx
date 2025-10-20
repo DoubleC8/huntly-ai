@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { STAGE_ORDER } from "@/app/constants/jobStage";
-import { updateJob } from "@/app/actions/job-post/updateJob";
+import { updateJob } from "@/app/actions/jobs/updateJob";
 
 export default function RejectedButton({
   jobTitle,
@@ -38,13 +38,9 @@ export default function RejectedButton({
           jobId,
           stage: JobStage.REJECTED,
         });
-        toast.success(
-          `${jobTitle} at ${jobCompany} has been marked as rejected.`,
-          {
-            description:
-              "This job has been removed from your active applications.",
-          }
-        );
+        toast.success(`Moved job to ${JobStage.REJECTED.toLowerCase()}.`, {
+          description: `${jobTitle} @ ${jobCompany}`,
+        });
       } catch {
         toast.error("Failed to add job to rejected list.", {
           description: "Please try again later.",
@@ -65,12 +61,7 @@ export default function RejectedButton({
 
   return jobStage === null ||
     STAGE_ORDER.indexOf("APPLIED") <= STAGE_ORDER.indexOf(jobStage) ? (
-    <Dialog
-      open={open}
-      onOpenChange={() => {
-        setOpen(true);
-      }}
-    >
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         asChild
         title="Mark Job as rejected"

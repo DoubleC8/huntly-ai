@@ -34,7 +34,6 @@ const updateFields = base.extend({
     salaryMin: z.number().optional(),
     salaryMax: z.number().optional(),
     currency: z.string().optional(),
-    // add more fields as needed
   }),
 });
 

@@ -4,7 +4,7 @@ import { STAGE_ORDER } from "@/app/constants/jobStage";
 import { toast } from "sonner";
 import { Star } from "lucide-react";
 import { JobStage } from "@/app/generated/prisma";
-import { updateJob } from "@/app/actions/job-post/updateJob";
+import { updateJob } from "@/app/actions/jobs/updateJob";
 
 export default function StarButton({
   jobTitle,

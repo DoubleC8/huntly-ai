@@ -35,6 +35,7 @@ export async function updateUserResume({
   });
 
   revalidatePath("/jobs/resume");
+  revalidatePath("/jobs/profile");
 
   return newResume;
 }
@@ -55,6 +56,7 @@ export async function updateUserResumeJobTitle(values: {
   })
 
   revalidatePath("/jobs/resume");
+  revalidatePath("/jobs/profile");
   return updatedResume;
 }
 

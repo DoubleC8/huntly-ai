@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -10,50 +12,82 @@ import { Button } from "../ui/button";
 import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
-import { STAGE_ORDER } from "@/app/constants/jobStage";
 import { formatJobDate, formatSalary } from "@/lib/date-utils";
 import RejectedButton from "../dashboard/buttons/RejectedButton";
+import { updateJob } from "@/app/actions/jobs/updateJob";
+import { useState } from "react";
 
-export default function JobColumnJobPost({ job }: { job: Job }) {
+/** Valid stage order for navigation */
+const stageOrder: JobStage[] = ["APPLIED", "INTERVIEW", "OFFER"];
+
+/** Helper to find next/previous stage */
+function getAdjacentStage(
+  stage: JobStage,
+  direction: "up" | "down"
+): JobStage | null {
+  const index = stageOrder.indexOf(stage);
+  if (index === -1) return null;
+
+  return direction === "up"
+    ? stageOrder[index - 1] ?? null
+    : stageOrder[index + 1] ?? null;
+}
+
+export default function JobColumnJobPost({
+  job,
+  isDraggable = true,
+  onStageChange,
+}: {
+  job: Job;
+  isDraggable?: boolean;
+  onStageChange?: (jobId: string, newStage: JobStage) => void;
+}) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: job.id,
-      data: {
-        job,
-      },
+      data: { job },
+      disabled: !isDraggable,
     });
 
-  // const moveJobStage = async (direction: "up" | "down") => {
-  //   const currentIndex = STAGE_ORDER.indexOf(job.stage as JobStage);
-  //   const newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+  const [updating, setUpdating] = useState(false);
 
-  //   if (newIndex < 0 || newIndex >= STAGE_ORDER.length) return;
+  /** Mobile stage change handler */
+  async function handleStageChange(direction: "up" | "down") {
+    const nextStage = getAdjacentStage(job.stage, direction);
+    if (!nextStage) return;
 
-  //   const newStage = STAGE_ORDER[newIndex];
+    setUpdating(true);
 
-  //   if (!newStage) {
-  //     console.error("Invalid stage index:", newIndex);
-  //     return;
-  //   }
+    try {
+      // Update the visual state immediately
+      if (onStageChange) {
+        onStageChange(job.id, nextStage);
+      }
 
-  //   try {
-  //     await updateJobStage(job.id, newStage);
-  //     toast.success(
-  //       `Moved job to the ${
-  //         newStage.charAt(0).toUpperCase() + newStage.slice(1).toLowerCase()
-  //       } column.`,
-  //       {
-  //         description: "Congrats!",
-  //       }
-  //     );
-  //     const timer = setTimeout(() => {
-  //       window.location.reload();
-  //     }, 3000);
-  //     return () => clearTimeout(timer);
-  //   } catch {
-  //     toast.error("Failed to update job stage.");
-  //   }
-  // };
+      // Update the backend
+      await updateJob({
+        type: "setStage",
+        jobId: job.id,
+        stage: nextStage,
+      });
+
+      toast.success(`Moved job to ${nextStage.toLowerCase()} stage.`, {
+        description: `${job.title} @ ${job.company}`,
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update job stage.", {
+        description: "Please try again later.",
+      });
+
+      // Revert the visual state on error
+      if (onStageChange) {
+        onStageChange(job.id, job.stage);
+      }
+    } finally {
+      setUpdating(false);
+    }
+  }
 
   return (
     <Card
@@ -66,23 +100,25 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
         opacity: isDragging ? 0.6 : 1,
         zIndex: isDragging ? 50 : 0,
         position: isDragging ? "absolute" : "relative",
-        width: isDragging ? "24%" : "",
+        width: isDragging ? "24%" : "100%",
       }}
-      className="lg:min-h-[32%] lg:h-[32%] lg:max-h-fit lg:overflow-y-auto
-      flex flex-col gap-3 justify-between p-3"
+      className="p-3 flex flex-col justify-between"
     >
+      {/* HEADER */}
       <CardHeader
-        className="flex gap-3 items-center justify-between p-0 cursor-grab active:cursor-grabbing"
-        {...listeners}
-        {...attributes}
+        className={`flex gap-3 items-center justify-between p-0 ${
+          isDraggable ? "cursor-grab active:cursor-grabbing" : ""
+        }`}
+        {...(isDraggable ? listeners : {})}
+        {...(isDraggable ? attributes : {})}
       >
         <div className="flex gap-3">
-          <a target="_blank" href="https://logo.dev" rel="noopener noreferrer">
+          <a target="_blank" href={job.sourceUrl} rel="noopener noreferrer">
             <Image
               src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
               width={45}
               height={45}
-              alt="Logo API"
+              alt="Company Logo"
               className="rounded-lg"
             />
           </a>
@@ -93,12 +129,10 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
             </p>
           </div>
         </div>
-        <span
-          className="lg:hidden
-          block"
-        ></span>
       </CardHeader>
-      <CardContent className="flex justify-start p-0">
+
+      {/* CONTENT */}
+      <CardContent className="flex justify-start p-0 mt-2">
         <div className="font-medium text-xs text-muted-foreground">
           <p>
             Salary: ${formatSalary(job.salaryMin)} - $
@@ -110,31 +144,49 @@ export default function JobColumnJobPost({ job }: { job: Job }) {
           {job.postedAt ? (
             <p>Posted: {formatJobDate(job.postedAt)}</p>
           ) : (
-            <p>We found this job for you {formatJobDate(job.createdAt)}</p>
+            <p>Added: {formatJobDate(job.createdAt)}</p>
           )}
         </div>
       </CardContent>
-      <CardFooter
-        className="md:gap-3 md:justify-center
-       flex items-center justify-between"
-      >
-        <Button className="lg:hidden">
-          <ChevronUp />
-        </Button>
+
+      {/* FOOTER */}
+      <CardFooter className="flex items-center justify-between md:gap-3 md:justify-center">
+        {/* Mobile Up Button */}
+        {job.stage !== JobStage.APPLIED && (
+          <Button
+            variant="ghost"
+            className="lg:hidden"
+            disabled={updating}
+            onClick={() => handleStageChange("up")}
+          >
+            <ChevronUp className={updating ? "animate-pulse" : ""} />
+          </Button>
+        )}
+
+        {/* Center Actions */}
         <div className="flex items-center gap-3 mx-auto">
           <a href={job.sourceUrl} target="_blank" rel="noopener noreferrer">
-            <Button>View Job Posting</Button>
+            <Button size="sm">View Job Posting</Button>
           </a>
-          <span
-            className="lg:block
-          hidden"
-          >
-            ={" "}
-          </span>
+          <RejectedButton
+            jobTitle={job.title}
+            jobCompany={job.company}
+            jobId={job.id}
+            jobStage={job.stage}
+          />
         </div>
-        <Button className="lg:hidden">
-          <ChevronDown />
-        </Button>
+
+        {/* Mobile Down Button */}
+        {job.stage !== JobStage.OFFER && (
+          <Button
+            variant="ghost"
+            className="lg:hidden"
+            disabled={updating}
+            onClick={() => handleStageChange("down")}
+          >
+            <ChevronDown className={updating ? "animate-pulse" : ""} />
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

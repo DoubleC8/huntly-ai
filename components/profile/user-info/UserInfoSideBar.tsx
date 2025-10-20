@@ -96,6 +96,7 @@ export default function UserInfoSidebar({ user }: { user: User }) {
 
       // perform update
       await updateUserPersonalInfo(changedValues);
+      form.reset(values);
 
       // create readable field labels
       const formattedKeys = changedEntries

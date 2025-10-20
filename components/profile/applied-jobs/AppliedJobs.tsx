@@ -5,7 +5,7 @@ import JobsTable from "./JobsTable";
 import Link from "next/link";
 import { AppliedJobsPaginationBar } from "./AppliedJobsPaginationBar";
 import { useEffect, useState, useTransition } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 import { getPaginatedJobs } from "@/app/actions/profile/get/getPaginatedJobs";
 import JobsTableSkeleton from "../ui/JobsTableSkeleton";
@@ -22,7 +22,6 @@ export default function AppliedJobs({
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
   const [isPending, startTransition] = useTransition();
 
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const currentPage = Number(searchParams.get("page")) || 1;

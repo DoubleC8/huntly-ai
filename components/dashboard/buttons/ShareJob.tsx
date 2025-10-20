@@ -15,7 +15,7 @@ export default function ShareJobButton({
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(
-        "Check out this job I just found: " + jobSourceUrl
+        "Check out this job Huntly Ai just found for me: " + jobSourceUrl
       );
       setIsCopied(true);
 

@@ -9,7 +9,7 @@ import {
   STAGE_ICONS,
 } from "@/app/constants/jobStage";
 import { LoaderCircle } from "lucide-react";
-import { updateJob } from "@/app/actions/job-post/updateJob";
+import { updateJob } from "@/app/actions/jobs/updateJob";
 
 export default function UpdateJobStageButton({
   jobTitle,

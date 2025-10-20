@@ -1,60 +1,63 @@
 "use client";
 
-import { CircleCheck, CircleUserRound, PartyPopper, Star } from "lucide-react";
-import JobColumn from "./JobColumn";
 import { Job, JobStage } from "@/app/generated/prisma";
-import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
+import { CircleCheck, CircleUserRound, PartyPopper } from "lucide-react";
+import JobColumn from "./JobColumn";
+import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import { toast } from "sonner";
 import { useState } from "react";
+import { toast } from "sonner";
 import useIsLargeScreen from "@/hooks/useIsLargeScreen";
 import ErrorBoundary from "../ui/ErrorBoundary";
+import { updateJob } from "@/app/actions/jobs/updateJob";
 
 export default function AppTrackerColumns({
-  wishlist,
-  applied,
-  interview,
-  offered,
+  groupedJobs,
 }: {
-  wishlist: Job[];
-  applied: Job[];
-  interview: Job[];
-  offered: Job[];
+  groupedJobs: Record<JobStage, Job[]>;
 }) {
+  const [columns, setColumns] = useState(groupedJobs);
   const isLargeScreen = useIsLargeScreen();
 
-  const [columns, setColumns] = useState<Record<JobStage, Job[]>>({
-    DEFAULT: [],
-    WISHLIST: wishlist,
-    APPLIED: applied,
-    INTERVIEW: interview,
-    OFFER: offered,
-    REJECTED: [],
-  });
-  //handles the drag and drop event
-  //uses toast to notify the user if the change was successful
-  //only calls the function if the job moves columns
-  const handleDragEnd = async (event: DragEndEvent) => {
+  // Function to handle stage changes from mobile buttons
+  const handleStageChange = (jobId: string, newStage: JobStage) => {
+    setColumns((prev) => {
+      const updated = { ...prev };
+
+      // Find the job in any column and remove it
+      Object.keys(updated).forEach((stage) => {
+        updated[stage as JobStage] = updated[stage as JobStage].filter(
+          (job) => job.id !== jobId
+        );
+      });
+
+      // Add the job to the new stage
+      const job = Object.values(prev)
+        .flat()
+        .find((j) => j.id === jobId);
+
+      if (job) {
+        updated[newStage] = [{ ...job, stage: newStage }, ...updated[newStage]];
+      }
+
+      return updated;
+    });
+  };
+
+  async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over) return;
 
     const jobId = active.id.toString();
     const destinationStage = over.id.toString() as JobStage;
 
-    // Validate destination stage
-    if (!destinationStage) {
-      console.error("Invalid destination stage:", over.id);
-      return;
-    }
-
-    // Skip if dropped into same column
     const sourceStage = Object.entries(columns).find(([, jobs]) =>
-      jobs.find((j) => j.id === jobId)
+      jobs.some((job) => job.id === jobId)
     )?.[0] as JobStage;
 
-    if (sourceStage === destinationStage) return;
+    if (!sourceStage || sourceStage === destinationStage) return;
 
-    const draggedJob = columns[sourceStage].find((job) => job.id === jobId);
+    const draggedJob = columns[sourceStage].find((j) => j.id === jobId);
     if (!draggedJob) return;
 
     setColumns((prev) => {
@@ -64,92 +67,81 @@ export default function AppTrackerColumns({
       return updated;
     });
 
-    //   try {
-    //     await updateJobStage(jobId, destinationStage);
-    //     toast.success(
-    //       `Moved job to the ${
-    //         destinationStage.charAt(0).toUpperCase() +
-    //         destinationStage.slice(1).toLowerCase()
-    //       } column.`,
-    //       {
-    //         description: "Congrats!",
-    //       }
-    //     );
-    //   } catch {
-    //     toast.error("Failed to update job stage. Reverting...");
+    try {
+      await updateJob({
+        type: "setStage",
+        jobId,
+        stage: destinationStage,
+      });
 
-    //     setColumns((prev) => {
-    //       const updated = { ...prev };
-    //       updated[destinationStage] = updated[destinationStage].filter(
-    //         (j) => j.id !== jobId
-    //       );
-    //       updated[sourceStage] = [draggedJob, ...updated[sourceStage]];
-    //       return updated;
-    //     });
-    //   }
-    // };
+      toast.success(
+        `Moved job to the ${destinationStage
+          .toLowerCase()
+          .replace(/^\w/, (c) => c.toUpperCase())} column!`
+      );
+    } catch (error) {
+      console.error("Error updating job stage: ", error);
+      toast.error("Failed to update job stage. Reverting...");
 
-    //checks if the screen is large, if it is then allow drag and drop else disable it
-    return isLargeScreen ? (
-      <ErrorBoundary>
+      setColumns((prev) => {
+        const updated = { ...prev };
+        updated[destinationStage] = updated[destinationStage].filter(
+          (j) => j.id !== jobId
+        );
+        updated[sourceStage] = [draggedJob, ...updated[sourceStage]];
+        return updated;
+      });
+    }
+  }
+
+  const gridContent = (
+    <div className="lg:grid-cols-3 grid grid-cols-1 gap-5 h-full min-h-0 flex-1">
+      <JobColumn
+        id="APPLIED"
+        jobs={columns.APPLIED}
+        title="Applied"
+        color="--app-dark-purple"
+        icon={CircleCheck}
+        description="Track jobs you've submitted an application to."
+        isDraggable={isLargeScreen}
+        onStageChange={handleStageChange}
+      />
+      <JobColumn
+        id="INTERVIEW"
+        jobs={columns.INTERVIEW}
+        title="Interview"
+        color="--app-blue"
+        icon={CircleUserRound}
+        description="Once you've landed an interview, it will show up here."
+        isDraggable={isLargeScreen}
+        onStageChange={handleStageChange}
+      />
+      <JobColumn
+        id="OFFER"
+        jobs={columns.OFFER}
+        title="Offer"
+        color="--app-light-blue"
+        icon={PartyPopper}
+        description="Congrats! Companies that have offered you a position will appear here."
+        isDraggable={isLargeScreen}
+        onStageChange={handleStageChange}
+      />
+    </div>
+  );
+
+  return (
+    <ErrorBoundary>
+      {isLargeScreen ? (
         <DndContext
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
           modifiers={[restrictToWindowEdges]}
         >
-          <Layout columns={columns} />
+          {gridContent}
         </DndContext>
-      </ErrorBoundary>
-    ) : (
-      <ErrorBoundary>
-        <Layout columns={columns} />
-      </ErrorBoundary>
-    );
-  };
-
-  function Layout({ columns }: { columns: Record<JobStage, Job[]> }) {
-    return (
-      <div
-        className="lg:flex-row lg:justify-between lg:h-[90vh]
-    relative w-full flex flex-col gap-3 "
-      >
-        <JobColumn
-          id="WISHLIST"
-          jobs={columns.WISHLIST}
-          title="Wishlist"
-          color="--app-purple"
-          icon={Star}
-          total_jobs={columns.WISHLIST.length}
-          description="Jobs you’re interested in but haven’t applied to yet. Start building your wishlist!"
-        />
-        <JobColumn
-          id="APPLIED"
-          jobs={columns.APPLIED}
-          title="Applied"
-          color="--app-dark-purple"
-          icon={CircleCheck}
-          total_jobs={columns.APPLIED.length}
-          description="Track jobs you've submitted an application to. Try applying to one today!"
-        />
-        <JobColumn
-          id="INTERVIEW"
-          jobs={columns.INTERVIEW}
-          title="Interview"
-          color="--app-blue"
-          icon={CircleUserRound}
-          total_jobs={columns.INTERVIEW.length}
-          description="Once you’ve landed an interview, it will show up here. Keep pushing!"
-        />
-        <JobColumn
-          id="OFFER"
-          jobs={columns.OFFER}
-          title="Offer"
-          color="--app-light-blue"
-          icon={PartyPopper}
-          total_jobs={columns.OFFER.length}
-          description="Congrats! Companies that have offered you a position will appear here. Time to celebrate!"
-        />
-      </div>
-    );
-  }
+      ) : (
+        gridContent
+      )}
+    </ErrorBoundary>
+  );
 }

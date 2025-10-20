@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { JobStage } from "@/app/generated/prisma";
-import { updateJob } from "@/app/actions/job-post/updateJob";
+import { updateJob } from "@/app/actions/jobs/updateJob";
 import {
   STAGE_COLORS,
   STAGE_ICONS,

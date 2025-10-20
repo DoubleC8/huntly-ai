@@ -3,7 +3,6 @@ import AppliedJobs from "@/components/profile/applied-jobs/AppliedJobs";
 import UserEducation from "@/components/profile/education/UserEducation";
 import UserJobPreferences from "@/components/profile/job-preferences/UserJobPreferences";
 import UserSkills from "@/components/profile/skills/UserSkills";
-import JobsTableSkeleton from "@/components/profile/ui/JobsTableSkeleton";
 import UserProfileSkeleton from "@/components/profile/ui/UserProfileSkeleton";
 import UserResumeSkeleton from "@/components/profile/ui/UserResumeSkeleton";
 import UserInfo from "@/components/profile/user-info/UserInfo";

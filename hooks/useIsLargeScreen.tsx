@@ -1,17 +1,24 @@
-import { useEffect, useState } from "react";
+"use client";
 
-export default function useIsLargeScreen(breakpoint = 1024) {
+import { useState, useEffect } from "react";
+
+export default function useIsLargeScreen() {
   const [isLargeScreen, setIsLargeScreen] = useState(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(`(min-width: ${breakpoint}px)`);
+    const checkScreenSize = () => {
+      setIsLargeScreen(window.innerWidth >= 1024); // lg breakpoint in Tailwind
+    };
 
-    const update = () => setIsLargeScreen(mediaQuery.matches);
-    update();
+    // Check initial screen size
+    checkScreenSize();
 
-    mediaQuery.addEventListener("change", update);
-    return () => mediaQuery.removeEventListener("change", update);
-  }, [breakpoint]);
+    // Add event listener for window resize
+    window.addEventListener("resize", checkScreenSize);
+
+    // Cleanup event listener on component unmount
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   return isLargeScreen;
 }
