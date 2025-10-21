@@ -45,7 +45,7 @@ export default function ActiveFiltersBar() {
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => router.push("/jobs/dashboard")}
+        onClick={() => router.replace("/jobs/dashboard")}
       >
         Clear all
       </Button>

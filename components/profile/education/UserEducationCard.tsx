@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { School } from "lucide-react";
 import DeleteEducationEntry from "./DeleteEducationEntry";
 import { format } from "date-fns";
-import UserEducationSidebar from "./UserEducationSideBar";
+import UserEducationSidebar from "./UserEducationSidebar";
 
 export function UserEducationCard({ education }: { education: Education }) {
   return (

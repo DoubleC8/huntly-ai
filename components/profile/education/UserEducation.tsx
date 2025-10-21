@@ -2,13 +2,22 @@ import { Education } from "@/app/generated/prisma";
 
 import Link from "next/link";
 import { UserEducationCard } from "./UserEducationCard";
-import UserEducationSidebar from "./UserEducationSideBar";
+import UserEducationSidebar from "./UserEducationSidebar";
 
 export default function UserEducation({
   education,
 }: {
   education: Education[];
 }) {
+  const sortedEducation: Education[] = [...education].sort((a, b) => {
+    const dateA = a.startDate ? new Date(a.startDate).getTime() : null;
+    const dateB = b.startDate ? new Date(b.startDate).getTime() : null;
+
+    if (dateA === null && dateB === null) return 0;
+    if (dateA === null) return 1;
+    if (dateB === null) return -1;
+    return dateA - dateB; // Changed to descending order (most recent first)
+  });
   return (
     <div className="h-fit flex flex-col gap-3">
       <div className="flex items-center justify-between w-full">
@@ -17,8 +26,8 @@ export default function UserEducation({
       </div>
 
       <div className="flex flex-col gap-3 flex-wrap">
-        {education.length ? (
-          education.map((edu) => (
+        {sortedEducation.length ? (
+          sortedEducation.map((edu) => (
             <UserEducationCard education={edu} key={edu.id} />
           ))
         ) : (
