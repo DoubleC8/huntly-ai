@@ -45,23 +45,28 @@ export async function updateUserPersonalInfo(values: {
     const session = await auth();
     if(!session?.user?.email) throw new Error("Unauthorized");
 
-    const cleanedValues = Object.fromEntries(
-        Object.entries(values).filter(([_, v]) => v !== undefined && v !== "")
-    );
-
-    const normalizedPhoneNumber = values.phoneNumber
-    ? normalizePhoneNumber(values.phoneNumber)
-    : null;
+    // Only include fields that are actually provided and not empty
+    const updateData: any = {};
+    
+    if (values.githubUrl !== undefined) {
+        updateData.githubUrl = values.githubUrl || null;
+    }
+    if (values.linkedInUrl !== undefined) {
+        updateData.linkedInUrl = values.linkedInUrl || null;
+    }
+    if (values.portfolioUrl !== undefined) {
+        updateData.portfolioUrl = values.portfolioUrl || null;
+    }
+    if (values.phoneNumber !== undefined) {
+        updateData.phoneNumber = values.phoneNumber ? normalizePhoneNumber(values.phoneNumber) : null;
+    }
+    if (values.city !== undefined) {
+        updateData.city = values.city || null;
+    }
 
     const updatedUser = await prisma.user.update({
         where: {email: session.user.email}, 
-        data: {
-            githubUrl: cleanedValues.githubUrl || null,
-            linkedInUrl: cleanedValues.linkedInUrl || null,
-            portfolioUrl: cleanedValues.portfolioUrl || null,
-            phoneNumber: normalizedPhoneNumber,
-            city: cleanedValues.city || null,
-        }
+        data: updateData
     })
 
     revalidatePath("/jobs/profile")

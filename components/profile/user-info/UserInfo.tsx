@@ -11,9 +11,10 @@ import {
   UserRound,
 } from "lucide-react";
 import { formatPhoneForDisplay } from "@/lib/utils";
-import UserInfoSidebar from "./UserInfoSidebar";
+
 import DeleteUserFieldButton from "../buttons/DeleteUserFieldButton";
 import { FieldType } from "@/app/actions/profile/delete/deleteUserProfileEntry";
+import UserInfoSidebar from "./UserInfoSidebar";
 
 export default function UserInfo({ user }: { user: User }) {
   const userFields: {

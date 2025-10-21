@@ -2,7 +2,7 @@ import { Education } from "@/app/generated/prisma";
 
 import Link from "next/link";
 import { UserEducationCard } from "./UserEducationCard";
-import UserEducationSidebar from "./UserEducationSidebar";
+import UserEducationSidebar from "./UserEducationSideBar";
 
 export default function UserEducation({
   education,
