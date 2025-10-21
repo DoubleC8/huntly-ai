@@ -21,11 +21,13 @@ export default function RejectedButton({
   jobCompany,
   jobId,
   jobStage,
+  onJobDeletion,
 }: {
   jobTitle: string;
   jobCompany: string;
   jobId: string;
   jobStage: JobStage | null;
+  onJobDeletion?: (jobId: string) => void;
 }) {
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
@@ -38,6 +40,12 @@ export default function RejectedButton({
           jobId,
           stage: JobStage.REJECTED,
         });
+
+        // Update the frontend immediately
+        if (onJobDeletion) {
+          onJobDeletion(jobId);
+        }
+
         toast.success(`Moved job to ${JobStage.REJECTED.toLowerCase()}.`, {
           description: `${jobTitle} @ ${jobCompany}`,
         });

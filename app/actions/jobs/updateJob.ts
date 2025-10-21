@@ -40,7 +40,8 @@ const updateFields = base.extend({
 const InputSchema = z.union([setStage, toggleWishlist, setNote, updateFields]);
 export type UpdateJobInput = z.infer<typeof InputSchema>;
 
-async function requireUser() {
+//used to verify user
+export async function requireUser() {
     const session = await auth();
     if (!session?.user?.email) throw new Error("Unauthorized");
 
@@ -52,7 +53,8 @@ async function requireUser() {
     return user;
 }
 
-async function requireOwnedJob(jobId: string, userId: string){
+//used to verify that the user owns the job 
+export async function requireOwnedJob(jobId: string, userId: string){
     const job = await prisma.job.findUnique({ where: { id: jobId }});
     if(!job || job.userId !== userId){
         throw new Error("Job not found or does not belong to the user");
@@ -64,7 +66,7 @@ async function requireOwnedJob(jobId: string, userId: string){
 function revalidateJobViews(jobId: string) {
   revalidatePath("/jobs/app-tracker");
   revalidatePath("/jobs/dashboard");
-  revalidatePath(`/jobs/dashboard/${jobId}`);
+  revalidatePath(`/jobs/dashboard/job/${jobId}`);
 }
 
 

@@ -10,6 +10,7 @@ import UserResume from "@/components/profile/user-resume/UserResume";
 import { getDefaultResume } from "@/lib/queries/resumeQueries";
 import { getUserProfileData } from "@/lib/queries/userQueries";
 import { Suspense } from "react";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 
 export default async function ProfilePage({
   searchParams,
@@ -52,31 +53,43 @@ export default async function ProfilePage({
 
       <div className="pageContainer">
         <div className="bg-[var(--background)] h-fit rounded-3xl shadow-md p-5 flex flex-col gap-5">
-          <Suspense fallback={<UserProfileSkeleton />}>
-            <UserInfo user={user} />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<UserProfileSkeleton />}>
+              <UserInfo user={user} />
+            </Suspense>
+          </ErrorBoundary>
 
-          <Suspense fallback={<UserProfileSkeleton />}>
-            <UserEducation education={user.education} />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<UserProfileSkeleton />}>
+              <UserEducation education={user.education} />
+            </Suspense>
+          </ErrorBoundary>
 
-          <Suspense fallback={<UserProfileSkeleton />}>
-            <UserSkills skills={user.skills} />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<UserProfileSkeleton />}>
+              <UserSkills skills={user.skills} />
+            </Suspense>
+          </ErrorBoundary>
 
-          <Suspense fallback={<UserProfileSkeleton />}>
-            <UserJobPreferences jobPreferences={user.jobPreferences} />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<UserProfileSkeleton />}>
+              <UserJobPreferences jobPreferences={user.jobPreferences} />
+            </Suspense>
+          </ErrorBoundary>
 
-          <Suspense fallback={<UserResumeSkeleton />}>
-            <UserResume defaultResume={defaultResume} />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<UserResumeSkeleton />}>
+              <UserResume defaultResume={defaultResume} />
+            </Suspense>
+          </ErrorBoundary>
 
-          <AppliedJobs
-            initialJobs={user.jobs}
-            totalJobs={totalJobs}
-            limit={limit}
-          />
+          <ErrorBoundary>
+            <AppliedJobs
+              initialJobs={user.jobs}
+              totalJobs={totalJobs}
+              limit={limit}
+            />
+          </ErrorBoundary>
         </div>
       </div>
     </div>

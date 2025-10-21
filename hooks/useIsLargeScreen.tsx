@@ -22,3 +22,4 @@ export default function useIsLargeScreen() {
 
   return isLargeScreen;
 }
+

@@ -1,4 +1,3 @@
-import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import JobPageNavbar from "@/components/dashboard/job-id-page/JobPageNavbar";
@@ -8,6 +7,7 @@ import JobPageNotes from "@/components/dashboard/job-id-page/JobPageNotes";
 import JobPageFooter from "@/components/dashboard/job-id-page/JobPageFooter";
 import { getUserByEmail } from "@/lib/queries/userQueries";
 import { getJobById } from "@/lib/queries/jobQueries";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -55,39 +55,49 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <div className="pageContainer">
-      {/**contains buttons and dropdown  */}
-      <JobPageNavbar
-        jobTitle={job.title}
-        jobCompany={job.company}
-        jobId={job.id}
-        jobStage={job.stage}
-        jobSourceUrl={job.sourceUrl}
-      />
-      <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-3 flex flex-col gap-3 justify-between">
-        {/**job header, contains job image, rank score, ai summary etc... */}
-        <JobPageHeader
+      <ErrorBoundary>
+        {/**contains buttons and dropdown  */}
+        <JobPageNavbar
           jobTitle={job.title}
           jobCompany={job.company}
-          jobPostedAt={job.postedAt ?? new Date()}
-          jobCreatedAt={job.postedAt ?? new Date()}
-          jobAiSummary={job.aiSummary ?? ""}
-          jobLocation={job.location}
-          jobEmployment={job.employment}
-          jobRemoteType={job.remoteType}
+          jobId={job.id}
+          jobStage={job.stage}
+          jobSourceUrl={job.sourceUrl}
         />
-        {/**description contains job description, responsibilities, etc */}
-        <JobPageDescription
-          jobDescription={job.description}
-          jobResponsibilities={job.responsibilities}
-          jobQualifications={job.qualifications}
-          jobSkills={job.skills}
-          jobTags={job.tags}
-        />
+      </ErrorBoundary>
+      <div className="bg-[var(--background)] h-fit min-h-[100vh] rounded-3xl shadow-md p-3 flex flex-col gap-3 justify-between">
+        <ErrorBoundary>
+          {/**job header, contains job image, rank score, ai summary etc... */}
+          <JobPageHeader
+            jobTitle={job.title}
+            jobCompany={job.company}
+            jobPostedAt={job.postedAt ?? new Date()}
+            jobCreatedAt={job.postedAt ?? new Date()}
+            jobAiSummary={job.aiSummary ?? ""}
+            jobLocation={job.location}
+            jobEmployment={job.employment}
+            jobRemoteType={job.remoteType}
+          />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          {/**description contains job description, responsibilities, etc */}
+          <JobPageDescription
+            jobDescription={job.description}
+            jobResponsibilities={job.responsibilities}
+            jobQualifications={job.qualifications}
+            jobSkills={job.skills}
+            jobTags={job.tags}
+          />
+        </ErrorBoundary>
 
-        {/**notes */}
-        <JobPageNotes jobId={job.id} initialNote={job.note} />
-        {/**apply/go back to dashboard button */}
-        <JobPageFooter jobSourceUrl={job.sourceUrl} jobStage={job.stage} />
+        <ErrorBoundary>
+          {/**notes */}
+          <JobPageNotes jobId={job.id} initialNote={job.note} />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          {/**apply/go back to dashboard button */}
+          <JobPageFooter jobSourceUrl={job.sourceUrl} jobStage={job.stage} />
+        </ErrorBoundary>
       </div>
     </div>
   );

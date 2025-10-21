@@ -10,7 +10,7 @@ import Image from "next/image";
 import { Job, JobStage } from "@/app/generated/prisma";
 import { Button } from "../ui/button";
 import { useDraggable } from "@dnd-kit/core";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import { formatJobDate, formatSalary } from "@/lib/date-utils";
 import RejectedButton from "../dashboard/buttons/RejectedButton";
@@ -37,10 +37,12 @@ export default function JobColumnJobPost({
   job,
   isDraggable = true,
   onStageChange,
+  onJobDeletion,
 }: {
   job: Job;
   isDraggable?: boolean;
   onStageChange?: (jobId: string, newStage: JobStage) => void;
+  onJobDeletion?: (jobId: string) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
@@ -97,12 +99,14 @@ export default function JobColumnJobPost({
         transform: transform
           ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
           : undefined,
-        opacity: isDragging ? 0.6 : 1,
+        opacity: isDragging ? 0.6 : updating ? 0.7 : 1,
         zIndex: isDragging ? 50 : 0,
         position: isDragging ? "absolute" : "relative",
         width: isDragging ? "24%" : "100%",
       }}
-      className="p-3 flex flex-col justify-between"
+      className={`p-3 flex flex-col justify-between transition-opacity duration-200 ${
+        updating ? "pointer-events-none" : ""
+      }`}
     >
       {/* HEADER */}
       <CardHeader
@@ -124,7 +128,7 @@ export default function JobColumnJobPost({
           </a>
           <div>
             <h2 className="font-bold">{job.title}</h2>
-            <p className="font-medium text-xs text-muted-foreground">
+            <p className="font-semibold text-xs text-muted-foreground">
               {job.company} — {job.location}
             </p>
           </div>
@@ -135,16 +139,24 @@ export default function JobColumnJobPost({
       <CardContent className="flex justify-start p-0 mt-2">
         <div className="font-medium text-xs text-muted-foreground">
           <p>
-            Salary: ${formatSalary(job.salaryMin)} - $
-            {formatSalary(job.salaryMax)} {job.currency}
+            <span className="font-semibold">Salary:</span> $
+            {formatSalary(job.salaryMin)} - ${formatSalary(job.salaryMax)}{" "}
+            {job.currency}
           </p>
           <p>
-            Job Type: {job.employment}, {job.remoteType}
+            <span className="font-semibold">Job Type:</span> {job.employment},{" "}
+            {job.remoteType}
           </p>
           {job.postedAt ? (
-            <p>Posted: {formatJobDate(job.postedAt)}</p>
+            <p>
+              <span className="font-semibold">Posted:</span>{" "}
+              {formatJobDate(job.postedAt)}
+            </p>
           ) : (
-            <p>Added: {formatJobDate(job.createdAt)}</p>
+            <p>
+              <span className="font-semibold">Added:</span>{" "}
+              {formatJobDate(job.createdAt)}
+            </p>
           )}
         </div>
       </CardContent>
@@ -159,7 +171,11 @@ export default function JobColumnJobPost({
             disabled={updating}
             onClick={() => handleStageChange("up")}
           >
-            <ChevronUp className={updating ? "animate-pulse" : ""} />
+            {updating ? (
+              <LoaderCircle className="animate-spin" size={16} />
+            ) : (
+              <ChevronUp />
+            )}
           </Button>
         )}
 
@@ -173,6 +189,7 @@ export default function JobColumnJobPost({
             jobCompany={job.company}
             jobId={job.id}
             jobStage={job.stage}
+            onJobDeletion={onJobDeletion}
           />
         </div>
 
@@ -184,7 +201,11 @@ export default function JobColumnJobPost({
             disabled={updating}
             onClick={() => handleStageChange("down")}
           >
-            <ChevronDown className={updating ? "animate-pulse" : ""} />
+            {updating ? (
+              <LoaderCircle className="animate-spin" size={16} />
+            ) : (
+              <ChevronDown />
+            )}
           </Button>
         )}
       </CardFooter>

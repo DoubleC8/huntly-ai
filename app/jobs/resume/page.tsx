@@ -3,6 +3,7 @@ import ResumeTable from "@/components/resume/ResumeTable";
 import { prisma } from "@/lib/prisma";
 import { getResumesByUserId } from "@/lib/queries/resumeQueries";
 import { getUserByEmail } from "@/lib/queries/userQueries";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 
 export default async function ResumePage() {
   const session = await auth();
@@ -46,7 +47,9 @@ export default async function ResumePage() {
         className="
             pageContainer !min-h-[94vh]"
       >
-        <ResumeTable resumes={resumes} email={user.email} />
+        <ErrorBoundary>
+          <ResumeTable resumes={resumes} email={user.email} />
+        </ErrorBoundary>
       </div>
     </div>
   );

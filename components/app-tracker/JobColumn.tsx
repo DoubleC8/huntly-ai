@@ -1,7 +1,6 @@
 import { Job, JobStage } from "@/app/generated/prisma";
 import JobColumnJobPost from "./JobColumnJobPost";
 import { useDroppable } from "@dnd-kit/core";
-import { cn } from "@/lib/utils";
 
 export default function JobColumn({
   id,
@@ -12,6 +11,7 @@ export default function JobColumn({
   description,
   isDraggable = true,
   onStageChange,
+  onJobDeletion,
 }: {
   id: string;
   jobs: Job[];
@@ -21,13 +21,14 @@ export default function JobColumn({
   description: string;
   isDraggable?: boolean;
   onStageChange?: (jobId: string, newStage: JobStage) => void;
+  onJobDeletion?: (jobId: string) => void;
 }) {
   const { setNodeRef } = useDroppable({ id });
 
   return (
     <div
       ref={setNodeRef}
-      className="bg-[var(--background)] h-full rounded-xl flex flex-col"
+      className="bg-[var(--background)] h-full rounded-xl flex flex-col shadow-md"
     >
       <div
         className="w-full py-2 px-3 flex rounded-t-xl text-lg font-bold justify-between sticky top-0 z-10"
@@ -48,6 +49,7 @@ export default function JobColumn({
               key={job.id}
               isDraggable={isDraggable}
               onStageChange={onStageChange}
+              onJobDeletion={onJobDeletion}
             />
           ))}
         </div>

@@ -1,20 +1,15 @@
 .
 ├── app
 │   ├── actions
-│   │   ├── job-post
+│   │   ├── jobs
 │   │   │   └── updateJob.ts
 │   │   ├── profile
 │   │   │   ├── delete
-│   │   │   │   ├── deleteUserEducation.ts
-│   │   │   │   ├── deleteUserJobPreference.ts
-│   │   │   │   └── deleteUserSkill.ts
+│   │   │   │   └── deleteUserProfileEntry.ts
 │   │   │   ├── get
 │   │   │   │   └── getPaginatedJobs.ts
 │   │   │   └── update
-│   │   │       ├── updateUserEducation.ts
-│   │   │       ├── updateUserInfo.ts
-│   │   │       ├── updateUserJobPreferences.ts
-│   │   │       └── updateUserSkills.ts
+│   │   │       └── updateUserInfo.ts
 │   │   └── resume
 │   │       ├── delete
 │   │       │   └── deleteUserResume.ts
@@ -146,21 +141,23 @@
 │   │   │   ├── AppliedJobs.tsx
 │   │   │   ├── AppliedJobsPaginationBar.tsx
 │   │   │   └── JobsTable.tsx
+│   │   ├── buttons
+│   │   │   └── DeleteUserFieldButton.tsx
 │   │   ├── education
 │   │   │   ├── DeleteEducationEntry.tsx
 │   │   │   ├── UserEducation.tsx
 │   │   │   ├── UserEducationCard.tsx
 │   │   │   └── UserEducationSidebar.tsx
 │   │   ├── job-preferences
-│   │   │   ├── DeleteJobPreference.tsx
 │   │   │   ├── UserJobPreferences.tsx
 │   │   │   └── UserJobPreferencesSidebar.tsx
 │   │   ├── skills
-│   │   │   ├── DeleteSkill.tsx
 │   │   │   ├── UserSkills.tsx
 │   │   │   └── UserSkillsSidebar.tsx
 │   │   ├── ui
-│   │   │   └── JobsTableSkeleton.tsx
+│   │   │   ├── JobsTableSkeleton.tsx
+│   │   │   ├── UserProfileSkeleton.tsx
+│   │   │   └── UserResumeSkeleton.tsx
 │   │   ├── user-info
 │   │   │   ├── UserInfo.tsx
 │   │   │   └── UserInfoSidebar.tsx
@@ -276,4 +273,4 @@
 ├── tsconfig.tsbuildinfo
 └── types
 
-78 directories, 199 files
+79 directories, 195 files

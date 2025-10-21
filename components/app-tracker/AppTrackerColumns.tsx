@@ -44,6 +44,22 @@ export default function AppTrackerColumns({
     });
   };
 
+  // Function to handle job deletion (rejection)
+  const handleJobDeletion = (jobId: string) => {
+    setColumns((prev) => {
+      const updated = { ...prev };
+
+      // Remove the job from all columns
+      Object.keys(updated).forEach((stage) => {
+        updated[stage as JobStage] = updated[stage as JobStage].filter(
+          (job) => job.id !== jobId
+        );
+      });
+
+      return updated;
+    });
+  };
+
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over) return;
@@ -105,6 +121,7 @@ export default function AppTrackerColumns({
         description="Track jobs you've submitted an application to."
         isDraggable={isLargeScreen}
         onStageChange={handleStageChange}
+        onJobDeletion={handleJobDeletion}
       />
       <JobColumn
         id="INTERVIEW"
@@ -115,6 +132,7 @@ export default function AppTrackerColumns({
         description="Once you've landed an interview, it will show up here."
         isDraggable={isLargeScreen}
         onStageChange={handleStageChange}
+        onJobDeletion={handleJobDeletion}
       />
       <JobColumn
         id="OFFER"
@@ -125,6 +143,7 @@ export default function AppTrackerColumns({
         description="Congrats! Companies that have offered you a position will appear here."
         isDraggable={isLargeScreen}
         onStageChange={handleStageChange}
+        onJobDeletion={handleJobDeletion}
       />
     </div>
   );

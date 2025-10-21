@@ -57,7 +57,7 @@ export default function JobPostFooter({
         </div>
         {/** view job button */}
         <Link
-          href={`/jobs/dashboard/${jobId}`}
+          href={`/jobs/dashboard/job/${jobId}`}
           className="md:w-1/2 lg:w-1/4
             w-full"
         >

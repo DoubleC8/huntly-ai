@@ -28,7 +28,9 @@ export function UserEducationCard({ education }: { education: Education }) {
         <div className="text-muted-foreground w-full border-t-[1px] pt-1">
           <p>
             {education.degree} in{" "}
-            <span className="text-[var(--app-blue)]">{education.major}</span>
+            <span className="text-[var(--app-blue)] font-semibold">
+              {education.major}
+            </span>
           </p>
           <p>
             {" "}
@@ -43,7 +45,10 @@ export function UserEducationCard({ education }: { education: Education }) {
               : "End date not set"}
           </p>
           <p>
-            Gpa: <span className="text-[var(--app-blue)]">{education.gpa}</span>
+            Gpa:{" "}
+            <span className="text-[var(--app-blue)] font-semibold">
+              {education.gpa}
+            </span>
           </p>
         </div>
       </CardContent>
