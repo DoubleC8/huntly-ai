@@ -27,7 +27,7 @@ export function UserEducationCard({ education }: { education: Education }) {
       <CardContent>
         <div className="text-muted-foreground w-full border-t-[1px] pt-1">
           <p>
-            {education.degree} in{" "}
+            <span className="font-semibold">{education.degree}</span> in{" "}
             <span className="text-[var(--app-blue)] font-semibold">
               {education.major}
             </span>

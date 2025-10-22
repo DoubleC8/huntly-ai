@@ -130,15 +130,19 @@ export default function DashboardNavbar() {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="md:flex-row
-        flex flex-col gap-3 pb-3 border-b-[0.5px] border-b-gray-300"
+        flex flex-col gap-5 pb-3 border-b-[0.5px] border-b-gray-300"
       >
         <div className="w-full flex flex-col gap-3">
           {/**search input */}
+
           <FormField
             control={form.control}
             name="search"
             render={({ field }) => (
               <FormItem className="w-full">
+                <FormLabel className="text-muted-foreground md:hidden">
+                  Search
+                </FormLabel>
                 <FormControl>
                   <Input
                     className="bg-[var(--background)] h-9 w-full"
@@ -155,18 +159,15 @@ export default function DashboardNavbar() {
 
           {/**filters */}
           <div
-            className="md:flex-row
-          flex flex-col gap-3"
+            className="md:grid-cols-2 lg:grid-cols-4
+          grid grid-cols-1 gap-5"
           >
             {/**employment type: full-time, part-time */}
             <FormField
               control={form.control}
               name="employment"
               render={({ field }) => (
-                <FormItem
-                  className="md:w-1/4
-                flex flex-col"
-                >
+                <FormItem>
                   <FormLabel className="text-muted-foreground">
                     Job Type
                   </FormLabel>
@@ -228,10 +229,7 @@ export default function DashboardNavbar() {
               control={form.control}
               name="remoteType"
               render={({ field }) => (
-                <FormItem
-                  className="md:w-1/4
-                flex flex-col"
-                >
+                <FormItem>
                   <FormLabel className="text-muted-foreground">
                     Work Model
                   </FormLabel>
@@ -296,7 +294,7 @@ export default function DashboardNavbar() {
               control={form.control}
               name="salaryMin"
               render={({ field }) => (
-                <FormItem className="md:w-1/4">
+                <FormItem>
                   <FormLabel className="text-muted-foreground">
                     Salary Minimum
                   </FormLabel>
@@ -319,7 +317,7 @@ export default function DashboardNavbar() {
               control={form.control}
               name="location"
               render={({ field }) => (
-                <FormItem className="md:w-1/4">
+                <FormItem>
                   <FormLabel className="text-muted-foreground">City</FormLabel>
                   <FormControl>
                     <Input

@@ -27,47 +27,53 @@ export default function DashboardTitle() {
   const links: LinkItem[] = [
     { name: "Recommended", href: "/jobs/dashboard" },
     {
-      name: "Wishlist",
+      name: "Wishlisted",
       href: "/jobs/dashboard/stage/wishlist",
       key: "WISHLIST",
     },
     { name: "Applied", href: "/jobs/dashboard/stage/applied", key: "APPLIED" },
     {
-      name: "Interview",
+      name: "Interviewing",
       href: "/jobs/dashboard/stage/interview",
       key: "INTERVIEW",
     },
-    { name: "Offer", href: "/jobs/dashboard/stage/offer", key: "OFFER" },
+    { name: "Offered", href: "/jobs/dashboard/stage/offer", key: "OFFER" },
   ];
+
+  const currentLink = links.find((link) => link.href === pathname);
+  const currentTitle = currentLink?.name || "Recommended";
 
   return (
     <>
       {/* MOBILE NAV */}
-      <div className="md:hidden h-14 bg-[var(--background)] flex justify-between items-center px-3 font-semibold">
+      <div className="md:hidden w-full h-14 bg-[var(--background)] flex gap-2 justify-between items-center px-3 font-semibold overflow-x-scroll">
         {links.map((link) => (
           <Link
             key={link.name}
             href={link.href}
             className={
               pathname === link.href
-                ? "text-[var(--app-blue)] underline underline-offset-4"
-                : ""
+                ? "px-3 bg-[var(--app-blue)] rounded-md text-[var(--background)]"
+                : "px-3"
             }
           >
             {link.name}
-            {link.key && counts?.[link.key] ? ` (${counts[link.key]})` : ""}
           </Link>
         ))}
       </div>
 
       {/* DESKTOP NAV */}
       <div className="pageTitleContainer">
-        <div className="lg:flex-row lg:items-center flex flex-col gap-3">
-          <div className="flex items-center gap-3">
-            <h1 className="pageTitle">Recommended Jobs</h1>
+        <div className="lg:flex-row lg:items-center lg:gap-0 flex flex-col gap-3">
+          <div
+            className="lg:w-3/10 
+          flex items-center gap-3"
+          >
+            <h1 className="pageTitle">{currentTitle} Jobs</h1>
             <ChevronRight />
           </div>
-          <div className="lg:w-7/10 flex items-center justify-between font-bold h-fit">
+
+          <div className="lg:w-7/10 flex items-center justify-evenly font-bold h-fit">
             {links.map((link) => (
               <Link
                 key={link.name}
