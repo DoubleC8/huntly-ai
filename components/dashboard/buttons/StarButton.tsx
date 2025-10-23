@@ -1,10 +1,10 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { STAGE_ORDER } from "@/app/constants/jobStage";
 import { toast } from "sonner";
 import { Star } from "lucide-react";
 import { JobStage } from "@/app/generated/prisma";
-import { updateJob } from "@/app/actions/jobs/updateJob";
+import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
 
 export default function StarButton({
   jobTitle,
@@ -17,30 +17,35 @@ export default function StarButton({
   jobId: string;
   jobStage: JobStage | null;
 }) {
-  const [isPending, startTransition] = useTransition();
   const [isWishlisted, setIsWishlisted] = useState(
     jobStage === JobStage.WISHLIST
   );
 
-  const handleStarClick = () => {
+  const mutation = useUpdateJobStage();
+
+  const handleStarClick = async () => {
     setIsWishlisted((prev) => !prev);
 
-    startTransition(async () => {
-      try {
-        const updatedJob = await updateJob({ type: "toggleWishlist", jobId });
-        setIsWishlisted(updatedJob.stage === "WISHLIST");
-        toast.success(
-          updatedJob.stage === "WISHLIST"
-            ? `${jobTitle} at ${jobCompany} added to Wishlist!`
-            : `${jobTitle} at ${jobCompany} removed from Wishlist.`
-        );
-      } catch {
-        setIsWishlisted((prev) => !prev);
-        toast.error("Failed to toggle wishlist.", {
-          description: "Please try again later.",
-        });
-      }
-    });
+    try {
+      const updatedJob = await mutation.mutateAsync({
+        type: "toggleWishlist",
+        jobId,
+      });
+
+      setIsWishlisted(updatedJob.stage === JobStage.WISHLIST);
+
+      toast.success(
+        updatedJob.stage === JobStage.WISHLIST
+          ? `${jobTitle} @${jobCompany} added to Wishlist!`
+          : `${jobTitle} @${jobCompany} removed from Wishlist.`
+      );
+    } catch {
+      // revert if error
+      setIsWishlisted((prev) => !prev);
+      toast.error("Failed to toggle wishlist.", {
+        description: "Please try again later.",
+      });
+    }
   };
 
   // Only show star if job is not yet applied or earlier
@@ -53,7 +58,7 @@ export default function StarButton({
   return (
     <button
       onClick={handleStarClick}
-      disabled={isPending}
+      disabled={mutation.isPending} //is pending is part of useQuery
       aria-pressed={isWishlisted}
       title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
     >

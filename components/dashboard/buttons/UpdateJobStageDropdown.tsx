@@ -1,5 +1,5 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import {
   Select,
@@ -9,12 +9,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { JobStage } from "@/app/generated/prisma";
-import { updateJob } from "@/app/actions/jobs/updateJob";
 import {
   STAGE_COLORS,
   STAGE_ICONS,
   STAGE_LABELS,
 } from "@/app/constants/jobStage";
+import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
 
 export default function UpdateJobStageDropdown({
   jobTitle,
@@ -27,31 +27,30 @@ export default function UpdateJobStageDropdown({
   jobId: string;
   jobStage: JobStage | null;
 }) {
-  const [isPending, startTransition] = useTransition();
   const [selectedStage, setSelectedStage] = useState<JobStage>(
     jobStage ?? JobStage.APPLIED
   );
 
-  const handleStageChange = (newStage: JobStage) => {
+  const mutation = useUpdateJobStage();
+
+  const handleStageChange = async (newStage: JobStage) => {
     setSelectedStage(newStage);
 
-    startTransition(async () => {
-      try {
-        await updateJob({
-          type: "setStage",
-          jobId,
-          stage: newStage,
-        });
+    try {
+      await mutation.mutateAsync({
+        type: "setStage",
+        stage: newStage,
+        jobId,
+      });
 
-        toast.success(
-          `${jobTitle} at ${jobCompany} has been marked as ${STAGE_LABELS[newStage]}`
-        );
-      } catch {
-        toast.error(`Failed to mark as ${STAGE_LABELS[newStage]}.`, {
-          description: "Please try again later.",
-        });
-      }
-    });
+      toast.success(
+        `${jobTitle} @${jobCompany} added to ${STAGE_LABELS[newStage]} list.`
+      );
+    } catch (error) {
+      toast.error(`Failed to add job to ${STAGE_LABELS[newStage]} list.`, {
+        description: "Please try again later.",
+      });
+    }
   };
 
   const allowedStages: JobStage[] = [
@@ -66,7 +65,7 @@ export default function UpdateJobStageDropdown({
     <Select
       value={selectedStage}
       onValueChange={(value) => handleStageChange(value as JobStage)}
-      disabled={isPending || jobStage === JobStage.REJECTED}
+      disabled={mutation.isPending || jobStage === JobStage.REJECTED}
     >
       <SelectTrigger
         className="w-[180px] bg-[var(--background)]"

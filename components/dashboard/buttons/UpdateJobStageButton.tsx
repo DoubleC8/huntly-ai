@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { JobStage } from "@/app/generated/prisma";
 import {
@@ -9,7 +9,7 @@ import {
   STAGE_ICONS,
 } from "@/app/constants/jobStage";
 import { LoaderCircle } from "lucide-react";
-import { updateJob } from "@/app/actions/jobs/updateJob";
+import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
 
 export default function UpdateJobStageButton({
   jobTitle,
@@ -22,8 +22,6 @@ export default function UpdateJobStageButton({
   jobId: string;
   jobStage: JobStage | null;
 }) {
-  const [isPending, startTransition] = useTransition();
-
   const allowedStages: JobStage[] = [
     JobStage.APPLIED,
     JobStage.INTERVIEW,
@@ -33,7 +31,7 @@ export default function UpdateJobStageButton({
   const initialStage =
     jobStage && allowedStages.includes(jobStage) ? jobStage : JobStage.DEFAULT;
 
-  const [currentStage, setCurrentStage] = useState<JobStage>(initialStage);
+  const [currentStage] = useState<JobStage>(initialStage);
 
   let nextStage: JobStage;
 
@@ -47,26 +45,24 @@ export default function UpdateJobStageButton({
         : JobStage.OFFER;
   }
 
-  const handleUpdateJobStage = () => {
-    startTransition(async () => {
-      try {
-        await updateJob({
-          type: "setStage",
-          jobId,
-          stage: nextStage,
-        });
+  const mutation = useUpdateJobStage();
 
-        setCurrentStage(nextStage);
+  const handleUpdateJobStageClick = async () => {
+    try {
+      await mutation.mutateAsync({
+        type: "setStage",
+        stage: nextStage,
+        jobId,
+      });
 
-        toast.success(
-          `${jobTitle} at ${jobCompany} has been marked as ${STAGE_LABELS[nextStage]}`
-        );
-      } catch {
-        toast.error(`Failed to mark as ${STAGE_LABELS[nextStage]}.`, {
-          description: "Please try again later.",
-        });
-      }
-    });
+      toast.success(
+        `${jobTitle} @${jobCompany} added to ${STAGE_LABELS[nextStage]} list.`
+      );
+    } catch (error) {
+      toast.error(`Failed to add job to ${STAGE_LABELS[nextStage]} list.`, {
+        description: "Please try again later.",
+      });
+    }
   };
 
   // The icon should show the NEXT stage — not current one
@@ -75,8 +71,8 @@ export default function UpdateJobStageButton({
 
   return (
     <button
-      onClick={handleUpdateJobStage}
-      disabled={isPending || isMaxStage}
+      onClick={handleUpdateJobStageClick}
+      disabled={mutation.isPending || isMaxStage}
       title={`Mark as ${STAGE_LABELS[nextStage]}`}
       aria-pressed={isMaxStage}
       className="transition-colors ease-in-out duration-200 hover:cursor-pointer"
@@ -86,7 +82,7 @@ export default function UpdateJobStageButton({
           : "var(--muted-foreground)",
       }}
     >
-      {isPending ? (
+      {mutation.isPending ? (
         <LoaderCircle className="animate-spin" />
       ) : (
         <NextIcon className="hover:opacity-80" />

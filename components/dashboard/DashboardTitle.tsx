@@ -3,41 +3,41 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
-import { getJobStageCounts } from "@/app/actions/jobs/getJobStageCounts";
+import { useJobStageCounts } from "@/lib/hooks/jobs/useJobStageCounts";
+import { JobStage } from "@/app/generated/prisma";
 
 type LinkItem = {
   name: string;
   href: string;
-  key?: string;
+  key?: JobStage;
 };
 
 export default function DashboardTitle() {
   const pathname = usePathname();
-  const [counts, setCounts] = useState<Record<string, number> | null>(null);
-
-  useEffect(() => {
-    async function fetchCounts() {
-      const res = await getJobStageCounts();
-      setCounts(res);
-    }
-    fetchCounts();
-  }, []);
+  const { data: counts } = useJobStageCounts();
 
   const links: LinkItem[] = [
     { name: "Recommended", href: "/jobs/dashboard" },
     {
       name: "Wishlisted",
       href: "/jobs/dashboard/stage/wishlist",
-      key: "WISHLIST",
+      key: JobStage.WISHLIST,
     },
-    { name: "Applied", href: "/jobs/dashboard/stage/applied", key: "APPLIED" },
+    {
+      name: "Applied",
+      href: "/jobs/dashboard/stage/applied",
+      key: JobStage.APPLIED,
+    },
     {
       name: "Interviewing",
       href: "/jobs/dashboard/stage/interview",
-      key: "INTERVIEW",
+      key: JobStage.INTERVIEW,
     },
-    { name: "Offered", href: "/jobs/dashboard/stage/offer", key: "OFFER" },
+    {
+      name: "Offered",
+      href: "/jobs/dashboard/stage/offer",
+      key: JobStage.OFFER,
+    },
   ];
 
   const currentLink = links.find((link) => link.href === pathname);

@@ -7,9 +7,10 @@ import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { useState } from "react";
 import { toast } from "sonner";
-import useIsLargeScreen from "@/hooks/useIsLargeScreen";
+
 import ErrorBoundary from "../ui/ErrorBoundary";
 import { updateJob } from "@/app/actions/jobs/updateJob";
+import useIsLargeScreen from "@/lib/hooks/useIsLargeScreen";
 
 export default function AppTrackerColumns({
   groupedJobs,

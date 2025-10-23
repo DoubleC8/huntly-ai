@@ -1,5 +1,5 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { HeartCrack, LoaderCircle, Trash2 } from "lucide-react";
 import { JobStage } from "@/app/generated/prisma";
@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 
 import { STAGE_ORDER } from "@/app/constants/jobStage";
 import { updateJob } from "@/app/actions/jobs/updateJob";
+import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
 
 export default function RejectedButton({
   jobTitle,
@@ -29,36 +30,29 @@ export default function RejectedButton({
   jobStage: JobStage | null;
   onJobDeletion?: (jobId: string) => void;
 }) {
-  const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
 
-  const handleReject = () => {
-    startTransition(async () => {
-      try {
-        await updateJob({
-          type: "setStage",
-          jobId,
-          stage: JobStage.REJECTED,
-        });
+  const mutation = useUpdateJobStage();
 
-        // Update the frontend immediately
-        if (onJobDeletion) {
-          onJobDeletion(jobId);
-        }
+  const handleRejectClick = async () => {
+    try {
+      await mutation.mutateAsync({
+        type: "setStage",
+        stage: JobStage.REJECTED,
+        jobId,
+      });
 
-        toast.success(`Moved job to ${JobStage.REJECTED.toLowerCase()}.`, {
-          description: `${jobTitle} @ ${jobCompany}`,
-        });
-      } catch {
-        toast.error("Failed to add job to rejected list.", {
-          description: "Please try again later.",
-        });
-      } finally {
-        setTimeout(() => {
-          setOpen(false);
-        }, 1000);
-      }
-    });
+      toast.success(`${jobTitle} @${jobCompany} added to rejected list.`);
+    } catch {
+      // revert if error
+      toast.error("Failed to add job to rejected list.", {
+        description: "Please try again later.",
+      });
+    } finally {
+      setTimeout(() => {
+        setOpen(false);
+      }, 1000);
+    }
   };
 
   const showButton =
@@ -99,18 +93,18 @@ export default function RejectedButton({
         </p>
         <DialogFooter>
           <Button
-            onClick={handleReject}
-            disabled={isPending}
+            onClick={handleRejectClick}
+            disabled={mutation.isPending}
             className="md:w-1/2 md:mx-auto
             w-full"
             variant={"destructive"}
           >
-            {isPending ? (
+            {mutation.isPending ? (
               <LoaderCircle className="animate-spin mr-2" size={18} />
             ) : (
               ""
             )}
-            {isPending ? "Deleting..." : "Delete"}
+            {mutation.isPending ? "Deleting..." : "Delete"}
           </Button>
         </DialogFooter>
       </DialogContent>
