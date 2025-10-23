@@ -16,6 +16,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { LoaderCircle, Plus, SquarePen } from "lucide-react";
 import { updateJob } from "@/app/actions/jobs/updateJob";
+import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
 
 const formSchema = z.object({
   jobNote: z
@@ -28,15 +29,14 @@ const formSchema = z.object({
 export default function NoteEditorBase({
   jobId,
   note,
-
   onNoteChange,
 }: {
   jobId: string;
   note: string;
   onNoteChange?: (note: string) => void;
 }) {
-  const [uploading, setUploading] = useState(false);
   const [editMode, setEditMode] = useState(!note);
+  const [uploading, setUploading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,17 +44,22 @@ export default function NoteEditorBase({
     values: { jobNote: note },
   });
 
+  const mutation = useUpdateJobStage();
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setUploading(true);
     try {
-      const updatedJob = await updateJob({
+      await mutation.mutateAsync({
         type: "setNote",
         jobId,
         note: values.jobNote ?? "",
       });
 
+      // Call the optional callback if provided
       onNoteChange?.(values.jobNote ?? "");
+
       toast.success("Job Note saved!");
+      setEditMode(false);
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to save job note.", {
@@ -62,7 +67,6 @@ export default function NoteEditorBase({
       });
     } finally {
       setUploading(false);
-      setEditMode(false);
     }
   }
 
@@ -122,21 +126,26 @@ export default function NoteEditorBase({
         >
           <Button
             type="submit"
-            className="md:w-1/6
+            disabled={uploading || mutation.isPending}
+            className="md:w-1/3
             w-1/2"
           >
-            {uploading ? (
+            {uploading || mutation.isPending ? (
               <LoaderCircle className="animate-spin mr-1" />
             ) : (
               <Plus className="mr-1" />
             )}
-            {uploading ? "Saving..." : note ? "Update Note" : "Add Note"}
+            {uploading || mutation.isPending
+              ? "Saving..."
+              : note
+              ? "Update Note"
+              : "Add Note"}
           </Button>
           <Button
             type="button"
             variant="outline"
             onClick={() => setEditMode(false)}
-            className="md:w-1/6
+            className="md:w-1/3
             w-1/2"
           >
             Cancel
