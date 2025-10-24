@@ -1,7 +1,9 @@
 .
+├── README.md
 ├── app
 │   ├── actions
 │   │   ├── jobs
+│   │   │   ├── getJobStageCounts.ts
 │   │   │   └── updateJob.ts
 │   │   ├── profile
 │   │   │   ├── delete
@@ -58,20 +60,15 @@
 │   │   │   ├── loading.tsx
 │   │   │   └── page.tsx
 │   │   ├── dashboard
-│   │   │   ├── [id]
-│   │   │   │   └── page.tsx
-│   │   │   ├── applied
-│   │   │   │   └── page.tsx
-│   │   │   ├── DashboardNavbar.tsx
-│   │   │   ├── interview
-│   │   │   │   └── page.tsx
+│   │   │   ├── job
+│   │   │   │   └── [id]
+│   │   │   │       └── page.tsx
 │   │   │   ├── layout.tsx
 │   │   │   ├── loading.tsx
-│   │   │   ├── offer
-│   │   │   │   └── page.tsx
 │   │   │   ├── page.tsx
-│   │   │   └── wishlist
-│   │   │       └── page.tsx
+│   │   │   └── stage
+│   │   │       └── [stage]
+│   │   │           └── page.tsx
 │   │   ├── layout.tsx
 │   │   ├── profile
 │   │   │   ├── loading.tsx
@@ -90,11 +87,16 @@
 ├── components
 │   ├── app-tracker
 │   │   ├── AppTrackerColumns.tsx
-│   │   ├── AppTrackerNavbar.tsx
 │   │   ├── AppTrackerTitle.tsx
 │   │   ├── JobColumn.tsx
-│   │   └── JobColumnJobPost.tsx
+│   │   ├── JobColumnJobPost.tsx
+│   │   ├── LoadingWrapper.tsx
+│   │   └── columnConfig.ts
 │   ├── dashboard
+│   │   ├── ActiveFiltersBar.tsx
+│   │   ├── DashboardCard.tsx
+│   │   ├── DashboardTitle.tsx
+│   │   ├── RecommendedJobs.tsx
 │   │   ├── buttons
 │   │   │   ├── AddNoteButton.tsx
 │   │   │   ├── RejectedButton.tsx
@@ -104,8 +106,6 @@
 │   │   │   └── UpdateJobStageDropdown.tsx
 │   │   ├── charts
 │   │   │   └── ResumeMatchScore.tsx
-│   │   ├── DashboardCard.tsx
-│   │   ├── DashboardTitle.tsx
 │   │   ├── job-id-page
 │   │   │   ├── JobPageDescription.tsx
 │   │   │   ├── JobPageFooter.tsx
@@ -117,9 +117,10 @@
 │   │   │   ├── JobPostDescription.tsx
 │   │   │   ├── JobPostFooter.tsx
 │   │   │   └── JobPostHeader.tsx
-│   │   ├── notes
-│   │   │   └── NoteEditorBase.tsx
-│   │   └── RecommendedJobs.tsx
+│   │   ├── navbars
+│   │   │   └── DashboardNavbar.tsx
+│   │   └── notes
+│   │       └── NoteEditorBase.tsx
 │   ├── landing
 │   │   ├── Footer.tsx
 │   │   ├── ImageCarousel.tsx
@@ -127,10 +128,10 @@
 │   │   └── UserTestimonials.tsx
 │   ├── navbars
 │   │   ├── AppNavbar.tsx
-│   │   ├── desktop-navbar
-│   │   │   └── AppSideNavbar.tsx
 │   │   ├── HomeNavbar.tsx
 │   │   ├── LoginButton.tsx
+│   │   ├── desktop-navbar
+│   │   │   └── AppSideNavbar.tsx
 │   │   ├── mobile-navbar
 │   │   │   ├── AppMobileNavbar.tsx
 │   │   │   └── NavbarBurgerButton.tsx
@@ -164,45 +165,50 @@
 │   │   └── user-resume
 │   │       ├── DefaultResume.tsx
 │   │       └── UserResume.tsx
+│   ├── providers
+│   │   └── ReactQueryProvider.tsx
 │   ├── resume
-│   │   ├── buttons
-│   │   │   ├── AddResumeButton.tsx
-│   │   │   ├── DeleteResumeButton.tsx
-│   │   │   └── MakeResumeDefaultButton.tsx
 │   │   ├── ResumeNavbar.tsx
 │   │   ├── ResumeTable.tsx
-│   │   └── TargetJobTitle.tsx
-│   ├── ui
-│   │   ├── badge.tsx
-│   │   ├── button.tsx
-│   │   ├── calendar.tsx
-│   │   ├── card.tsx
-│   │   ├── carousel.tsx
-│   │   ├── chart.tsx
-│   │   ├── checkbox.tsx
-│   │   ├── command.tsx
-│   │   ├── dialog.tsx
-│   │   ├── ErrorBoundary.tsx
-│   │   ├── form.tsx
-│   │   ├── input.tsx
-│   │   ├── label.tsx
-│   │   ├── pagination.tsx
-│   │   ├── popover.tsx
-│   │   ├── select.tsx
-│   │   ├── sheet.tsx
-│   │   ├── skeleton.tsx
-│   │   ├── sonner.tsx
-│   │   ├── table.tsx
-│   │   ├── TagsInput.tsx
-│   │   └── textarea.tsx
-│   └── UserInfoSideBar.tsx
+│   │   ├── TargetJobTitle.tsx
+│   │   └── buttons
+│   │       ├── AddResumeButton.tsx
+│   │       ├── DeleteResumeButton.tsx
+│   │       └── MakeResumeDefaultButton.tsx
+│   └── ui
+│       ├── ErrorBoundary.tsx
+│       ├── TagsInput.tsx
+│       ├── badge.tsx
+│       ├── button.tsx
+│       ├── calendar.tsx
+│       ├── card.tsx
+│       ├── carousel.tsx
+│       ├── chart.tsx
+│       ├── checkbox.tsx
+│       ├── command.tsx
+│       ├── dialog.tsx
+│       ├── form.tsx
+│       ├── input.tsx
+│       ├── label.tsx
+│       ├── pagination.tsx
+│       ├── popover.tsx
+│       ├── select.tsx
+│       ├── sheet.tsx
+│       ├── skeleton.tsx
+│       ├── sonner.tsx
+│       ├── table.tsx
+│       └── textarea.tsx
 ├── components.json
 ├── eslint.config.mjs
-├── hooks
-│   └── useIsLargeScreen.tsx
 ├── lib
 │   ├── auth-actions.ts
 │   ├── date-utils.ts
+│   ├── hooks
+│   │   ├── jobs
+│   │   │   ├── useJobStageCounts.ts
+│   │   │   ├── useStageChangeOperations.ts
+│   │   │   └── useUpdateJobStage.ts
+│   │   └── useIsLargeScreen.tsx
 │   ├── phone-utils.ts
 │   ├── prisma.ts
 │   ├── queries
@@ -212,6 +218,8 @@
 │   ├── supabase
 │   │   ├── client.ts
 │   │   └── server.ts
+│   ├── utils
+│   │   └── jobUtils.ts
 │   ├── utils.ts
 │   └── validations
 │       └── resume.ts
@@ -267,10 +275,8 @@
 │   ├── resume-demo.png
 │   ├── vercel.svg
 │   └── window.svg
-├── README.md
 ├── tree_out.txt
 ├── tsconfig.json
-├── tsconfig.tsbuildinfo
-└── types
+└── tsconfig.tsbuildinfo
 
-79 directories, 195 files
+81 directories, 199 files
