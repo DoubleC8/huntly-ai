@@ -1,17 +1,44 @@
-"use client"
+"use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateJob } from "@/app/actions/jobs/updateJob";
+import { jobService } from "@/lib/services/jobService";
+import { JobStage } from "@/app/generated/prisma";
 
+type UpdateJobPayload = 
+  | { type: "setStage"; jobId: string; stage: JobStage }
+  | { type: "toggleWishlist"; jobId: string }
+  | { type: "setNote"; jobId: string; note: string };
+
+/**
+ * Generic mutation hook for any job update (stage change, wishlist toggle, etc.)
+ * Handles cache invalidation and error logging in one place.
+ */
 export function useUpdateJobStage() {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: updateJob, 
-        onSuccess: () => {
-            //marks any cached query with that key as “stale” and triggers a refetch the next time 
-            // React Query thinks it’s appropriate. This is what keeps our data fresh 
-            queryClient.invalidateQueries({ queryKey: ["jobStageCounts"] });
-        }
-    })
+  return useMutation({
+    // the actual async function to run
+    mutationFn: async (payload: UpdateJobPayload) => {
+      switch (payload.type) {
+        case "setStage":
+          return jobService.setStage(payload.jobId, payload.stage);
+        case "toggleWishlist":
+          return jobService.toggleWishlist(payload.jobId);
+        case "setNote":
+          return jobService.setNote(payload.jobId, payload.note);
+        default:
+          throw new Error(`Unknown job update type: ${(payload as any).type}`);
+      }
+    },
+
+    // on success: refresh cached counts everywhere
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["jobStageCounts"] });
+    },
+
+    // optional global error fallback
+    onError: (error) => {
+      console.error("Job update failed:", error);
+    },
+  });
 }

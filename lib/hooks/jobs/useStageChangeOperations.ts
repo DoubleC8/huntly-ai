@@ -3,10 +3,10 @@
 import { useState, useCallback } from "react";
 import { Job, JobStage } from "@/app/generated/prisma";
 import { useUpdateJobStage } from "./useUpdateJobStage";
-import { toast } from "sonner";
 
 import { findJobInColumns } from "@/lib/utils/jobUtils";
 import { STAGE_LABELS } from "@/lib/config/jobStage";
+import { jobToasts } from "@/lib/utils/toast";
 
 interface UseStageChangeOperationsProps {
   initialColumns: Record<JobStage, Job[]>;
@@ -85,12 +85,10 @@ export function useStageChangeOperations({ initialColumns }: UseStageChangeOpera
         stage: newStage,
       });
 
-      toast.success(
-        `${job.title} @${job.company} added to ${STAGE_LABELS[newStage]} list.`
-      );
+      jobToasts.stageChanged({ title: job.title, company: job.company }, newStage);
     } catch (error) {
       console.error("Error updating job stage:", error);
-      toast.error("Failed to update job stage. Reverting...");
+      jobToasts.error("Failed to update job stage. Reverting...");
       
       revertJobMove(jobId, job.stage, newStage);
     }

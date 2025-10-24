@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
 
-import { toast } from "sonner";
 import { Star } from "lucide-react";
 import { JobStage } from "@/app/generated/prisma";
 import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
 import { STAGE_ORDER } from "@/lib/config/jobStage";
+import { jobToasts } from "@/lib/utils/toast";
 
 export default function StarButton({
   jobTitle,
@@ -35,17 +35,15 @@ export default function StarButton({
 
       setIsWishlisted(updatedJob.stage === JobStage.WISHLIST);
 
-      toast.success(
-        updatedJob.stage === JobStage.WISHLIST
-          ? `${jobTitle} @${jobCompany} added to Wishlist!`
-          : `${jobTitle} @${jobCompany} removed from Wishlist.`
-      );
+      if (updatedJob.stage === JobStage.WISHLIST) {
+        jobToasts.wishlistAdded({ title: jobTitle, company: jobCompany });
+      } else {
+        jobToasts.wishlistRemoved({ title: jobTitle, company: jobCompany });
+      }
     } catch {
       // revert if error
       setIsWishlisted((prev) => !prev);
-      toast.error("Failed to toggle wishlist.", {
-        description: "Please try again later.",
-      });
+      jobToasts.error("Failed to toggle wishlist.", "Please try again later.");
     }
   };
 

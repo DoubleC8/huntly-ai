@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -12,6 +11,7 @@ import { JobStage } from "@/app/generated/prisma";
 
 import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
 import { STAGE_COLORS, STAGE_ICONS, STAGE_LABELS } from "@/lib/config/jobStage";
+import { jobToasts } from "@/lib/utils/toast";
 
 export default function UpdateJobStageDropdown({
   jobTitle,
@@ -45,13 +45,15 @@ export default function UpdateJobStageDropdown({
         jobId,
       });
 
-      toast.success(
-        `${jobTitle} @${jobCompany} added to ${STAGE_LABELS[newStage]} list.`
+      jobToasts.stageChanged(
+        { title: jobTitle, company: jobCompany },
+        newStage
       );
     } catch {
-      toast.error(`Failed to add job to ${STAGE_LABELS[newStage]} list.`, {
-        description: "Please try again later.",
-      });
+      jobToasts.error(
+        `Failed to add job to ${STAGE_LABELS[newStage]} list.`,
+        "Please try again later."
+      );
     }
   };
 

@@ -11,13 +11,13 @@ import { Job, JobStage } from "@/app/generated/prisma";
 import { Button } from "../ui/button";
 import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, ChevronUp, LoaderCircle } from "lucide-react";
-import { toast } from "sonner";
 import { formatJobDate, formatSalary } from "@/lib/date-utils";
 import RejectedButton from "../dashboard/buttons/RejectedButton";
 import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
 
 import { getAdjacentStage } from "@/lib/utils/jobUtils";
 import { STAGE_LABELS } from "@/lib/config/jobStage";
+import { jobToasts } from "@/lib/utils/toast";
 
 export default function JobColumnJobPost({
   job,
@@ -54,14 +54,16 @@ export default function JobColumnJobPost({
         onStageChange(job.id, nextStage);
       }
 
-      toast.success(
-        `${job.title} @${job.company} added to ${STAGE_LABELS[nextStage]} list.`
+      jobToasts.stageChanged(
+        { title: job.title, company: job.company },
+        nextStage
       );
     } catch (error) {
       console.error(error);
-      toast.error(`Failed to add job to ${STAGE_LABELS[nextStage]} list.`, {
-        description: "Please try again later.",
-      });
+      jobToasts.error(
+        `Failed to add job to ${STAGE_LABELS[nextStage]} list.`,
+        "Please try again later."
+      );
 
       // Revert the visual state on error
       if (onStageChange) {

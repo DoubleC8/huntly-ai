@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { toast } from "sonner";
 import { HeartCrack, LoaderCircle, Trash2 } from "lucide-react";
 import { JobStage } from "@/app/generated/prisma";
 import {
@@ -15,6 +14,7 @@ import { Button } from "@/components/ui/button";
 
 import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
 import { STAGE_ORDER } from "@/lib/config/jobStage";
+import { jobToasts } from "@/lib/utils/toast";
 
 export default function RejectedButton({
   jobTitle,
@@ -39,12 +39,13 @@ export default function RejectedButton({
         jobId,
       });
 
-      toast.success(`${jobTitle} @${jobCompany} added to rejected list.`);
+      jobToasts.rejected({ title: jobTitle, company: jobCompany });
     } catch {
       // revert if error
-      toast.error("Failed to add job to rejected list.", {
-        description: "Please try again later.",
-      });
+      jobToasts.error(
+        "Failed to add job to rejected list.",
+        "Please try again later."
+      );
     } finally {
       setTimeout(() => {
         setOpen(false);
