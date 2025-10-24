@@ -13,22 +13,19 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-import { STAGE_ORDER } from "@/app/constants/jobStage";
-import { updateJob } from "@/app/actions/jobs/updateJob";
 import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
+import { STAGE_ORDER } from "@/lib/config/jobStage";
 
 export default function RejectedButton({
   jobTitle,
   jobCompany,
   jobId,
   jobStage,
-  onJobDeletion,
 }: {
   jobTitle: string;
   jobCompany: string;
   jobId: string;
   jobStage: JobStage | null;
-  onJobDeletion?: (jobId: string) => void;
 }) {
   const [open, setOpen] = useState(false);
 

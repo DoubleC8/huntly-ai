@@ -1,6 +1,6 @@
-import { STAGE_MESSAGES, STAGE_ORDER } from "@/app/constants/jobStage";
 import { JobStage } from "@/app/generated/prisma";
 import { Button } from "@/components/ui/button";
+import { STAGE_MESSAGES, STAGE_ORDER } from "@/lib/config/jobStage";
 import Link from "next/link";
 
 export default function JobPageFooter({

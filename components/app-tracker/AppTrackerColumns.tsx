@@ -21,8 +21,9 @@ export default function AppTrackerColumns({
   const isLargeScreen = useIsLargeScreen();
   const { data: counts, isLoading: countsLoading } = useJobStageCounts();
 
-  const { columns, handleStageChange, handleJobDeletion, isPending } =
-    useStageChangeOperations({ initialColumns: groupedJobs });
+  const { columns, handleStageChange, isPending } = useStageChangeOperations({
+    initialColumns: groupedJobs,
+  });
 
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -52,7 +53,6 @@ export default function AppTrackerColumns({
           description={config.description}
           isDraggable={isLargeScreen}
           onStageChange={handleStageChange}
-          onJobDeletion={handleJobDeletion}
         />
       ))}
     </div>

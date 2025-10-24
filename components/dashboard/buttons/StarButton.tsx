@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
-import { STAGE_ORDER } from "@/app/constants/jobStage";
+
 import { toast } from "sonner";
 import { Star } from "lucide-react";
 import { JobStage } from "@/app/generated/prisma";
 import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
+import { STAGE_ORDER } from "@/lib/config/jobStage";
 
 export default function StarButton({
   jobTitle,

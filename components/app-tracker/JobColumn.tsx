@@ -13,7 +13,6 @@ export default function JobColumn({
   description,
   isDraggable = true,
   onStageChange,
-  onJobDeletion,
 }: {
   id: string;
   jobs: Job[];
@@ -25,7 +24,6 @@ export default function JobColumn({
   description: string;
   isDraggable?: boolean;
   onStageChange?: (jobId: string, newStage: JobStage) => void;
-  onJobDeletion?: (jobId: string) => void;
 }) {
   const { setNodeRef } = useDroppable({ id });
   return (
@@ -52,7 +50,6 @@ export default function JobColumn({
               key={job.id}
               isDraggable={isDraggable}
               onStageChange={onStageChange}
-              onJobDeletion={onJobDeletion}
             />
           ))}
         </div>

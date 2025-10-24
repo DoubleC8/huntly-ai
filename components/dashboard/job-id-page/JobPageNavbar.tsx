@@ -3,9 +3,9 @@ import RejectedButton from "../buttons/RejectedButton";
 import ShareJobButton from "../buttons/ShareJob";
 import StarButton from "../buttons/StarButton";
 import { JobStage } from "@/app/generated/prisma";
-import { STAGE_MESSAGES, STAGE_ORDER } from "@/app/constants/jobStage";
-import UpdateJobStageButton from "../buttons/UpdateJobStageButton";
+
 import UpdateJobStageDropdown from "../buttons/UpdateJobStageDropdown";
+import { STAGE_MESSAGES, STAGE_ORDER } from "@/lib/config/jobStage";
 
 export default function JobPageNavbar({
   jobTitle,

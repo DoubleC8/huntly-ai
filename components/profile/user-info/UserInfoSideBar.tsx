@@ -26,10 +26,7 @@ import { LoaderCircle, Plus, SquarePen } from "lucide-react";
 import { User } from "@/app/generated/prisma";
 
 import { useState } from "react";
-import {
-  UpdateUserField,
-  updateUserPersonalInfo,
-} from "@/app/actions/profile/update/updateUserInfo";
+import { updateUserPersonalInfo } from "@/app/actions/profile/update/updateUserInfo";
 
 const urlField = (pattern: RegExp, msg: string) =>
   z

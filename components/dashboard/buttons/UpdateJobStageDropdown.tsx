@@ -9,12 +9,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { JobStage } from "@/app/generated/prisma";
-import {
-  STAGE_COLORS,
-  STAGE_ICONS,
-  STAGE_LABELS,
-} from "@/app/constants/jobStage";
+
 import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
+import { STAGE_COLORS, STAGE_ICONS, STAGE_LABELS } from "@/lib/config/jobStage";
 
 export default function UpdateJobStageDropdown({
   jobTitle,
@@ -51,7 +48,7 @@ export default function UpdateJobStageDropdown({
       toast.success(
         `${jobTitle} @${jobCompany} added to ${STAGE_LABELS[newStage]} list.`
       );
-    } catch (error) {
+    } catch {
       toast.error(`Failed to add job to ${STAGE_LABELS[newStage]} list.`, {
         description: "Please try again later.",
       });

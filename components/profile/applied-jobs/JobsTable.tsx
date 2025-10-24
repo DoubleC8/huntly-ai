@@ -1,4 +1,3 @@
-import { STAGE_COLORS } from "@/app/constants/jobStage";
 import { Job } from "@/app/generated/prisma";
 import Image from "next/image";
 import {
@@ -9,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { STAGE_COLORS } from "@/lib/config/jobStage";
 
 export default function JobsTable({ jobs }: { jobs: Job[] }) {
   return (

@@ -3,13 +3,10 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { JobStage } from "@/app/generated/prisma";
-import {
-  STAGE_COLORS,
-  STAGE_LABELS,
-  STAGE_ICONS,
-} from "@/app/constants/jobStage";
+
 import { LoaderCircle } from "lucide-react";
 import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
+import { STAGE_COLORS, STAGE_ICONS, STAGE_LABELS } from "@/lib/config/jobStage";
 
 export default function UpdateJobStageButton({
   jobTitle,
@@ -58,7 +55,7 @@ export default function UpdateJobStageButton({
       toast.success(
         `${jobTitle} @${jobCompany} added to ${STAGE_LABELS[nextStage]} list.`
       );
-    } catch (error) {
+    } catch {
       toast.error(`Failed to add job to ${STAGE_LABELS[nextStage]} list.`, {
         description: "Please try again later.",
       });

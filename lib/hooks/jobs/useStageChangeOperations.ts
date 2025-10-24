@@ -4,8 +4,9 @@ import { useState, useCallback } from "react";
 import { Job, JobStage } from "@/app/generated/prisma";
 import { useUpdateJobStage } from "./useUpdateJobStage";
 import { toast } from "sonner";
-import { STAGE_LABELS } from "@/app/constants/jobStage";
+
 import { findJobInColumns } from "@/lib/utils/jobUtils";
+import { STAGE_LABELS } from "@/lib/config/jobStage";
 
 interface UseStageChangeOperationsProps {
   initialColumns: Record<JobStage, Job[]>;

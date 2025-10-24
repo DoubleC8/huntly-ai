@@ -15,19 +15,18 @@ import { toast } from "sonner";
 import { formatJobDate, formatSalary } from "@/lib/date-utils";
 import RejectedButton from "../dashboard/buttons/RejectedButton";
 import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
-import { STAGE_LABELS } from "@/app/constants/jobStage";
+
 import { getAdjacentStage } from "@/lib/utils/jobUtils";
+import { STAGE_LABELS } from "@/lib/config/jobStage";
 
 export default function JobColumnJobPost({
   job,
   isDraggable = true,
   onStageChange,
-  onJobDeletion,
 }: {
   job: Job;
   isDraggable?: boolean;
   onStageChange?: (jobId: string, newStage: JobStage) => void;
-  onJobDeletion?: (jobId: string) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
@@ -169,7 +168,6 @@ export default function JobColumnJobPost({
             jobCompany={job.company}
             jobId={job.id}
             jobStage={job.stage}
-            onJobDeletion={onJobDeletion}
           />
         </div>
 

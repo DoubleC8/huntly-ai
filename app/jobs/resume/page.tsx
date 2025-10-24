@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import ResumeTable from "@/components/resume/ResumeTable";
-import { prisma } from "@/lib/prisma";
 import { getResumesByUserId } from "@/lib/queries/resumeQueries";
 import { getUserByEmail } from "@/lib/queries/userQueries";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";

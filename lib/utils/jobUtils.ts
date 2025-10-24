@@ -1,5 +1,6 @@
 import { Job, JobStage } from "@/app/generated/prisma";
-import { STAGE_ORDER } from "@/app/constants/jobStage";
+import { STAGE_ORDER } from "../config/jobStage";
+
 
 /**
  * Find the next or previous stage in the job flow

@@ -5,10 +5,11 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Job } from "@/app/generated/prisma";
-import { STAGE_COLORS, STAGE_LABELS } from "@/app/constants/jobStage";
+
 import JobPostHeader from "./JobPostHeader";
 import JobPostDescription from "./JobPostDescription";
 import JobPostFooter from "./JobPostFooter";
+import { STAGE_COLORS, STAGE_LABELS } from "@/lib/config/jobStage";
 
 export default function DashboardJobPost({ job }: { job: Job }) {
   return (

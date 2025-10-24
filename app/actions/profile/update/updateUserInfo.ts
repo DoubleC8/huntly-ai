@@ -46,7 +46,13 @@ export async function updateUserPersonalInfo(values: {
     if(!session?.user?.email) throw new Error("Unauthorized");
 
     // Only include fields that are actually provided and not empty
-    const updateData: any = {};
+    const updateData: {
+        githubUrl?: string | null;
+        linkedInUrl?: string | null;
+        portfolioUrl?: string | null;
+        phoneNumber?: string | null;
+        city?: string | null;
+    } = {};
     
     if (values.githubUrl !== undefined) {
         updateData.githubUrl = values.githubUrl || null;

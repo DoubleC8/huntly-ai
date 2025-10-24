@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { LoaderCircle, Plus, SquarePen } from "lucide-react";
-import { updateJob } from "@/app/actions/jobs/updateJob";
 import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
 
 const formSchema = z.object({
