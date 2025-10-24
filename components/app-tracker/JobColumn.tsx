@@ -6,6 +6,8 @@ export default function JobColumn({
   id,
   jobs,
   title,
+  count,
+  isLoading = false,
   color,
   icon: Icon,
   description,
@@ -16,6 +18,8 @@ export default function JobColumn({
   id: string;
   jobs: Job[];
   title: string;
+  count: number | undefined;
+  isLoading?: boolean;
   color: string;
   icon: React.ElementType;
   description: string;
@@ -24,7 +28,6 @@ export default function JobColumn({
   onJobDeletion?: (jobId: string) => void;
 }) {
   const { setNodeRef } = useDroppable({ id });
-
   return (
     <div
       ref={setNodeRef}
@@ -38,10 +41,10 @@ export default function JobColumn({
           <h1>{title}</h1>
           <Icon size={18} />
         </div>
-        <p>{jobs.length}</p>
+        <p>{isLoading ? "..." : count ?? 0}</p>
       </div>
 
-      {jobs.length > 0 ? (
+      {!isLoading && (count ?? 0) > 0 ? (
         <div className="flex flex-col gap-3 flex-1 p-3 overflow-y-auto">
           {jobs.map((job) => (
             <JobColumnJobPost
@@ -52,6 +55,11 @@ export default function JobColumn({
               onJobDeletion={onJobDeletion}
             />
           ))}
+        </div>
+      ) : isLoading ? (
+        <div className="flex flex-col items-center justify-center text-center flex-1 text-muted-foreground p-3">
+          <Icon size={30} className="opacity-60 animate-pulse" />
+          <p className="text-sm mt-2 opacity-70">Loading...</p>
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center text-center flex-1 text-muted-foreground p-3">

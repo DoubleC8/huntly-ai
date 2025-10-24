@@ -14,24 +14,9 @@ import { ChevronDown, ChevronUp, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import { formatJobDate, formatSalary } from "@/lib/date-utils";
 import RejectedButton from "../dashboard/buttons/RejectedButton";
-import { updateJob } from "@/app/actions/jobs/updateJob";
-import { useState } from "react";
-
-/** Valid stage order for navigation */
-const stageOrder: JobStage[] = ["APPLIED", "INTERVIEW", "OFFER"];
-
-/** Helper to find next/previous stage */
-function getAdjacentStage(
-  stage: JobStage,
-  direction: "up" | "down"
-): JobStage | null {
-  const index = stageOrder.indexOf(stage);
-  if (index === -1) return null;
-
-  return direction === "up"
-    ? stageOrder[index - 1] ?? null
-    : stageOrder[index + 1] ?? null;
-}
+import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
+import { STAGE_LABELS } from "@/app/constants/jobStage";
+import { getAdjacentStage } from "@/lib/utils/jobUtils";
 
 export default function JobColumnJobPost({
   job,
@@ -51,34 +36,31 @@ export default function JobColumnJobPost({
       disabled: !isDraggable,
     });
 
-  const [updating, setUpdating] = useState(false);
+  const mutation = useUpdateJobStage();
 
   /** Mobile stage change handler */
-  async function handleStageChange(direction: "up" | "down") {
+  const handleStageChangeClick = async (direction: "up" | "down") => {
     const nextStage = getAdjacentStage(job.stage, direction);
     if (!nextStage) return;
 
-    setUpdating(true);
-
     try {
-      // Update the visual state immediately
+      await mutation.mutateAsync({
+        type: "setStage",
+        stage: nextStage,
+        jobId: job.id,
+      });
+
+      // Notify parent component of the stage change
       if (onStageChange) {
         onStageChange(job.id, nextStage);
       }
 
-      // Update the backend
-      await updateJob({
-        type: "setStage",
-        jobId: job.id,
-        stage: nextStage,
-      });
-
-      toast.success(`Moved job to ${nextStage.toLowerCase()} stage.`, {
-        description: `${job.title} @ ${job.company}`,
-      });
+      toast.success(
+        `${job.title} @${job.company} added to ${STAGE_LABELS[nextStage]} list.`
+      );
     } catch (error) {
       console.error(error);
-      toast.error("Failed to update job stage.", {
+      toast.error(`Failed to add job to ${STAGE_LABELS[nextStage]} list.`, {
         description: "Please try again later.",
       });
 
@@ -86,10 +68,8 @@ export default function JobColumnJobPost({
       if (onStageChange) {
         onStageChange(job.id, job.stage);
       }
-    } finally {
-      setUpdating(false);
     }
-  }
+  };
 
   return (
     <Card
@@ -99,13 +79,13 @@ export default function JobColumnJobPost({
         transform: transform
           ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
           : undefined,
-        opacity: isDragging ? 0.6 : updating ? 0.7 : 1,
+        opacity: isDragging ? 0.6 : mutation.isPending ? 0.7 : 1,
         zIndex: isDragging ? 50 : 0,
         position: isDragging ? "absolute" : "relative",
         width: isDragging ? "24%" : "100%",
       }}
       className={`p-3 flex flex-col justify-between transition-opacity duration-200 ${
-        updating ? "pointer-events-none" : ""
+        mutation.isPending ? "pointer-events-none" : ""
       }`}
     >
       {/* HEADER */}
@@ -168,10 +148,10 @@ export default function JobColumnJobPost({
           <Button
             variant="ghost"
             className="lg:hidden"
-            disabled={updating}
-            onClick={() => handleStageChange("up")}
+            disabled={mutation.isPending}
+            onClick={() => handleStageChangeClick("up")}
           >
-            {updating ? (
+            {mutation.isPending ? (
               <LoaderCircle className="animate-spin" size={16} />
             ) : (
               <ChevronUp />
@@ -198,10 +178,10 @@ export default function JobColumnJobPost({
           <Button
             variant="ghost"
             className="lg:hidden"
-            disabled={updating}
-            onClick={() => handleStageChange("down")}
+            disabled={mutation.isPending}
+            onClick={() => handleStageChangeClick("down")}
           >
-            {updating ? (
+            {mutation.isPending ? (
               <LoaderCircle className="animate-spin" size={16} />
             ) : (
               <ChevronDown />

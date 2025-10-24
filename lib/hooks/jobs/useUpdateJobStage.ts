@@ -9,6 +9,8 @@ export function useUpdateJobStage() {
     return useMutation({
         mutationFn: updateJob, 
         onSuccess: () => {
+            //marks any cached query with that key as “stale” and triggers a refetch the next time 
+            // React Query thinks it’s appropriate. This is what keeps our data fresh 
             queryClient.invalidateQueries({ queryKey: ["jobStageCounts"] });
         }
     })

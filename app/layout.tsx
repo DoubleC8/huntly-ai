@@ -27,7 +27,7 @@ export default function RootLayout({
       >
         <ReactQueryProvider>
           {children}
-          <Toaster position="bottom-left" richColors expand={false} />
+          <Toaster position="bottom-right" richColors expand={false} />
         </ReactQueryProvider>
       </body>
     </html>
