@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
   Select,
@@ -28,10 +28,15 @@ export default function UpdateJobStageDropdown({
   jobStage: JobStage | null;
 }) {
   const [selectedStage, setSelectedStage] = useState<JobStage>(
-    jobStage ?? JobStage.APPLIED
+    jobStage ?? JobStage.DEFAULT
   );
 
   const mutation = useUpdateJobStage();
+
+  // Sync selectedStage with jobStage prop changes
+  useEffect(() => {
+    setSelectedStage(jobStage ?? JobStage.DEFAULT);
+  }, [jobStage]);
 
   const handleStageChange = async (newStage: JobStage) => {
     setSelectedStage(newStage);
@@ -75,7 +80,7 @@ export default function UpdateJobStageDropdown({
         }}
       >
         <SelectValue placeholder="Select Stage">
-          {jobStage !== JobStage.DEFAULT ? (
+          {selectedStage !== JobStage.DEFAULT ? (
             <>
               <Icon className={`text-[var(${STAGE_COLORS[selectedStage]})]`} />
               <p>{STAGE_LABELS[selectedStage]}</p>
