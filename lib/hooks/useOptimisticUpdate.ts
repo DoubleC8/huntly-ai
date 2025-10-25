@@ -13,22 +13,23 @@ import { useState, useCallback } from "react";
  *   async (newStage) => await mutation.mutateAsync({ type: "setStage", stage: newStage, jobId })
  * );
  */
-export function useOptimisticUpdate<T>(
+export function useOptimisticUpdate<T, R = T>(
   initialState: T,
-  mutationFn: (newValue: T) => Promise<any>
+  mutationFn: (newValue: T) => Promise<R>
 ) {
   const [state, setState] = useState<T>(initialState);
 
   const mutate = useCallback(
-    async (newValue: T, onSuccess?: (value: T) => void, onError?: () => void) => {
+    async (newValue: T, onSuccess?: (value: T) => void, onError?: () => void): Promise<R> => {
       const previousValue = state;
       
       // Optimistically update the UI
       setState(newValue);
 
       try {
-        await mutationFn(newValue);
+        const result = await mutationFn(newValue);
         onSuccess?.(newValue);
+        return result;
       } catch (error) {
         // Revert to previous state on error
         setState(previousValue);
