@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { JobStage } from "@/app/generated/prisma";
 
 import { LoaderCircle } from "lucide-react";
 import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
+import { useOptimisticUpdate } from "@/lib/hooks/useOptimisticUpdate";
 import { STAGE_COLORS, STAGE_ICONS, STAGE_LABELS } from "@/lib/config/jobStage";
 import { jobToasts } from "@/lib/utils/toast";
 
@@ -28,7 +28,18 @@ export default function UpdateJobStageButton({
   const initialStage =
     jobStage && allowedStages.includes(jobStage) ? jobStage : JobStage.DEFAULT;
 
-  const [currentStage] = useState<JobStage>(initialStage);
+  const mutation = useUpdateJobStage();
+
+  const { state: currentStage, mutate: optimisticUpdate } = useOptimisticUpdate(
+    initialStage,
+    async (newStage: JobStage) => {
+      return mutation.mutateAsync({
+        type: "setStage",
+        stage: newStage,
+        jobId,
+      });
+    }
+  );
 
   let nextStage: JobStage;
 
@@ -42,16 +53,9 @@ export default function UpdateJobStageButton({
         : JobStage.OFFER;
   }
 
-  const mutation = useUpdateJobStage();
-
   const handleUpdateJobStageClick = async () => {
     try {
-      await mutation.mutateAsync({
-        type: "setStage",
-        stage: nextStage,
-        jobId,
-      });
-
+      await optimisticUpdate(nextStage);
       jobToasts.stageChanged(
         { title: jobTitle, company: jobCompany },
         nextStage

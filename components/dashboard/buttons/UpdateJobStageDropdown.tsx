@@ -10,6 +10,7 @@ import {
 import { JobStage } from "@/app/generated/prisma";
 
 import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
+import { useOptimisticUpdate } from "@/lib/hooks/useOptimisticUpdate";
 import { STAGE_COLORS, STAGE_ICONS, STAGE_LABELS } from "@/lib/config/jobStage";
 import { jobToasts } from "@/lib/utils/toast";
 
@@ -24,27 +25,31 @@ export default function UpdateJobStageDropdown({
   jobId: string;
   jobStage: JobStage | null;
 }) {
-  const [selectedStage, setSelectedStage] = useState<JobStage>(
-    jobStage ?? JobStage.DEFAULT
-  );
-
   const mutation = useUpdateJobStage();
 
-  // Sync selectedStage with jobStage prop changes
-  useEffect(() => {
-    setSelectedStage(jobStage ?? JobStage.DEFAULT);
-  }, [jobStage]);
-
-  const handleStageChange = async (newStage: JobStage) => {
-    setSelectedStage(newStage);
-
-    try {
-      await mutation.mutateAsync({
+  const {
+    state: selectedStage,
+    setState: setSelectedStage,
+    mutate: optimisticUpdate,
+  } = useOptimisticUpdate(
+    jobStage ?? JobStage.DEFAULT,
+    async (newStage: JobStage) => {
+      return mutation.mutateAsync({
         type: "setStage",
         stage: newStage,
         jobId,
       });
+    }
+  );
 
+  // Sync selectedStage with jobStage prop changes
+  useEffect(() => {
+    setSelectedStage(jobStage ?? JobStage.DEFAULT);
+  }, [jobStage, setSelectedStage]);
+
+  const handleStageChange = async (newStage: JobStage) => {
+    try {
+      await optimisticUpdate(newStage);
       jobToasts.stageChanged(
         { title: jobTitle, company: jobCompany },
         newStage
