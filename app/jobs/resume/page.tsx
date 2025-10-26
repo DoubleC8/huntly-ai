@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import ResumeTable from "@/components/resume/ResumeTable";
-import { getResumesByUserId } from "@/lib/queries/resumeQueries";
 import { getUserByEmail } from "@/lib/queries/userQueries";
+import { getResumesByUserId } from "@/app/actions/resume/get/getResumes";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 
 export default async function ResumePage() {
@@ -47,7 +47,7 @@ export default async function ResumePage() {
             pageContainer !min-h-[94vh]"
       >
         <ErrorBoundary>
-          <ResumeTable resumes={resumes} email={user.email} />
+          <ResumeTable resumes={resumes ?? []} email={user.email} />
         </ErrorBoundary>
       </div>
     </div>

@@ -5,13 +5,13 @@ import { Job, JobStage } from "@/app/generated/prisma";
 import { useUpdateJobStage } from "./useUpdateJobStage";
 
 import { findJobInColumns } from "@/lib/utils/jobUtils";
-import { STAGE_LABELS } from "@/lib/config/jobStage";
 import { jobToasts } from "@/lib/utils/toast";
 
 interface UseStageChangeOperationsProps {
   initialColumns: Record<JobStage, Job[]>;
 }
 
+//used for in app tracking page
 export function useStageChangeOperations({ initialColumns }: UseStageChangeOperationsProps) {
   const [columns, setColumns] = useState(initialColumns);
   const mutation = useUpdateJobStage();
