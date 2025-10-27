@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { resumeFileSchema } from "@/lib/validations/resume";
-import { updateUserResume } from "@/app/actions/resume/update/updateUserResume";
+import { useResumeMutations } from "@/lib/hooks/resumes/useResumeMutations";
 
 export default function AddResumeButton({
   resumeCount,
@@ -32,8 +32,8 @@ export default function AddResumeButton({
   resumeCount: number;
   email: string;
 }) {
+  const mutation = useResumeMutations();
   const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
   const [open, setOpen] = useState(false);
 
   const handleUpload = async () => {
@@ -47,14 +47,12 @@ export default function AddResumeButton({
       return;
     }
 
-    if (resumeCount >= 5) {
+    if (resumeCount >= 10) {
       toast.error("Upload limit reached", {
-        description: "You can only upload up to 5 resumes.",
+        description: "You can only upload up to 10 resumes.",
       });
       return;
     }
-
-    setUploading(true);
 
     try {
       const fileExt = file.name.split(".").pop();
@@ -79,9 +77,12 @@ export default function AddResumeButton({
         toast.error("URL generation failed");
         return;
       }
-      await updateUserResume({
+
+      // Use the mutation hook to add the resume
+      await mutation.mutateAsync({
+        type: "updateResume",
         resumeUrl: publicUrl,
-        fileName: file.name,
+        filename: file.name,
       });
 
       toast.success("Resume uploaded.", {
@@ -89,16 +90,14 @@ export default function AddResumeButton({
       });
 
       setFile(null);
+      setTimeout(() => {
+        setOpen(false);
+      }, 1000);
     } catch (error) {
       console.error("Unexpected error in handleUpload:", error);
       toast.error("Upload failed", {
         description: "Please try again.",
       });
-    } finally {
-      setUploading(false);
-      setTimeout(() => {
-        setOpen(false);
-      }, 1000);
     }
   };
 
@@ -156,15 +155,15 @@ export default function AddResumeButton({
         <DialogFooter>
           <Button
             onClick={handleUpload}
-            disabled={!file || uploading}
+            disabled={!file || mutation.isPending}
             className="md:w-1/2 md:mx-auto w-full"
           >
-            {uploading ? (
+            {mutation.isPending ? (
               <LoaderCircle className="animate-spin mr-1" />
             ) : (
               <Upload className="mr-1" />
             )}
-            {uploading ? "Uploading..." : "Upload"}
+            {mutation.isPending ? "Uploading..." : "Upload"}
           </Button>
         </DialogFooter>
       </DialogContent>

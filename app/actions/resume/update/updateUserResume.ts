@@ -6,10 +6,10 @@ import { revalidatePath } from "next/cache";
 
 export async function updateUserResume({
   resumeUrl,
-  fileName,
+  filename,
 }: {
   resumeUrl: string;
-  fileName: string;
+  filename: string;
 }) {
   const session = await auth();
   if (!session?.user?.email) {
@@ -29,7 +29,7 @@ export async function updateUserResume({
     data: {
       userId: user.id,
       publicUrl: resumeUrl,
-      fileName,
+      fileName: filename,
       isDefault: isFirstResume,
     },
   });
@@ -53,18 +53,18 @@ export async function updateUserResumeJobTitle(values: {
     data: {
       targetJobTitle: values.targetJobTitle
     }
-  })
+  });
 
   revalidatePath("/jobs/resume");
   revalidatePath("/jobs/profile");
   return updatedResume;
 }
 
-export async function makeResumeDefault( id: string ){
+export async function makeResumeDefault( resumeId: string ){
   const session = await auth();
   if (!session?.user?.email) { throw new Error("Unauthorized"); }
 
-  const resume = await prisma.resume.findUnique({ where: { id: id }});
+  const resume = await prisma.resume.findUnique({ where: { id: resumeId }});
   if(!resume) {throw new Error("Resume not found")}
 
   const user = await prisma.user.findUnique({
@@ -83,7 +83,7 @@ export async function makeResumeDefault( id: string ){
 
 
   const updatedResume = await prisma.resume.update({
-    where: { id: id },
+    where: { id: resumeId },
     data: {
       isDefault: true
     }

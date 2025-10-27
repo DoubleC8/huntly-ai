@@ -4,22 +4,31 @@ import { Star } from "lucide-react";
 import { Resume } from "@/app/generated/prisma";
 import { toast } from "sonner";
 import { makeResumeDefault } from "@/app/actions/resume/update/updateUserResume";
+import { useResumeMutations } from "@/lib/hooks/resumes/useResumeMutations";
 
 export default function MakeResumeDefaultButton({
   resume,
 }: {
   resume: Resume;
 }) {
+  const mutation = useResumeMutations();
+
   const handleDefault = async () => {
     if (!resume) {
       return;
     }
-
     try {
-      await makeResumeDefault(resume.id);
-      toast.success(`${resume.fileName.split(".")[0]} set as Default Resume.`, {
-        description: "This resume will be used to get your match score.",
+      await mutation.mutateAsync({
+        type: "toggleDefaultResume",
+        resumeId: resume.id,
       });
+
+      toast.success(
+        `"${resume.fileName.split(".")[0]}" set as Default Resume.`,
+        {
+          description: "This resume will be used to get your match score.",
+        }
+      );
     } catch {
       toast.error(
         `Failed to make ${

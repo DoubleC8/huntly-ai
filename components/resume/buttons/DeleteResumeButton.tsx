@@ -12,28 +12,28 @@ import {
 import { useState } from "react";
 import { Resume } from "@/app/generated/prisma";
 import { toast } from "sonner";
-import { deleteUserResume } from "@/app/actions/resume/delete/deleteUserResume";
 import { Button } from "@/components/ui/button";
+import { useResumeMutations } from "@/lib/hooks/resumes/useResumeMutations";
 
 export default function DeleteResumeButton({ resume }: { resume: Resume }) {
+  const mutation = useResumeMutations();
   const { id, publicUrl } = resume;
-  const [deleting, setDeleting] = useState(false);
   const [open, setOpen] = useState(false);
 
   const handleDelete = async () => {
     if (!resume) {
       return;
     }
-    setDeleting(true);
-
     try {
       const filePath = publicUrl.split("/resumes/")[1];
-      await deleteUserResume(id, filePath);
-      toast.success("Resume deleted!");
+      await mutation.mutateAsync({
+        type: "deleteResume",
+        resumeId: resume.id,
+        filePath: filePath,
+      });
+      toast.success(`${resume.fileName} deleted!`);
     } catch {
       toast.error("Failed to delete resume");
-    } finally {
-      setDeleting(false);
     }
   };
 
@@ -59,17 +59,17 @@ export default function DeleteResumeButton({ resume }: { resume: Resume }) {
         <DialogFooter>
           <Button
             onClick={handleDelete}
-            disabled={deleting}
+            disabled={mutation.isPending}
             className="md:w-1/2 md:mx-auto
             w-full"
             variant={"destructive"}
           >
-            {deleting ? (
+            {mutation.isPending ? (
               <LoaderCircle className="animate-spin mr-2" size={18} />
             ) : (
               ""
             )}
-            {deleting ? "Deleting..." : "Delete"}
+            {mutation.isPending ? "Deleting..." : "Delete"}
           </Button>
         </DialogFooter>
       </DialogContent>

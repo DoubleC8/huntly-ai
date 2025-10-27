@@ -33,11 +33,34 @@ export async function deleteUserResume(id: string, filePath: string) {
   const ownsResume = user?.resumes.some((r) => r.id === id);
   if (!ownsResume) throw new Error("Forbidden");
 
+  const wasDefault = resume.isDefault;
+  const remainingResumes = user!.resumes.filter((r) => r.id !== id);
+
   // 4. Delete from DB
   await prisma.resume.delete({ where: { id } });
 
-  // 5. Revalidate so UI updates
+  // 5. If we deleted the default resume and there are other resumes, make the oldest remaining one the default
+  if (wasDefault && remainingResumes.length > 0) {
+    // Sort by creation date (oldest first) and make the oldest the default
+    const oldestRemaining = remainingResumes.sort(
+      (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+    )[0];
+
+    // Make the oldest remaining resume the default
+    await prisma.resume.updateMany({
+      where: { userId: user!.id },
+      data: { isDefault: false },
+    });
+
+    await prisma.resume.update({
+      where: { id: oldestRemaining.id },
+      data: { isDefault: true },
+    });
+  }
+
+  // 6. Revalidate so UI updates
   revalidatePath("/jobs/resume");
+  revalidatePath("/jobs/profile");
 
   return { success: true };
 }
