@@ -11,30 +11,33 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Education } from "@/app/generated/prisma";
-import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
-import { DeleteUserField } from "@/app/actions/profile/delete/deleteUserProfileEntry";
+
+import { profileToasts } from "@/lib/utils/toast";
+import { useProfileMutations } from "@/lib/hooks/profile/useProfileMutations";
 
 export default function DeleteEducationEntry({
   education,
 }: {
   education: Education;
 }) {
-  const [deleting, setDeleting] = useState(false);
+  const mutation = useProfileMutations();
   const [open, setOpen] = useState(false);
 
   async function handleDelete() {
-    setDeleting(true);
     try {
-      await DeleteUserField("education", education.id);
-      toast.success("Education entry deleted successfully!");
+      mutation.mutateAsync({
+        type: "deleteField",
+        field: "education",
+        value: education.id,
+      });
+
+      profileToasts.deletedEducation();
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to update education.", {
-        description: "Please try again later.",
-      });
+      profileToasts.error("Failed to update education.");
     } finally {
-      setDeleting(false);
       setTimeout(() => {
         setOpen(false);
       }, 1000);
@@ -63,17 +66,17 @@ export default function DeleteEducationEntry({
         <DialogFooter>
           <Button
             onClick={handleDelete}
-            disabled={deleting}
+            disabled={mutation.isPending}
             className="md:w-1/2 md:mx-auto
             w-full"
             variant={"destructive"}
           >
-            {deleting ? (
+            {mutation.isPending ? (
               <LoaderCircle className="animate-spin mr-2" size={18} />
             ) : (
               ""
             )}
-            {deleting ? "Deleting..." : "Delete"}
+            {mutation.isPending ? "Deleting..." : "Delete"}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -55,7 +55,10 @@ export default function UserJobPreferencesSidebar() {
         value: values.jobPreferences,
       });
 
-      profileToasts.addedFields({ fields: values.jobPreferences ?? [] });
+      profileToasts.addedFields({
+        fields: values.jobPreferences ?? [],
+        fieldType: "jobPreferences",
+      });
       form.reset({ jobPreferences: [] });
     } catch (error) {
       console.error("Form submission error", error);

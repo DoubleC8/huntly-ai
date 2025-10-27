@@ -2,8 +2,8 @@
 
 import { Star, LoaderCircle } from "lucide-react";
 import { Resume } from "@/app/generated/prisma";
-import { toast } from "sonner";
 import { useResumeMutations } from "@/lib/hooks/resumes/useResumeMutations";
+import { resumeToasts } from "@/lib/utils/toast";
 
 export default function MakeResumeDefaultButton({
   resume,
@@ -22,20 +22,12 @@ export default function MakeResumeDefaultButton({
         resumeId: resume.id,
       });
 
-      toast.success(
-        `"${resume.fileName.split(".")[0]}" set as Default Resume.`,
-        {
-          description: "This resume will be used to get your match score.",
-        }
-      );
+      resumeToasts.resumeMadeDefault({ resumeTitle: resume.fileName });
     } catch {
-      toast.error(
+      resumeToasts.error(
         `Failed to make ${
           resume.fileName.split(".")[0]
-        } as your default resume.`,
-        {
-          description: "Please try again later.",
-        }
+        } as your default resume.`
       );
     }
   };

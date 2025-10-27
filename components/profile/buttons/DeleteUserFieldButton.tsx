@@ -25,7 +25,7 @@ export default function DeleteUserFieldButton({
         value: value,
       });
 
-      profileToasts.deletedField(value);
+      profileToasts.deletedField({ field: value, fieldType: field });
     } catch (error) {
       console.error("Form submission error", error);
       profileToasts.error("Failed to update user profile entries.");

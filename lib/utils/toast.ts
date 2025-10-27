@@ -7,7 +7,7 @@ type JobCtx = { title: string, company: string };
 
 type ResumeCtx = { resumeTitle: string };
 
-type ProfileCtx = { formattedKeys?: string, fields?: string[] }
+type ProfileCtx = { formattedKeys?: string, fields?: string[], fieldType?: "skills" | "jobPreferences" }
 
 export const jobToasts = {
     stageChanged: (ctx: JobCtx, to: JobStage) =>
@@ -44,6 +44,11 @@ export const resumeToasts = {
     toast.info(`Target job title changed to: "${formatResumeTitle(ctx.resumeTitle)}".`, {
       description: `${formatTimestamp()}`
     }),
+
+  resumeMadeDefault: (ctx: ResumeCtx) => 
+    toast.info(`Made ${formatResumeTitle(ctx.resumeTitle)} default resume.`, {
+      description: "This resume will be used to get your match score."
+    }), 
   
   resumeDeleted: (ctx: ResumeCtx) => 
     toast.warning(`Deleted "${formatResumeTitle(ctx.resumeTitle)}" from your resume list.`, {
@@ -54,6 +59,29 @@ export const resumeToasts = {
       toast.error(message, { description })
 }
 
+// Helper function to get field label
+const getFieldLabel = (fieldType?: "skills" | "jobPreferences"): string => {
+  switch (fieldType) {
+    case "skills":
+      return "Skills";
+    case "jobPreferences":
+      return "Job Preferences";
+    default:
+      return "Item";
+  }
+};
+
+const getFieldLabelPlural = (fieldType?: "skills" | "jobPreferences"): string => {
+  switch (fieldType) {
+    case "skills":
+      return "Skills";
+    case "jobPreferences":
+      return "Job Preferences";
+    default:
+      return "Items";
+  }
+};
+
 export const profileToasts = {
   updatedPersonalInfo: (ctx: ProfileCtx) => 
     toast.success(`Updated ${ctx.formattedKeys}!`, {
@@ -61,34 +89,42 @@ export const profileToasts = {
     }),
   
   addedFields: (ctx: ProfileCtx) => {
-    toast.success("Skills added successfully!", {
-        description: `${
-          ctx.fields?.length ?? 0
-        } skills saved to your profile.`,
-      });
+    const fieldLabel = getFieldLabelPlural(ctx.fieldType);
+    const count = ctx.fields?.length ?? 0;
+    
+    toast.success(`${fieldLabel} added successfully!`, {
+      description: `${count} ${count === 1 ? getFieldLabel(ctx.fieldType) : fieldLabel.toLowerCase()} saved to your profile.`,
+    });
   },
+
+  deletedField: (ctx: ProfileCtx & { field?: string }) => {
+    const fieldLabel = getFieldLabel(ctx.fieldType);
+    const deletedItem = ctx.field ?? "item";
+    
+    toast.warning(`${formatEntry(deletedItem)} removed from your ${fieldLabel}.`);
+  },
+
+  noInfoChanged: () => {
+    toast.info("No values changed.");
+  }, 
   
   addedEducation: () => {
     toast.success("Education entry added successfully!", {
       description: `${formatTimestamp()}`
     })
   }, 
-  
+
   updateEducation: () => {
     toast.info("Education updated successfully!", {
       description: `${formatTimestamp()}`
     })
   },
 
-  deletedField: (field: string) => {
-    toast.warning(`"${formatEntry(field)}" deleted.`, {
+  deletedEducation: () => {
+    toast.warning("Education entry deleted successfully!", {
       description: `${formatTimestamp()}`
     })
   },
-
-  noInfoChanged: () => {
-    toast.info("No values changed.");
-  }, 
 
   error: (message = "Something went wrong", description?: string) => 
       toast.error(message, { description })

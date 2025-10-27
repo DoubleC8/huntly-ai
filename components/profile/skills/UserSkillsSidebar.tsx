@@ -57,7 +57,10 @@ export default function UserSkillsSidebar() {
         value: values.skills,
       });
 
-      profileToasts.addedFields({ fields: values.skills ?? [] });
+      profileToasts.addedFields({
+        fields: values.skills ?? [],
+        fieldType: "skills",
+      });
       form.reset({ skills: [] });
     } catch (error) {
       console.error("Form submission error", error);
