@@ -11,13 +11,13 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Resume } from "@/app/generated/prisma";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useResumeMutations } from "@/lib/hooks/resumes/useResumeMutations";
+import { resumeToasts } from "@/lib/utils/toast";
 
 export default function DeleteResumeButton({ resume }: { resume: Resume }) {
   const mutation = useResumeMutations();
-  const { id, publicUrl } = resume;
+  const { publicUrl } = resume;
   const [open, setOpen] = useState(false);
 
   const handleDelete = async () => {
@@ -31,9 +31,9 @@ export default function DeleteResumeButton({ resume }: { resume: Resume }) {
         resumeId: resume.id,
         filePath: filePath,
       });
-      toast.success(`${resume.fileName} deleted!`);
+      resumeToasts.resumeDeleted({ resumeTitle: resume.fileName });
     } catch {
-      toast.error("Failed to delete resume");
+      resumeToasts.error("Failed to delete resume");
     }
   };
 

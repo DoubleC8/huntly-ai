@@ -1,9 +1,8 @@
 "use client";
 
-import { Star } from "lucide-react";
+import { Star, LoaderCircle } from "lucide-react";
 import { Resume } from "@/app/generated/prisma";
 import { toast } from "sonner";
-import { makeResumeDefault } from "@/app/actions/resume/update/updateUserResume";
 import { useResumeMutations } from "@/lib/hooks/resumes/useResumeMutations";
 
 export default function MakeResumeDefaultButton({
@@ -43,11 +42,16 @@ export default function MakeResumeDefaultButton({
 
   return (
     <button
-      title={resume.isDefault ? "Remove as Default" : "Make Default"}
+      title={resume.isDefault ? "Default Resume" : "Make Default"}
       onClick={() => handleDefault()}
-      disabled={resume.isDefault}
+      disabled={resume.isDefault || mutation.isPending}
     >
-      {resume.isDefault ? (
+      {mutation.isPending ? (
+        <LoaderCircle
+          className="animate-spin text-[var(--app-yellow)]"
+          size={18}
+        />
+      ) : resume.isDefault ? (
         <Star fill="yellow" className="text-[var(--app-yellow)]" />
       ) : (
         <Star className="ease-in-out duration-200 hover:text-[var(--app-yellow)] hover:cursor-pointer" />

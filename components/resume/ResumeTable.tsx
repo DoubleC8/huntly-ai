@@ -10,7 +10,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDistanceToNow as formatFn } from "date-fns";
-
 import { ExternalLink, HeartCrack } from "lucide-react";
 import TargetJobTitle from "./TargetJobTitle";
 import { Card, CardContent, CardDescription, CardFooter } from "../ui/card";
@@ -18,6 +17,8 @@ import AddResumeButton from "./buttons/AddResumeButton";
 import ResumeNavbar from "./ResumeNavbar";
 import DeleteResumeButton from "./buttons/DeleteResumeButton";
 import MakeResumeDefaultButton from "./buttons/MakeResumeDefaultButton";
+import { formatResumeTitle } from "@/lib/utils";
+import UploadResumeCard from "./cards/UploadResumeCard";
 
 export default function ResumeTable({
   resumes,
@@ -27,23 +28,7 @@ export default function ResumeTable({
   email: string;
 }) {
   if (resumes.length === 0) {
-    return (
-      <div className="my-auto">
-        <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
-          <CardContent className="flex flex-col items-center gap-3">
-            <HeartCrack className="text-[var(--app-red)]" />
-            <p>No resumes uploaded yet</p>
-            <CardDescription>
-              Upload a resume to start applying for jobs and tracking your
-              progress.
-            </CardDescription>
-          </CardContent>
-          <CardFooter className="mx-auto">
-            <AddResumeButton resumeCount={resumes.length} email={email} />
-          </CardFooter>
-        </Card>
-      </div>
-    );
+    return <UploadResumeCard resumeCount={resumes.length} email={email} />;
   }
   return (
     <div className="h-fit flex flex-col gap-3">
@@ -87,13 +72,13 @@ export default function ResumeTable({
                       <MakeResumeDefaultButton resume={resume} />
                       {resume.isDefault ? (
                         <p>
-                          {resume.fileName.split(".")[0]}{" "}
+                          {formatResumeTitle(resume.fileName)}{" "}
                           <span className="text-[var(--app-blue)]">
                             (Default)
                           </span>
                         </p>
                       ) : (
-                        <p> {resume.fileName.split(".")[0]}</p>
+                        <p> {formatResumeTitle(resume.fileName)}</p>
                       )}
                     </div>
                   </TableCell>

@@ -24,6 +24,9 @@ import {
 import { toast } from "sonner";
 import { resumeFileSchema } from "@/lib/validations/resume";
 import { useResumeMutations } from "@/lib/hooks/resumes/useResumeMutations";
+import { resumeToasts } from "@/lib/utils/toast";
+
+const MAX_RESUMES = 5;
 
 export default function AddResumeButton({
   resumeCount,
@@ -37,25 +40,25 @@ export default function AddResumeButton({
   const [open, setOpen] = useState(false);
 
   const handleUpload = async () => {
+    // Validation
     if (!file || !email) return;
 
-    const result = resumeFileSchema.safeParse(file);
-    if (!result.success) {
-      toast.error("Invalid File", {
-        description: result.error.issues[0]?.message || "File is not valid.",
-      });
+    const validation = resumeFileSchema.safeParse(file);
+    if (!validation.success) {
+      resumeToasts.error(
+        validation.error.issues[0]?.message || "File is not valid."
+      );
       return;
     }
 
-    if (resumeCount >= 10) {
-      toast.error("Upload limit reached", {
-        description: "You can only upload up to 10 resumes.",
-      });
+    if (resumeCount >= MAX_RESUMES) {
+      resumeToasts.error(`You can only upload up to ${MAX_RESUMES} resumes.`);
       return;
     }
 
     try {
-      const fileExt = file.name.split(".").pop();
+      // Upload to Supabase
+      const fileExt = file.name.split(".").pop()!;
       const filePath = `${email}/resume-${Date.now()}.${fileExt}`;
       const supabase = createClient();
 
@@ -63,41 +66,29 @@ export default function AddResumeButton({
         .from("resumes")
         .upload(filePath, file, { upsert: true });
 
-      if (uploadError) {
-        console.error("Upload failed:", uploadError.message);
-        toast.error("Upload failed", {
-          description: "Please try again.",
-        });
-        return;
-      }
+      if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`);
 
+      // Get public URL
       const { data } = supabase.storage.from("resumes").getPublicUrl(filePath);
-      const publicUrl = data?.publicUrl;
-      if (!publicUrl) {
-        toast.error("URL generation failed");
-        return;
-      }
+      if (!data?.publicUrl) throw new Error("URL generation failed");
 
-      // Use the mutation hook to add the resume
+      // Save to database using mutation
       await mutation.mutateAsync({
         type: "updateResume",
-        resumeUrl: publicUrl,
+        resumeUrl: data.publicUrl,
         filename: file.name,
       });
 
-      toast.success("Resume uploaded.", {
-        description: "Sit back and watch the magic happen.",
-      });
-
+      // Cleanup and close
       setFile(null);
-      setTimeout(() => {
-        setOpen(false);
-      }, 1000);
+      resumeToasts.resumeAdded({ resumeTitle: file.name });
     } catch (error) {
-      console.error("Unexpected error in handleUpload:", error);
-      toast.error("Upload failed", {
-        description: "Please try again.",
-      });
+      console.error("Upload error:", error);
+      resumeToasts.error(
+        error instanceof Error ? error.message : "Please try again."
+      );
+    } finally {
+      setTimeout(() => setOpen(false), 1000);
     }
   };
 
@@ -105,9 +96,9 @@ export default function AddResumeButton({
     <Dialog
       open={open}
       onOpenChange={(val) => {
-        if (resumeCount >= 5 && val) {
+        if (resumeCount >= MAX_RESUMES && val) {
           toast.error("Upload limit reached", {
-            description: "You can only upload up to 5 resumes.",
+            description: `You can only upload up to ${MAX_RESUMES} resumes.`,
           });
           return;
         }
@@ -118,7 +109,7 @@ export default function AddResumeButton({
         <Button
           variant="default"
           className="flex items-center gap-2"
-          disabled={resumeCount >= 5}
+          disabled={resumeCount >= MAX_RESUMES}
         >
           <span className="hidden md:block">Add Resume</span>
           <Plus size={16} />

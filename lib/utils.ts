@@ -2,6 +2,8 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { prisma } from "@/lib/prisma";
 import parsePhoneNumberFromString from "libphonenumber-js";
+import { format } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -74,4 +76,12 @@ export async function validateJobOwnership(jobId: string, userEmail: string){
   if(!job || job.userId !== user.id) throw new Error("Unauthorized job access");
 
   return job;
+}
+
+export function formatResumeTitle(title: string): string {
+  return title.split(".")[0];
+}
+
+export function formatTimestamp() {
+  return `@ ${format(new Date(), "PPP p", { locale: enUS })}`;
 }

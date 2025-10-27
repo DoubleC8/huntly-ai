@@ -1,8 +1,11 @@
 import { toast } from "sonner";
 import { JobStage } from "@/app/generated/prisma";
 import { STAGE_LABELS } from "@/lib/config/jobStage";
+import { formatResumeTitle, formatTimestamp } from "../utils";
 
 type JobCtx = { title: string, company: string };
+
+type ResumeCtx = { resumeTitle: string }
 
 export const jobToasts = {
     stageChanged: (ctx: JobCtx, to: JobStage) =>
@@ -27,4 +30,19 @@ export const jobToasts = {
 
   error: (message = "Something went wrong", description?: string) =>
     toast.error(message, { description }),
+}
+
+export const resumeToasts = {
+  resumeAdded: (ctx: ResumeCtx) => 
+    toast.success(`Added "${formatResumeTitle(ctx.resumeTitle)}" to your resume list.`, {
+      description: `${formatTimestamp()}`
+    }), 
+  
+  resumeDeleted: (ctx: ResumeCtx) => 
+    toast.warning(`Deleted "${formatResumeTitle(ctx.resumeTitle)}" from your resume list.`, {
+      description: `${formatTimestamp()}`
+    }), 
+
+  error: (message = "Something went wrong", description?: string) => 
+      toast.error(message, { description })
 }
