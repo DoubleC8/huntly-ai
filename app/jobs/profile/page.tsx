@@ -7,11 +7,12 @@ import UserProfileSkeleton from "@/components/profile/ui/UserProfileSkeleton";
 import UserResumeSkeleton from "@/components/profile/ui/UserResumeSkeleton";
 import UserInfo from "@/components/profile/user-info/UserInfo";
 import UserResume from "@/components/profile/user-resume/UserResume";
-import { getDefaultResume } from "@/lib/queries/resumeQueries";
-import { getUserProfileData } from "@/lib/queries/userQueries";
 import { Suspense } from "react";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
+import { getDefaultResume } from "@/app/actions/resume/get/getResumes";
+import { getUserProfileData } from "@/app/actions/profile/get/getUserInfo";
 
+export const JOB_LIMIT = 10;
 export default async function ProfilePage({
   searchParams,
 }: {
@@ -28,12 +29,11 @@ export default async function ProfilePage({
 
   const params = await searchParams;
   const currentPage = Number(params.page) || 1;
-  const limit = 10;
 
   const { user, totalJobs } = await getUserProfileData({
     email: session.user.email,
     page: currentPage,
-    limit,
+    limit: JOB_LIMIT,
   });
   if (!user) {
     return (
@@ -87,7 +87,7 @@ export default async function ProfilePage({
             <AppliedJobs
               initialJobs={user.jobs}
               totalJobs={totalJobs}
-              limit={limit}
+              limit={JOB_LIMIT}
             />
           </ErrorBoundary>
         </div>

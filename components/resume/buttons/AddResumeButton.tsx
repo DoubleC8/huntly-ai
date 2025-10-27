@@ -25,8 +25,7 @@ import { toast } from "sonner";
 import { resumeFileSchema } from "@/lib/validations/resume";
 import { useResumeMutations } from "@/lib/hooks/resumes/useResumeMutations";
 import { resumeToasts } from "@/lib/utils/toast";
-
-const MAX_RESUMES = 5;
+import { RESUME_LIMIT } from "../ResumeNavbar";
 
 export default function AddResumeButton({
   resumeCount,
@@ -51,8 +50,8 @@ export default function AddResumeButton({
       return;
     }
 
-    if (resumeCount >= MAX_RESUMES) {
-      resumeToasts.error(`You can only upload up to ${MAX_RESUMES} resumes.`);
+    if (resumeCount >= RESUME_LIMIT) {
+      resumeToasts.error(`You can only upload up to ${RESUME_LIMIT} resumes.`);
       return;
     }
 
@@ -96,9 +95,9 @@ export default function AddResumeButton({
     <Dialog
       open={open}
       onOpenChange={(val) => {
-        if (resumeCount >= MAX_RESUMES && val) {
+        if (resumeCount >= RESUME_LIMIT && val) {
           toast.error("Upload limit reached", {
-            description: `You can only upload up to ${MAX_RESUMES} resumes.`,
+            description: `You can only upload up to ${RESUME_LIMIT} resumes.`,
           });
           return;
         }
@@ -109,7 +108,7 @@ export default function AddResumeButton({
         <Button
           variant="default"
           className="flex items-center gap-2"
-          disabled={resumeCount >= MAX_RESUMES}
+          disabled={resumeCount >= RESUME_LIMIT}
         >
           <span className="hidden md:block">Add Resume</span>
           <Plus size={16} />

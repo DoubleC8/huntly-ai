@@ -35,7 +35,7 @@ export async function UpdateUserField(
   return updatedUser;
 }
 
-export async function updateUserPersonalInfo(values: {
+export async function UpdateUserPersonalInfo(values: {
     githubUrl?: string;
     linkedInUrl?: string;
     portfolioUrl?: string;
@@ -80,7 +80,7 @@ export async function updateUserPersonalInfo(values: {
 }
 
 
-export async function updateUserEducation(values: {
+export async function UpdateUserEducation(values: {
   id?: string;
   school: string;
   major?: string;

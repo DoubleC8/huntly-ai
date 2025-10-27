@@ -26,7 +26,8 @@ import { LoaderCircle, Plus, SquarePen } from "lucide-react";
 import { User } from "@/app/generated/prisma";
 
 import { useState } from "react";
-import { updateUserPersonalInfo } from "@/app/actions/profile/update/updateUserInfo";
+import { useProfileMutations } from "@/lib/hooks/profile/useProfileMutations";
+import { jobToasts, profileToasts } from "@/lib/utils/toast";
 
 const urlField = (pattern: RegExp, msg: string) =>
   z
@@ -56,8 +57,8 @@ const formSchema = z.object({
 });
 
 export default function UserInfoSidebar({ user }: { user: User }) {
+  const mutation = useProfileMutations();
   const [open, setOpen] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,32 +71,31 @@ export default function UserInfoSidebar({ user }: { user: User }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setUploading(true);
     try {
-      // compare each field with the original user values
+      // Compare each field with the original user values
       const changedEntries = Object.entries(values).filter(([key, value]) => {
-        // normalize both sides to strings for safe comparison
         const currentValue =
           (user[key as keyof typeof values] ?? "")?.trim?.() ?? "";
         const newValue = (value ?? "")?.trim?.() ?? "";
         return newValue !== currentValue && newValue !== "";
       });
 
-      // if nothing changed
+      // If nothing changed
       if (changedEntries.length === 0) {
-        toast.info("No values changed.");
-        setUploading(false);
+        profileToasts.noInfoChanged;
         return;
       }
 
-      // convert to object for backend
+      // Convert to object for backend
       const changedValues = Object.fromEntries(changedEntries);
 
-      // perform update
-      await updateUserPersonalInfo(changedValues);
-      form.reset(values);
+      // Use the mutation hook to update
+      await mutation.mutateAsync({
+        type: "updatePersonalInfo",
+        ...changedValues,
+      });
 
-      // create readable field labels
+      // Create readable field labels
       const formattedKeys = changedEntries
         .map(([key]) =>
           key
@@ -105,17 +105,14 @@ export default function UserInfoSidebar({ user }: { user: User }) {
         )
         .join(", ");
 
-      toast.success(`Updated ${formattedKeys}!`);
+      // Reset form and close
+      form.reset(values);
+      profileToasts.updatedPersonalInfo({ formattedKeys });
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to update information.", {
-        description: "Please try again later.",
-      });
+      profileToasts.error("Failed to update information.");
     } finally {
-      setUploading(false);
-      setTimeout(() => {
-        setOpen(false);
-      }, 1000);
+      setTimeout(() => setOpen(false), 1000);
     }
   }
 
@@ -247,13 +244,13 @@ export default function UserInfoSidebar({ user }: { user: User }) {
               />
 
               <div className="flex justify-center">
-                <Button type="submit" disabled={uploading}>
-                  {uploading ? (
+                <Button type="submit" disabled={mutation.isPending}>
+                  {mutation.isPending ? (
                     <LoaderCircle className="animate-spin mr-1" />
                   ) : (
                     <Plus className="mr-1" />
                   )}
-                  {uploading ? "Saving Changes..." : "Save Changes"}
+                  {mutation.isPending ? "Saving Changes..." : "Save Changes"}
                 </Button>
               </div>
             </form>

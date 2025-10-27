@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { LoaderCircle, Plus, SquarePen } from "lucide-react";
 import { useState } from "react";
 import { useResumeMutations } from "@/lib/hooks/resumes/useResumeMutations";
+import { jobToasts, resumeToasts } from "@/lib/utils/toast";
 
 const formSchema = z.object({
   targetJobTitle: z.string().trim().max(50).optional(),
@@ -31,7 +32,6 @@ export default function TargetJobTitle({
   const mutation = useResumeMutations();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,23 +41,21 @@ export default function TargetJobTitle({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
     try {
       await mutation.mutateAsync({
         type: "setResumeJobTitle",
         targetJobTitle: values.targetJobTitle ?? "",
         resumeId: resumeId,
       });
-      toast.success(`Target job title set to: ${values.targetJobTitle}!`);
+      resumeToasts.resumeUpdatedJobTitle({
+        resumeTitle: values.targetJobTitle ?? "",
+      });
       setIsEditing(false); // Close form only after success
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to update job title", {
-        description: "Please try again later.",
-      });
-      // Don't close form on error, let user try again
-    } finally {
-      setIsLoading(false);
+      jobToasts.error(
+        error instanceof Error ? error.message : "Please try again."
+      );
     }
   }
 
@@ -86,8 +84,12 @@ export default function TargetJobTitle({
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? <LoaderCircle className="animate-spin" /> : <Plus />}
+            <Button type="submit" disabled={mutation.isPending}>
+              {mutation.isPending ? (
+                <LoaderCircle className="animate-spin" />
+              ) : (
+                <Plus />
+              )}
             </Button>
           </form>
         </Form>

@@ -1,8 +1,8 @@
 import { auth } from "@/auth";
 import ResumeTable from "@/components/resume/ResumeTable";
-import { getUserByEmail } from "@/lib/queries/userQueries";
 import { getResumesByUserId } from "@/app/actions/resume/get/getResumes";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
+import { getUserByEmail } from "@/app/actions/profile/get/getUserInfo";
 
 export default async function ResumePage() {
   const session = await auth();

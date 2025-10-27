@@ -39,7 +39,8 @@ import {
   SheetTrigger,
   Sheet,
 } from "@/components/ui/sheet";
-import { updateUserEducation } from "@/app/actions/profile/update/updateUserInfo";
+import { useProfileMutations } from "@/lib/hooks/profile/useProfileMutations";
+import { profileToasts } from "@/lib/utils/toast";
 
 const formSchema = z
   .object({
@@ -70,8 +71,9 @@ export default function UserEducationSidebar({
 }: {
   education?: Education;
 }) {
+  const mutation = useProfileMutations();
   const [open, setOpen] = useState(false);
-  const [uploading, setUploading] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: education
@@ -98,23 +100,26 @@ export default function UserEducationSidebar({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setUploading(true);
     try {
       if (education) {
-        await updateUserEducation({ id: education.id, ...values });
-        toast.success("Education updated successfully!");
+        await mutation.mutateAsync({
+          type: "updateEducation",
+          ...values,
+        });
+
+        profileToasts.updateEducation();
       } else {
-        await updateUserEducation(values);
-        toast.success("Education added successfully!");
+        await mutation.mutateAsync({
+          type: "updateEducation",
+          ...values,
+        });
+        profileToasts.addedEducation();
         form.reset();
       }
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to update education.", {
-        description: "Please try again later.",
-      });
+      profileToasts.error("Failed to update education.");
     } finally {
-      setUploading(false);
       setTimeout(() => {
         setOpen(false);
       }, 1000);
@@ -342,13 +347,13 @@ export default function UserEducationSidebar({
                 )}
               />
               <div className="flex justify-center">
-                <Button type="submit" disabled={uploading}>
-                  {uploading ? (
+                <Button type="submit" disabled={mutation.isPending}>
+                  {mutation.isPending ? (
                     <LoaderCircle className="animate-spin mr-1" />
                   ) : (
                     <Plus className="mr-1" />
                   )}
-                  {uploading ? "Adding Education..." : "Add Education"}
+                  {mutation.isPending ? "Adding Education..." : "Add Education"}
                 </Button>
               </div>
             </form>

@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/auth";
-import { getUserProfileData } from "@/lib/queries/userQueries";
+import { getUserProfileData } from "./getUserInfo";
 
 
 export async function getPaginatedJobs(page: number, limit: number) {

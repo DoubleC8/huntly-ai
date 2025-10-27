@@ -9,11 +9,12 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { getUserByEmail } from "@/lib/queries/userQueries";
+
 import { searchJobs } from "@/lib/queries/jobQueries";
 import DashboardNavbar from "@/components/dashboard/navbars/DashboardNavbar";
 import ActiveFiltersBar from "@/components/dashboard/ActiveFiltersBar";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
+import { getUserByEmail } from "@/app/actions/profile/get/getUserInfo";
 
 interface SearchParams {
   search?: string;

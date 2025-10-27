@@ -1,5 +1,5 @@
 "use client";
-import { toast } from "sonner";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,7 +24,8 @@ import {
 import { LoaderCircle, Plus, SquarePlus } from "lucide-react";
 import { useState } from "react";
 import { TagsInput } from "@/components/ui/TagsInput";
-import { UpdateUserField } from "@/app/actions/profile/update/updateUserInfo";
+import { useProfileMutations } from "@/lib/hooks/profile/useProfileMutations";
+import { profileToasts } from "@/lib/utils/toast";
 
 const formSchema = z.object({
   skills: z
@@ -36,8 +37,9 @@ const formSchema = z.object({
 });
 
 export default function UserSkillsSidebar() {
+  const mutation = useProfileMutations();
+
   const [open, setOpen] = useState(false);
-  const [uploading, setUploading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -47,26 +49,21 @@ export default function UserSkillsSidebar() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setUploading(true);
     try {
-      await UpdateUserField("skills", values.skills);
-      toast.success("Skills added successfully!", {
-        description: `${
-          values.skills?.length ?? 0
-        } skills saved to your profile.`,
+      // Use the mutation hook to update skills
+      await mutation.mutateAsync({
+        type: "updateFields",
+        field: "skills",
+        value: values.skills,
       });
 
+      profileToasts.addedFields({ fields: values.skills ?? [] });
       form.reset({ skills: [] });
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to update skills.", {
-        description: "Please try again later.",
-      });
+      profileToasts.error("Failed to update skills.");
     } finally {
-      setUploading(false);
-      setTimeout(() => {
-        setOpen(false);
-      }, 1000);
+      setTimeout(() => setOpen(false), 1000);
     }
   }
 
@@ -111,13 +108,13 @@ export default function UserSkillsSidebar() {
                 )}
               />
               <div className="flex justify-center">
-                <Button type="submit" disabled={uploading}>
-                  {uploading ? (
+                <Button type="submit" disabled={mutation.isPending}>
+                  {mutation.isPending ? (
                     <LoaderCircle className="animate-spin mr-1" />
                   ) : (
                     <Plus className="mr-1" />
                   )}
-                  {uploading ? "Adding skills..." : "Add Skills"}
+                  {mutation.isPending ? "Adding skills..." : "Add Skills"}
                 </Button>
               </div>
             </form>

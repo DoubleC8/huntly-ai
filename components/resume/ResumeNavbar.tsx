@@ -1,7 +1,7 @@
 import { PartyPopper } from "lucide-react";
 import AddResumeButton from "./buttons/AddResumeButton";
 
-const RESUME_LIMIT = 10;
+export const RESUME_LIMIT = 10;
 
 export default function ResumeNavbar({
   email,
