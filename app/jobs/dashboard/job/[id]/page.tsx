@@ -5,9 +5,10 @@ import JobPageHeader from "@/components/dashboard/job-id-page/JobPageHeader";
 import JobPageDescription from "@/components/dashboard/job-id-page/JobPageDescription";
 import JobPageNotes from "@/components/dashboard/job-id-page/JobPageNotes";
 import JobPageFooter from "@/components/dashboard/job-id-page/JobPageFooter";
-import { getUserByEmail } from "@/lib/queries/userQueries";
+
 import { getJobById } from "@/lib/queries/jobQueries";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
+import { getUserByEmail } from "@/app/actions/profile/get/getUserInfo";
 
 interface PageProps {
   params: Promise<{ id: string }>;

@@ -1,10 +1,11 @@
 import { auth } from "@/auth";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import RecommendedJobs from "@/components/dashboard/RecommendedJobs";
-import { getUserByEmail } from "@/lib/queries/userQueries";
+
 import { getJobsByStage } from "@/lib/queries/jobQueries";
 import { JobStage } from "@/app/generated/prisma";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
+import { getUserByEmail } from "@/app/actions/profile/get/getUserInfo";
 
 // Define readable messages for each stage
 const STAGE_CONTENT: Record<

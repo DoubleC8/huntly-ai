@@ -1,7 +1,7 @@
 "use client";
 
 import { getUserProfileData } from "@/app/actions/profile/get/getUserInfo";
-import { JOB_LIMIT } from "@/app/jobs/profile/page";
+import { JOB_LIMIT } from "@/lib/constants/profile";
 import { useQuery } from "@tanstack/react-query";
 
 

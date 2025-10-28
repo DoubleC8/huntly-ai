@@ -31,7 +31,7 @@ export function useResumeMutations(){
             payload.resumeId, payload.filePath
           );
         default:
-          throw new Error(`Unknown job update type: ${(payload as any).type}`);
+          throw new Error(`Unknown resume update type: ${(payload as UpdateResumePayload).type}`);
       }
     },
 

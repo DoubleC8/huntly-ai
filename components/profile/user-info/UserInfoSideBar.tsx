@@ -26,7 +26,7 @@ import { User } from "@/app/generated/prisma";
 
 import { useState } from "react";
 import { useProfileMutations } from "@/lib/hooks/profile/useProfileMutations";
-import { jobToasts, profileToasts } from "@/lib/utils/toast";
+import { profileToasts } from "@/lib/utils/toast";
 
 const urlField = (pattern: RegExp, msg: string) =>
   z
@@ -81,7 +81,7 @@ export default function UserInfoSidebar({ user }: { user: User }) {
 
       // If nothing changed
       if (changedEntries.length === 0) {
-        profileToasts.noInfoChanged;
+        profileToasts.noInfoChanged();
         return;
       }
 

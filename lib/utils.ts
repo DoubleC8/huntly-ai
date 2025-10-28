@@ -83,5 +83,5 @@ export function formatResumeTitle(title: string): string {
 }
 
 export function formatTimestamp() {
-  return `@ ${format(new Date(), "PPP p", { locale: enUS })}`;
+  return `On ${format(new Date(), "PPP p", { locale: enUS })}`;
 }

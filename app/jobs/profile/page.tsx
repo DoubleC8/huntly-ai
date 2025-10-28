@@ -11,8 +11,8 @@ import { Suspense } from "react";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import { getDefaultResume } from "@/app/actions/resume/get/getResumes";
 import { getUserProfileData } from "@/app/actions/profile/get/getUserInfo";
+import { JOB_LIMIT } from "@/lib/constants/profile";
 
-export const JOB_LIMIT = 10;
 export default async function ProfilePage({
   searchParams,
 }: {

@@ -27,7 +27,7 @@ export function useUpdateJobStage() {
         case "setNote":
           return jobService.setNote(payload.jobId, payload.note);
         default:
-          throw new Error(`Unknown job update type: ${(payload as any).type}`);
+          throw new Error(`Unknown job update type: ${(payload as UpdateJobPayload).type}`);
       }
     },
 

@@ -7,27 +7,31 @@ type JobCtx = { title: string, company: string };
 
 type ResumeCtx = { resumeTitle: string };
 
-type ProfileCtx = { formattedKeys?: string, fields?: string[], fieldType?: "skills" | "jobPreferences" }
+type ProfileCtx = { 
+  formattedKeys?: string, 
+  fields?: string[], 
+  fieldType?: "skills" | "jobPreferences" | "education" | "githubUrl" | "linkedInUrl" | "portfolioUrl" | "phoneNumber" | "city"
+}
 
 export const jobToasts = {
     stageChanged: (ctx: JobCtx, to: JobStage) =>
-    toast.success(`Moved to ${STAGE_LABELS[to]}`, {
-      description: `${ctx.title} @ ${ctx.company}`,
+    toast.success(`${ctx.title} @ ${ctx.company}`, {
+      description: `Moved to ${STAGE_LABELS[to]}.`,
     }),
 
   wishlistAdded: (ctx: JobCtx) =>
-    toast.success("Added to Wishlist", {
-      description: `${ctx.title} @ ${ctx.company}`,
+    toast.success(`${ctx.title} @ ${ctx.company}`, {
+      description: `Added to Wishlist.`,
     }),
 
   wishlistRemoved: (ctx: JobCtx) =>
-    toast.info("Removed from Wishlist", {
-      description: `${ctx.title} @ ${ctx.company}`,
+    toast.info(`${ctx.title} @ ${ctx.company}`, {
+      description: `Removed from Wishlist.`,
     }),
 
   rejected: (ctx: JobCtx) =>
-    toast.warning("Marked as Rejected", {
-      description: `${ctx.title} @ ${ctx.company}`,
+    toast.warning(`${ctx.title} @ ${ctx.company}`, {
+      description: `Marked as Rejected.`,
     }),
 
   error: (message = "Something went wrong", description?: string) =>
@@ -46,7 +50,7 @@ export const resumeToasts = {
     }),
 
   resumeMadeDefault: (ctx: ResumeCtx) => 
-    toast.info(`Made ${formatResumeTitle(ctx.resumeTitle)} default resume.`, {
+    toast.info(`Made ${formatResumeTitle(ctx.resumeTitle)} your default resume.`, {
       description: "This resume will be used to get your match score."
     }), 
   
@@ -60,23 +64,47 @@ export const resumeToasts = {
 }
 
 // Helper function to get field label
-const getFieldLabel = (fieldType?: "skills" | "jobPreferences"): string => {
+const getFieldLabel = (fieldType?: "skills" | "jobPreferences" | "education" | "githubUrl" | "linkedInUrl" | "portfolioUrl" | "phoneNumber" | "city"): string => {
   switch (fieldType) {
     case "skills":
       return "Skills";
     case "jobPreferences":
       return "Job Preferences";
+    case "education":
+      return "Education";
+    case "githubUrl":
+      return "GitHub URL";
+    case "linkedInUrl":
+      return "LinkedIn URL";
+    case "portfolioUrl":
+      return "Portfolio URL";
+    case "phoneNumber":
+      return "Phone Number";
+    case "city":
+      return "City";
     default:
       return "Item";
   }
 };
 
-const getFieldLabelPlural = (fieldType?: "skills" | "jobPreferences"): string => {
+const getFieldLabelPlural = (fieldType?: "skills" | "jobPreferences" | "education" | "githubUrl" | "linkedInUrl" | "portfolioUrl" | "phoneNumber" | "city"): string => {
   switch (fieldType) {
     case "skills":
       return "Skills";
     case "jobPreferences":
       return "Job Preferences";
+    case "education":
+      return "Education";
+    case "githubUrl":
+      return "GitHub URL";
+    case "linkedInUrl":
+      return "LinkedIn URL";
+    case "portfolioUrl":
+      return "Portfolio URL";
+    case "phoneNumber":
+      return "Phone Number";
+    case "city":
+      return "City";
     default:
       return "Items";
   }
@@ -92,7 +120,7 @@ export const profileToasts = {
     const fieldLabel = getFieldLabelPlural(ctx.fieldType);
     const count = ctx.fields?.length ?? 0;
     
-    toast.success(`${fieldLabel} added successfully!`, {
+    toast.success(`${fieldLabel} updated successfully!`, {
       description: `${count} ${count === 1 ? getFieldLabel(ctx.fieldType) : fieldLabel.toLowerCase()} saved to your profile.`,
     });
   },
@@ -101,7 +129,7 @@ export const profileToasts = {
     const fieldLabel = getFieldLabel(ctx.fieldType);
     const deletedItem = ctx.field ?? "item";
     
-    toast.warning(`${formatEntry(deletedItem)} removed from your ${fieldLabel}.`);
+    toast.warning(`"${formatEntry(deletedItem)}" removed from your ${fieldLabel}.`);
   },
 
   noInfoChanged: () => {

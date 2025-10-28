@@ -53,7 +53,7 @@ export function useProfileMutations(){
                 case "deleteField":
                     return profileService.deleteField(payload.field, payload.value);
                 default:
-                    throw new Error(`Unknown profile update type: ${(payload as any).type}`);
+                    throw new Error(`Unknown profile update type: ${(payload as UpdateProfilePayload).type}`);
             }
         }, 
 
