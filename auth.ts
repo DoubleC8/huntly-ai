@@ -9,7 +9,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
         strategy: "jwt", 
     }, 
-  providers: [GitHub], 
+  providers: [GitHub({
+    clientId: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  })], 
 
    //only neccesary if using ORM that will store information in a specific database
     //in our case we are using prisma

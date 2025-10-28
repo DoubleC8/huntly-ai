@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export async function deleteUserResume(id: string, filePath: string) {
@@ -10,7 +10,7 @@ export async function deleteUserResume(id: string, filePath: string) {
   if (!session?.user?.email) { throw new Error("Unauthorized"); }
 
   // 1. Delete from Supabase Storage
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error: storageError } = await supabase.storage
     .from("resumes")
     .remove([filePath]);
