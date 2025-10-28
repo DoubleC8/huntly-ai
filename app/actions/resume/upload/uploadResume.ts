@@ -15,6 +15,8 @@ export async function uploadResume(file: File, filePath: string) {
 
   try {
     // Upload to Supabase using admin client
+    // Note: We use admin client because users authenticate via NextAuth (not Supabase Auth),
+    // so RLS policies that require auth.uid() won't work for us.
     const supabase = createAdminClient();
     const { error: uploadError } = await supabase.storage
       .from("resumes")
