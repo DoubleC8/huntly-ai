@@ -9,7 +9,7 @@ export default async function Home() {
   return (
     <div className="page">
       <HomeNavbar />
-      <div className="pageContainer !gap-5">
+      <div className="pageContainer !gap-5 !rounded-none">
         {/**header */}
         <div className="flex flex-col gap-5 text-center">
           <h1
@@ -30,7 +30,7 @@ export default async function Home() {
         <ImageCarousel />
         <KeyFeatures />
       </div>
-      <div className="pageContainer !bg-[var(--background)] !gap-5 !min-h-fit md:!py-20">
+      <div className="pageContainer !bg-[var(--background)] !gap-5 !min-h-fit md:!py-20 !rounded-none">
         <div className="flex flex-col gap-1 text-center">
           <h1
             className="md:text-4xl
