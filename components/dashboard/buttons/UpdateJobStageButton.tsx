@@ -86,7 +86,10 @@ export default function UpdateJobStageButton({
       }}
     >
       {mutation.isPending ? (
-        <LoaderCircle className="animate-spin" />
+        <LoaderCircle
+          className="animate-spin"
+          style={{ color: `var(${STAGE_COLORS[nextStage]})` }}
+        />
       ) : (
         <NextIcon className="hover:opacity-80" />
       )}

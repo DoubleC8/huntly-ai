@@ -1,10 +1,10 @@
 "use client";
 
-import { Star } from "lucide-react";
+import { LoaderCircle, Star } from "lucide-react";
 import { JobStage } from "@/app/generated/prisma";
 import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
 import { useOptimisticUpdate } from "@/lib/hooks/useOptimisticUpdate";
-import { STAGE_ORDER } from "@/lib/config/jobStage";
+import { STAGE_COLORS, STAGE_ORDER } from "@/lib/config/jobStage";
 import { jobToasts } from "@/lib/utils/toast";
 
 export default function StarButton({
@@ -55,11 +55,16 @@ export default function StarButton({
   return (
     <button
       onClick={handleStarClick}
-      disabled={mutation.isPending} //is pending is part of useQuery
+      disabled={mutation.isPending}
       aria-pressed={isWishlisted}
       title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
     >
-      {isWishlisted ? (
+      {mutation.isPending ? (
+        <LoaderCircle
+          className="animate-spin text-muted-foreground"
+          style={{ color: `var(${STAGE_COLORS[JobStage.WISHLIST]})` }}
+        />
+      ) : isWishlisted ? (
         <Star
           fill="yellow"
           className="text-[var(--app-yellow)] hover:cursor-pointer ease-in-out duration-200"
