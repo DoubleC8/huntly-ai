@@ -10,11 +10,11 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 
-import { searchJobs } from "@/lib/queries/jobQueries";
 import DashboardNavbar from "@/components/dashboard/navbars/DashboardNavbar";
 import ActiveFiltersBar from "@/components/dashboard/ActiveFiltersBar";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import { getUserByEmail } from "@/app/actions/profile/get/getUserInfo";
+import { searchJobs } from "@/app/actions/jobs/getJobs";
 
 interface SearchParams {
   search?: string;

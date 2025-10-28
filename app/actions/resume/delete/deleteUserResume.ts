@@ -2,15 +2,15 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export async function deleteUserResume(id: string, filePath: string) {
   const session = await auth();
   if (!session?.user?.email) { throw new Error("Unauthorized"); }
 
-  // 1. Delete from Supabase Storage
-  const supabase = await createClient();
+  // 1. Delete from Supabase Storage using admin client
+  const supabase = createAdminClient();
   const { error: storageError } = await supabase.storage
     .from("resumes")
     .remove([filePath]);

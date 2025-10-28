@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +25,7 @@ import { resumeFileSchema } from "@/lib/validations/resume";
 import { useResumeMutations } from "@/lib/hooks/resumes/useResumeMutations";
 import { resumeToasts } from "@/lib/utils/toast";
 import { RESUME_LIMIT } from "../ResumeNavbar";
+import { uploadResume } from "@/app/actions/resume/upload/uploadResume";
 
 export default function AddResumeButton({
   resumeCount,
@@ -56,25 +56,17 @@ export default function AddResumeButton({
     }
 
     try {
-      // Upload to Supabase
+      // Upload to Supabase via server action
       const fileExt = file.name.split(".").pop()!;
       const filePath = `${email}/resume-${Date.now()}.${fileExt}`;
-      const supabase = createClient();
 
-      const { error: uploadError } = await supabase.storage
-        .from("resumes")
-        .upload(filePath, file, { upsert: true });
-
-      if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`);
-
-      // Get public URL
-      const { data } = supabase.storage.from("resumes").getPublicUrl(filePath);
-      if (!data?.publicUrl) throw new Error("URL generation failed");
+      // Call server action to upload the file
+      const { publicUrl } = await uploadResume(file, filePath);
 
       // Save to database using mutation
       await mutation.mutateAsync({
         type: "updateResume",
-        resumeUrl: data.publicUrl,
+        resumeUrl: publicUrl,
         filename: file.name,
       });
 

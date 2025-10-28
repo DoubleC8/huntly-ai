@@ -6,9 +6,9 @@ import JobPageDescription from "@/components/dashboard/job-id-page/JobPageDescri
 import JobPageNotes from "@/components/dashboard/job-id-page/JobPageNotes";
 import JobPageFooter from "@/components/dashboard/job-id-page/JobPageFooter";
 
-import { getJobById } from "@/lib/queries/jobQueries";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import { getUserByEmail } from "@/app/actions/profile/get/getUserInfo";
+import { getJobById } from "@/app/actions/jobs/getJobs";
 
 interface PageProps {
   params: Promise<{ id: string }>;
