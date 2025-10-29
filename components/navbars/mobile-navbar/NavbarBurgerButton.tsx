@@ -19,7 +19,7 @@ import {
   UserRoundPen,
 } from "lucide-react";
 import Link from "next/link";
-import { logout } from "@/lib/auth-actions";
+import { SignOutButton } from "@clerk/nextjs";
 
 const NavbarBurgerButton = () => {
   return (
@@ -77,10 +77,12 @@ const NavbarBurgerButton = () => {
                   Contact Us
                 </Link>
 
-                <button onClick={logout} className="flex gap-1 items-center">
-                  <LogOut size={16} />
-                  Sign Out
-                </button>
+                <SignOutButton>
+                  <button className="flex gap-1 items-center w-full text-left">
+                    <LogOut size={16} />
+                    Sign Out
+                  </button>
+                </SignOutButton>
               </div>
             </div>
           </SheetDescription>

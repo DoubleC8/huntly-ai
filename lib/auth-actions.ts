@@ -1,12 +1,6 @@
-"use server";
+// This file is no longer needed for Clerk authentication
+// Sign in is handled by Clerk's <SignInButton> component
+// Sign out is handled by Clerk's <SignOutButton> component
+// Both are used directly in the navbar components
 
-import { signOut } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-
-// Note: Sign in is handled by Clerk's SignInButton component
-// This logout function is used by navbar buttons
-
-export const logout = async () => {
-  await signOut();
-  redirect("/");
-};
+export {};
