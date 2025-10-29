@@ -10,21 +10,24 @@ interface Testimony {
 
 const userTestimonials: Testimony[] = [
   {
-    userImage: "/user1.jpg",
+    userImage:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png",
     userName: "Chimney Crooks",
     userOccupation: "Software Engineer, SF",
     content:
       "Huntly AI completely transformed how I track my job applications. The dashboard is clean, and the resume upload feature is seamless.",
   },
   {
-    userImage: "/user2.jpg",
+    userImage:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png",
     userName: "Gerbert Rodriguez",
     userOccupation: "Speech Language Pathologist, SF",
     content:
       "The ability to tailor resumes and track interviews in one place saved me hours. Highly recommend this for any job seeker.",
   },
   {
-    userImage: "/user3.jpg",
+    userImage:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png",
     userName: "Connor Chicoine",
     userOccupation: "Behavioral Specialist, SF",
     content:

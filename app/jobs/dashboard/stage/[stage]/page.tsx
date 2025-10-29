@@ -1,11 +1,12 @@
-import { auth } from "@/auth";
-import DashboardCard from "@/components/dashboard/DashboardCard";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
+
 import RecommendedJobs from "@/components/dashboard/RecommendedJobs";
 
 import { JobStage } from "@/app/generated/prisma";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import { getUserByEmail } from "@/app/actions/profile/get/getUserInfo";
 import { getJobsByStage } from "@/app/actions/jobs/getJobs";
+import DashboardCard from "@/components/dashboard/cards/DashboardCard";
 
 // Define readable messages for each stage
 const STAGE_CONTENT: Record<
@@ -47,17 +48,17 @@ interface PageProps {
 }
 
 export default async function StagePage({ params }: PageProps) {
-  const session = await auth();
+  const email = await getCurrentUserEmail();
 
-  if (!session?.user?.email) {
+  if (!email) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
-        {session ? "User email not found." : "Please Sign In."}
+        Please Sign In.
       </div>
     );
   }
 
-  const user = await getUserByEmail(session.user.email);
+  const user = await getUserByEmail(email);
   if (!user) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">

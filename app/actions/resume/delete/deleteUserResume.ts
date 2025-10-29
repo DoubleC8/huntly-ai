@@ -1,13 +1,13 @@
 "use server";
 
-import { auth } from "@/auth";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 import { createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export async function deleteUserResume(id: string, filePath: string) {
-  const session = await auth();
-  if (!session?.user?.email) { throw new Error("Unauthorized"); }
+  const email = await getCurrentUserEmail();
+  if (!email) { throw new Error("Unauthorized"); }
 
   // 1. Find resume in DB and verify ownership FIRST (before deleting from storage)
   const resume = await prisma.resume.findUnique({ where: { id } });
@@ -15,7 +15,7 @@ export async function deleteUserResume(id: string, filePath: string) {
 
   // 2. Ownership check - do this BEFORE deleting from storage
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { email },
     include: { resumes: true },
   });
 

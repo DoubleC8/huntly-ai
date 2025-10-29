@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Briefcase,
@@ -9,7 +11,7 @@ import {
   UserRoundPen,
 } from "lucide-react";
 import Image from "next/image";
-import { logout } from "@/lib/auth-actions";
+import { SignOutButton } from "@clerk/nextjs";
 
 export default function AppSidebarNavbar() {
   return (
@@ -59,10 +61,12 @@ export default function AppSidebarNavbar() {
             <p>Contact Us</p>
           </Link>
 
-          <button onClick={logout} className="sidebarNavbarLink">
-            <LogOut size={20} />
-            Sign Out
-          </button>
+          <SignOutButton>
+            <button className="sidebarNavbarLink w-full text-left">
+              <LogOut size={20} />
+              <p>Sign Out</p>
+            </button>
+          </SignOutButton>
         </div>
       </nav>
     </aside>

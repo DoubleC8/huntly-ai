@@ -1,6 +1,6 @@
 "use server"
 
-import { auth } from "@/auth";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -42,11 +42,11 @@ export type UpdateJobInput = z.infer<typeof InputSchema>;
 
 //used to verify user
 export async function requireUser() {
-    const session = await auth();
-    if (!session?.user?.email) throw new Error("Unauthorized");
+    const email = await getCurrentUserEmail();
+    if (!email) throw new Error("Unauthorized");
 
     const user = await prisma.user.findUnique({
-        where: { email: session.user.email },
+        where: { email },
         select: { id: true },
     })
     if (!user) throw new Error("User not found");

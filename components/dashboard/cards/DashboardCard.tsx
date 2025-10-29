@@ -1,6 +1,12 @@
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
 import { Frown } from "lucide-react";
-import { Card, CardContent, CardDescription, CardFooter } from "../ui/card";
-import { Button } from "../ui/button";
+
 import Link from "next/link";
 
 export default function DashboardCard({

@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/auth";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
 import { updateUserArrayEntry } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
@@ -18,12 +18,10 @@ export type FieldType =
 
 
 export async function DeleteUserField(field: FieldType, value?: string) {
-    const session = await auth();
-    if(!session?.user?.email) throw new Error("Unauthorized");
+    const email = await getCurrentUserEmail();
+    if(!email) throw new Error("Unauthorized");
 
     if (field === "email") throw new Error("Cannot Delete Email Field.")
-
-    const email = session.user.email;
 
     switch (field) {
         case "skills":

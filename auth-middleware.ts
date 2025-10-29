@@ -1,10 +1,5 @@
-// app/auth-middleware.ts (or lib/auth-middleware.ts)
-import { getToken } from "next-auth/jwt"
+// This file is kept for backward compatibility but now uses Clerk
+import { auth } from "@clerk/nextjs/server";
 
-// This auth function works in Edge Runtime (e.g., middleware.ts)
-export async function auth(request: Request) {
-  return await getToken({
-    req: request,
-    secret: process.env.AUTH_SECRET, // Make sure this is defined
-  })
-}
+// Clerk's auth function can be used directly in middleware context
+export { auth };

@@ -24,7 +24,7 @@ import {
 import { LoaderCircle, Plus, SquarePen } from "lucide-react";
 import { User } from "@/app/generated/prisma";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useProfileMutations } from "@/lib/hooks/profile/useProfileMutations";
 import { profileToasts } from "@/lib/utils/toast";
 
@@ -68,6 +68,20 @@ export default function UserInfoSidebar({ user }: { user: User }) {
       city: user.city ?? "",
     },
   });
+
+  // Reset form values when sheet opens to reflect current user data
+  // This ensures deleted fields show as blank when reopening the form
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        githubUrl: user.githubUrl ?? "",
+        linkedInUrl: user.linkedInUrl ?? "",
+        portfolioUrl: user.portfolioUrl ?? "",
+        phoneNumber: user.phoneNumber ?? "",
+        city: user.city ?? "",
+      });
+    }
+  }, [open, user, form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
