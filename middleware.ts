@@ -1,31 +1,27 @@
-import { auth } from "@/auth-middleware"
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const protectedRoutes = ["/jobs"];
+const isProtectedRoute = createRouteMatcher(["/jobs(.*)"]);
 
-export default async function middleware(request: NextRequest) {
-  const session = await auth(request);
+export default clerkMiddleware(async (auth, request: NextRequest) => {
+  const { userId } = await auth();
   const pathname = request.nextUrl.pathname;
 
-  //if the user is logged in and authorized they should not
-  //be able to see the / page
-  if (pathname === "/" && session) {
+  // If user is logged in and tries to access home page, redirect to dashboard
+  if (pathname === "/" && userId) {
     return NextResponse.redirect(new URL("/jobs/dashboard", request.url));
   }
 
-  const isProtected = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
-
-  if (isProtected && !session) {
+  // Protect routes that require authentication
+  if (isProtectedRoute(request) && !userId) {
     const loginUrl = new URL("/", request.url);
-    loginUrl.searchParams.set("callbackUrl", request.nextUrl.href);
+    loginUrl.searchParams.set("redirect_url", request.nextUrl.href);
     return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: [

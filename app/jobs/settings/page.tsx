@@ -1,13 +1,13 @@
-import { auth } from "@/auth";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ListFilter, Plus } from "lucide-react";
 
 export default async function SettingsPage() {
-  const session = await auth();
+  const email = await getCurrentUserEmail();
 
   //extra security, we have middleware but this is just incase it doesnt work for some reason
-  if (!session) {
+  if (!email) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
         {" "}

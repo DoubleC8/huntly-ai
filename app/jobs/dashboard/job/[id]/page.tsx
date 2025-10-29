@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import JobPageNavbar from "@/components/dashboard/job-id-page/JobPageNavbar";
 import JobPageHeader from "@/components/dashboard/job-id-page/JobPageHeader";
@@ -15,8 +15,8 @@ interface PageProps {
 }
 
 export default async function Page({ params }: PageProps) {
-  const session = await auth();
-  if (!session) {
+  const email = await getCurrentUserEmail();
+  if (!email) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
         {" "}
@@ -24,15 +24,8 @@ export default async function Page({ params }: PageProps) {
       </div>
     );
   }
-  if (!session.user?.email) {
-    return (
-      <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
-        User email not found.
-      </div>
-    );
-  }
 
-  const user = await getUserByEmail(session.user.email);
+  const user = await getUserByEmail(email);
 
   if (!user) {
     return (

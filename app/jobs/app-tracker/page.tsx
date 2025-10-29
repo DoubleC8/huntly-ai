@@ -1,12 +1,12 @@
 import { JobStage } from "@/app/generated/prisma";
-import { auth } from "@/auth";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
 import AppTrackerColumns from "@/components/app-tracker/AppTrackerColumns";
 import AppTrackerTitle from "@/components/app-tracker/AppTrackerTitle";
 import { prisma } from "@/lib/prisma";
 
 export default async function ApplicationTrackerPage() {
-  const session = await auth();
-  if (!session?.user?.email)
+  const email = await getCurrentUserEmail();
+  if (!email)
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
         Please Sign In.
@@ -14,7 +14,7 @@ export default async function ApplicationTrackerPage() {
     );
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { email },
     select: { id: true },
   });
 

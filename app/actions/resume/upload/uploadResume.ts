@@ -1,11 +1,11 @@
 "use server";
 
-import { auth } from "@/auth";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
 import { createAdminClient } from "@/lib/supabase/server";
 
 export async function uploadResume(file: File, filePath: string) {
-  const session = await auth();
-  if (!session?.user?.email) {
+  const email = await getCurrentUserEmail();
+  if (!email) {
     throw new Error("Unauthorized");
   }
 

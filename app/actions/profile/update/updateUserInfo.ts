@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/auth";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
 import { normalizePhoneNumber } from "@/lib/phone-utils";
 import { prisma } from "@/lib/prisma";
 import { updateUserArrayEntry } from "@/lib/utils";
@@ -12,9 +12,8 @@ export async function UpdateUserField(
   field: FieldType,
   value?: string | string[]
 ) {
-  const session = await auth();
-  if (!session?.user?.email) throw new Error("Unauthorized");
-  const email = session.user.email;
+  const email = await getCurrentUserEmail();
+  if (!email) throw new Error("Unauthorized");
 
   let updatedUser;
 
@@ -42,8 +41,8 @@ export async function UpdateUserPersonalInfo(values: {
     phoneNumber?: string;
     city?: string;
 }) {
-    const session = await auth();
-    if(!session?.user?.email) throw new Error("Unauthorized");
+    const email = await getCurrentUserEmail();
+    if(!email) throw new Error("Unauthorized");
 
     // Only include fields that are actually provided and not empty
     const updateData: {
@@ -71,7 +70,7 @@ export async function UpdateUserPersonalInfo(values: {
     }
 
     const updatedUser = await prisma.user.update({
-        where: {email: session.user.email}, 
+        where: {email}, 
         data: updateData
     })
 
@@ -90,11 +89,11 @@ export async function UpdateUserEducation(values: {
   endDate?: Date;
   onGoing?: boolean;
 }) {
-  const session = await auth();
-  if (!session?.user?.email) throw new Error("Unauthorized");
+  const email = await getCurrentUserEmail();
+  if (!email) throw new Error("Unauthorized");
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { email },
   });
 
   if (!user) throw new Error("User not found");

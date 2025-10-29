@@ -1,14 +1,14 @@
-import { auth } from "@/auth";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
 import ResumeTable from "@/components/resume/ResumeTable";
 import { getResumesByUserId } from "@/app/actions/resume/get/getResumes";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import { getUserByEmail } from "@/app/actions/profile/get/getUserInfo";
 
 export default async function ResumePage() {
-  const session = await auth();
+  const email = await getCurrentUserEmail();
 
   //extra security, we have middleware but this is just incase it doesnt work for some reason
-  if (!session) {
+  if (!email) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
         {" "}
@@ -17,15 +17,7 @@ export default async function ResumePage() {
     );
   }
 
-  if (!session.user?.email) {
-    return (
-      <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
-        User email not found.
-      </div>
-    );
-  }
-
-  const user = await getUserByEmail(session.user.email);
+  const user = await getUserByEmail(email);
 
   if (!user) {
     return (

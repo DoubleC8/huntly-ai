@@ -1,15 +1,15 @@
 "use server";
 
-import { auth } from "@/auth";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
 import { getUserProfileData } from "./getUserInfo";
 
 
 export async function getPaginatedJobs(page: number, limit: number) {
-  const session = await auth();
-  if (!session?.user?.email) return { jobs: [], totalJobs: 0 };
+  const email = await getCurrentUserEmail();
+  if (!email) return { jobs: [], totalJobs: 0 };
 
   const { user, totalJobs } = await getUserProfileData({
-    email: session.user.email,
+    email,
     page,
     limit,
   });

@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { getCurrentUserId } from "@/lib/auth-helpers";
 import { redirect } from "next/navigation";
 import { AppNavbar } from "@/components/navbars/AppNavbar";
 
@@ -7,10 +7,10 @@ export default async function JobsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
+  const userId = await getCurrentUserId();
 
-  if (!session) {
-    redirect("/login"); // or homepage with callback
+  if (!userId) {
+    redirect("/"); // redirect to homepage for sign in
   }
 
   return (

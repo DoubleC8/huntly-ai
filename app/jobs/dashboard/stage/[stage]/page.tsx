@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import RecommendedJobs from "@/components/dashboard/RecommendedJobs";
 
@@ -47,17 +47,17 @@ interface PageProps {
 }
 
 export default async function StagePage({ params }: PageProps) {
-  const session = await auth();
+  const email = await getCurrentUserEmail();
 
-  if (!session?.user?.email) {
+  if (!email) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
-        {session ? "User email not found." : "Please Sign In."}
+        Please Sign In.
       </div>
     );
   }
 
-  const user = await getUserByEmail(session.user.email);
+  const user = await getUserByEmail(email);
   if (!user) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">

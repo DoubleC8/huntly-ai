@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
 import AppliedJobs from "@/components/profile/applied-jobs/AppliedJobs";
 import UserEducation from "@/components/profile/education/UserEducation";
 import UserJobPreferences from "@/components/profile/job-preferences/UserJobPreferences";
@@ -18,8 +18,8 @@ export default async function ProfilePage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const session = await auth();
-  if (!session?.user?.email) {
+  const email = await getCurrentUserEmail();
+  if (!email) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
         Please Sign In.
@@ -31,7 +31,7 @@ export default async function ProfilePage({
   const currentPage = Number(params.page) || 1;
 
   const { user, totalJobs } = await getUserProfileData({
-    email: session.user.email,
+    email,
     page: currentPage,
     limit: JOB_LIMIT,
   });

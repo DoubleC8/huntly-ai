@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
 import { Frown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RecommendedJobs from "@/components/dashboard/RecommendedJobs";
@@ -30,10 +30,10 @@ export default async function DashboardPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const session = await auth();
+  const email = await getCurrentUserEmail();
 
   //extra security, we have middleware but this is just incase it doesnt work for some reason
-  if (!session) {
+  if (!email) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
         {" "}
@@ -42,16 +42,8 @@ export default async function DashboardPage({
     );
   }
 
-  if (!session.user?.email) {
-    return (
-      <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
-        User email not found.
-      </div>
-    );
-  }
-
   //await since its a promise
-  const user = await getUserByEmail(session.user.email);
+  const user = await getUserByEmail(email);
 
   if (!user) {
     return (
