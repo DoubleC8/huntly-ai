@@ -101,13 +101,16 @@ export default function UserEducationSidebar({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       if (education) {
+        // When editing, include the education ID so it updates instead of creating
         await mutation.mutateAsync({
           type: "updateEducation",
+          id: education.id,
           ...values,
         });
 
         profileToasts.updateEducation();
       } else {
+        // Creating new education entry - no ID needed
         await mutation.mutateAsync({
           type: "updateEducation",
           ...values,

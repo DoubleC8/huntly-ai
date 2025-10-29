@@ -14,7 +14,7 @@ export default function LoginButton({ isButton }: { isButton: boolean }) {
           Get Started for Free
         </Button>
       ) : (
-        <p className="ease-in-out duration-200 hover:text-[var(--ring)] hover:cursor-pointer">
+        <p className="font-bold ease-in-out duration-200 hover:text-[var(--ring)] hover:cursor-pointer">
           Sign In
         </p>
       )}

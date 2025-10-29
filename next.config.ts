@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
         hostname: 'img.logo.dev',
         port: '', // Optional: Specify if a non-standard port is used
         pathname: '/**', // Optional: Restrict to specific paths
+      }, 
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org'
       }
     ]
   },
