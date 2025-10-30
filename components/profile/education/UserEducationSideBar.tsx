@@ -355,7 +355,13 @@ export default function UserEducationSidebar({
                   ) : (
                     <Plus className="mr-1" />
                   )}
-                  {mutation.isPending ? "Adding Education..." : "Add Education"}
+                  {education
+                    ? mutation.isPending
+                      ? "Updating Education..."
+                      : "Update Education"
+                    : mutation.isPending
+                    ? "Adding Education..."
+                    : "Add Education"}
                 </Button>
               </div>
             </form>

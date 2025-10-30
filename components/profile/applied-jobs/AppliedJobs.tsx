@@ -4,10 +4,9 @@ import { Job } from "@/app/generated/prisma";
 import JobsTable from "./JobsTable";
 import Link from "next/link";
 import { AppliedJobsPaginationBar } from "./AppliedJobsPaginationBar";
-import { useEffect, useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 
-import { getPaginatedJobs } from "@/app/actions/profile/get/getPaginatedJobs";
+import { usePaginatedJobs } from "@/lib/hooks/profile/usePaginatedJobs";
 import JobsTableSkeleton from "../ui/JobsTableSkeleton";
 
 export default function AppliedJobs({
@@ -19,22 +18,17 @@ export default function AppliedJobs({
   totalJobs: number;
   limit: number;
 }) {
-  const [jobs, setJobs] = useState<Job[]>(initialJobs);
-  const [isPending, startTransition] = useTransition();
-
   const searchParams = useSearchParams();
-
   const currentPage = Number(searchParams.get("page")) || 1;
-  const totalPages = Math.ceil(totalJobs / limit);
 
-  useEffect(() => {
-    startTransition(async () => {
-      const { jobs } = await getPaginatedJobs(currentPage, limit);
-      setJobs(jobs);
-    });
-  }, [currentPage, limit]);
+  // Use React Query with initial data for SSR hydration
+  const { data, isLoading, isPending } = usePaginatedJobs(currentPage, limit);
 
-  if (jobs.length === 0 && !isPending) {
+  // Use React Query data if available, otherwise fall back to initialJobs
+  const jobs = data?.jobs ?? initialJobs;
+  const finalTotalJobs = data?.totalJobs ?? totalJobs;
+
+  if (jobs.length === 0 && !isLoading && !isPending) {
     return (
       <p className="text-muted-foreground">
         You haven’t applied to any jobs yet. Once you do, they’ll show up here!
@@ -55,18 +49,22 @@ export default function AppliedJobs({
       <h2 className="font-bold text-xl">Jobs You have Applied to</h2>
 
       <div className="flex flex-col items-center gap-3">
-        {isPending ? <JobsTableSkeleton /> : <JobsTable jobs={jobs} />}
+        {isLoading || isPending ? (
+          <JobsTableSkeleton />
+        ) : (
+          <JobsTable jobs={jobs} />
+        )}
 
         <AppliedJobsPaginationBar
           currentPage={currentPage}
-          totalPages={totalPages}
+          totalPages={Math.ceil(finalTotalJobs / limit)}
         />
 
-        {totalJobs > 0 && (
+        {finalTotalJobs > 0 && (
           <p className="text-muted-foreground text-center">
-            You’ve applied to{" "}
-            <strong className="text-[var(--app-blue)]">{totalJobs}</strong>{" "}
-            {totalJobs === 1 ? "job" : "jobs"} so far! Keep it up!
+            You've applied to{" "}
+            <strong className="text-[var(--app-blue)]">{finalTotalJobs}</strong>{" "}
+            {finalTotalJobs === 1 ? "job" : "jobs"} so far! Keep it up!
           </p>
         )}
       </div>
