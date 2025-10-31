@@ -1,4 +1,5 @@
-import { inngest } from "@/lib/services/inngest/client";
+
+import { inngest } from "@/services/inngest/client";
 import { serve } from "inngest/next";
 
 
