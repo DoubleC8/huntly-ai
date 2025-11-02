@@ -51,9 +51,13 @@ export async function updateUserArrayEntry(
     }
     case "remove": {
       const inputValues = Array.isArray(values) ? values : [values];
-      const normalized = inputValues.map(normalizeEntry);
+      const normalizedToRemove = inputValues.map(normalizeEntry);
 
-      updatedValues = currentValues.filter((v) => !normalized.includes(v));
+      // Normalize both the current values and the values to remove for comparison
+      updatedValues = currentValues.filter((v) => {
+        const normalizedCurrent = normalizeEntry(v);
+        return !normalizedToRemove.includes(normalizedCurrent);
+      });
       break;
     }
     default:
