@@ -3,6 +3,8 @@ import { inngest } from "../client";
 import { Webhook } from "svix"
 import { NonRetriableError } from "inngest";
 import {  deleteUser, insertUser, updateUser } from "@/features/users/db/users"
+import { insertUserNotificationSettings } from "@/features/users/db/userNotificationSettings"
+import { prisma } from "@/lib/prisma"
 
 
 function verifyWebhook({
@@ -11,8 +13,8 @@ function verifyWebhook({
 }: {
   raw: string
   headers: Record<string, string>
-}){
-    return new Webhook(env.CLERK_WEBHOOK_SECRET).verify(raw, headers)
+}) {
+  return new Webhook(env.CLERK_WEBHOOK_SECRET).verify(raw, headers)
 }
 
 export const clerkCreateUser = inngest.createFunction({ id: 'clerk/create-db-user', 
@@ -31,7 +33,7 @@ export const clerkCreateUser = inngest.createFunction({ id: 'clerk/create-db-use
     const userId = await step.run("create-user", async () => {
       const userData = event.data.data
       const email = userData.email_addresses.find(
-        email => email.id === userData.primary_email_address_id
+        (email: { id: string; email_address: string }) => email.id === userData.primary_email_address_id
       )
 
       if (email == null) {
@@ -47,7 +49,17 @@ export const clerkCreateUser = inngest.createFunction({ id: 'clerk/create-db-use
         updatedAt: new Date(userData.updated_at),
       })
 
-      return userData.id
+      // Get the actual user ID from database (in case user already existed with different ID)
+      const dbUser = await prisma.user.findUnique({
+        where: { email: email.email_address },
+        select: { id: true },
+      })
+
+      return dbUser?.id ?? userData.id
+    })
+
+    await step.run("create-user-notification-settings", async () => {
+      await insertUserNotificationSettings({ userId })
     })
 })
 
@@ -67,7 +79,7 @@ export const clerkUpdateUser = inngest.createFunction(
     await step.run("update-user", async () => {
       const userData = event.data.data
       const email = userData.email_addresses.find(
-        email => email.id === userData.primary_email_address_id
+        (email: { id: string; email_address: string }) => email.id === userData.primary_email_address_id
       )
 
       if (email == null) {
