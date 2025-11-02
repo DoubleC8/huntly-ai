@@ -62,7 +62,7 @@ export default function AppliedJobs({
 
         {finalTotalJobs > 0 && (
           <p className="text-muted-foreground text-center">
-            You've applied to{" "}
+            You&apos;ve applied to{" "}
             <strong className="text-[var(--app-blue)]">{finalTotalJobs}</strong>{" "}
             {finalTotalJobs === 1 ? "job" : "jobs"} so far! Keep it up!
           </p>

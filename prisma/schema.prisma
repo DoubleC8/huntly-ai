@@ -42,6 +42,9 @@ model User {
   phoneNumber  String?
   city         String?
 
+  // Notification settings
+  notificationSettings UserNotificationSettings?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -156,4 +159,14 @@ model Education {
   //each user has a connection to their education
   //will be used to check for ownership later
   @@unique([id, userId])
+}
+
+model UserNotificationSettings {
+  userId                 String   @id
+  newJobEmailNotifications Boolean  @default(false)
+  aiPrompt              String?
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
