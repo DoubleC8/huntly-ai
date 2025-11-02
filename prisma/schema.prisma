@@ -134,6 +134,7 @@ model Resume {
   fileName       String   @default("Resume")
   publicUrl      String
   isDefault      Boolean
+  aiSummary      String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt // added for tracking updates
   targetJobTitle String?

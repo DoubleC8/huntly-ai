@@ -12,6 +12,9 @@ export const env = createEnv({
     
     // Supabase (optional - falls back to anon key if not provided)
     SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
+    
+    // Google Gemini AI
+    GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1),
   },
   
   emptyStringAsUndefined: true,

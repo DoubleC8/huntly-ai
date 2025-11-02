@@ -3,6 +3,7 @@
 import { getCurrentUserEmail } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { inngest } from "@/services/inngest/client";
 
 export async function updateUserResume({
   resumeUrl,
@@ -31,6 +32,16 @@ export async function updateUserResume({
       publicUrl: resumeUrl,
       fileName: filename,
       isDefault: isFirstResume,
+    },
+  });
+
+  // Trigger Inngest event for AI analysis
+  await inngest.send({
+    name: "app/resume.uploaded",
+    data: {
+      user: {
+        id: user.id,
+      },
     },
   });
 
@@ -64,7 +75,10 @@ export async function makeResumeDefault( resumeId: string ){
   const email = await getCurrentUserEmail();
   if (!email) { throw new Error("Unauthorized"); }
 
-  const resume = await prisma.resume.findUnique({ where: { id: resumeId }});
+  const resume = await prisma.resume.findUnique({ 
+    where: { id: resumeId },
+    select: { userId: true, aiSummary: true }
+  });
   if(!resume) {throw new Error("Resume not found")}
 
   const user = await prisma.user.findUnique({
@@ -81,13 +95,25 @@ export async function makeResumeDefault( resumeId: string ){
     data: { isDefault: false },
   })
 
-
   const updatedResume = await prisma.resume.update({
     where: { id: resumeId },
     data: {
       isDefault: true
     }
   });
+
+  // If the new default resume doesn't have an AI summary yet, trigger analysis
+  // This ensures match scores always use data from the default resume
+  if (!resume.aiSummary) {
+    await inngest.send({
+      name: "app/resume.uploaded",
+      data: {
+        user: {
+          id: user.id,
+        },
+      },
+    });
+  }
 
   revalidatePath("/jobs/resume");
   revalidatePath("/jobs/profile");

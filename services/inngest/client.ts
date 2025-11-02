@@ -13,6 +13,11 @@ type Events = {
     "clerk/user.created": ClerkWebhookData<UserJSON>
     "clerk/user.updated": ClerkWebhookData<UserJSON>
     "clerk/user.deleted": ClerkWebhookData<DeletedObjectJSON>
+    "app/resume.uploaded": {
+      user: {
+        id: string
+      }
+    }
 }
 
 // Create a client to send and receive events
