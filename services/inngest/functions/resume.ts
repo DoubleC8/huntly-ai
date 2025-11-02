@@ -4,6 +4,7 @@ import { updateUserResume } from "@/features/users/db/userResumes";
 import { updateUser } from "@/features/users/db/users";
 import { env } from "@/data/env/server";
 import { GoogleGenAI } from "@google/genai";
+import { normalizePhoneNumber } from "@/lib/phone-utils";
 
 export const createAiSummaryOfUploadedResume = inngest.createFunction(
   {
@@ -14,7 +15,6 @@ export const createAiSummaryOfUploadedResume = inngest.createFunction(
     event: "app/resume.uploaded",
   },
   async ({ step, event }) => {
-    // User ID is in event.data.user.id, not event.user.id
     const userId = event.data?.user?.id;
     
     if (!userId) {
@@ -59,7 +59,7 @@ export const createAiSummaryOfUploadedResume = inngest.createFunction(
           apiKey: env.GOOGLE_GENERATIVE_AI_API_KEY,
         });
 
-        const prompt = "Analyze this resume and extract the following information in JSON format:\n1. A detailed markdown summary (field: 'summary') that includes all key skills, experience, and qualifications that a hiring manager would need to know\n2. An array of all skills mentioned (field: 'skills')\n3. An array of education entries with the following structure for each: { school: string, degree: string, major?: string, startDate?: string, endDate?: string, onGoing?: boolean, gpa?: string } (field: 'education')\n\nReturn ONLY valid JSON in this format:\n{\n  \"summary\": \"markdown summary here\",\n  \"skills\": [\"skill1\", \"skill2\"],\n  \"education\": [{ \"school\": \"...\", \"degree\": \"...\", ... }]\n}\n\nIf the file does not look like a resume, return: {\"summary\": \"N/A\", \"skills\": [], \"education\": []}";
+        const prompt = "Analyze this resume and extract the following information in JSON format:\n1. A detailed markdown summary (field: 'summary') that includes all key skills, experience, and qualifications that a hiring manager would need to know\n2. An array of all skills mentioned (field: 'skills')\n3. An array of education entries with the following structure for each: { school: string, degree: string, major?: string, startDate?: string, endDate?: string, onGoing?: boolean, gpa?: string } (field: 'education')\n4. Phone number if available (field: 'phoneNumber', format: include country code if present, e.g., '+14155551234' or just '4155551234')\n5. City/location if available (field: 'city', just the city name, e.g., 'San Francisco')\n\nReturn ONLY valid JSON in this format:\n{\n  \"summary\": \"markdown summary here\",\n  \"skills\": [\"skill1\", \"skill2\"],\n  \"education\": [{ \"school\": \"...\", \"degree\": \"...\", ... }],\n  \"phoneNumber\": \"+14155551234\" or null,\n  \"city\": \"San Francisco\" or null\n}\n\nIf the file does not look like a resume, return: {\"summary\": \"N/A\", \"skills\": [], \"education\": [], \"phoneNumber\": null, \"city\": null}";
 
         // Generate content with PDF using inlineData (fileUri requires Google Cloud Storage)
         const response = await ai.models.generateContent({
@@ -138,6 +138,8 @@ export const createAiSummaryOfUploadedResume = inngest.createFunction(
           onGoing?: boolean;
           gpa?: string;
         }>;
+        phoneNumber?: string | null;
+        city?: string | null;
       };
 
       try {
@@ -157,12 +159,41 @@ export const createAiSummaryOfUploadedResume = inngest.createFunction(
       // Save the AI summary to the resume
       await updateUserResume(stepUserId, { aiSummary: parsedData.summary });
 
+      // Prepare user update data
+      const userUpdateData: {
+        skills?: string[];
+        phoneNumber?: string | null;
+        city?: string | null;
+      } = {};
+
       // Update user with extracted skills
       if (parsedData.skills && parsedData.skills.length > 0) {
-        console.log("Updating user skills:", { userId: stepUserId, skillsCount: parsedData.skills.length });
-        await updateUser(stepUserId, {
-          skills: parsedData.skills,
-        });
+        userUpdateData.skills = parsedData.skills;
+      }
+
+      // Update user with phone number (normalize if provided)
+      if (parsedData.phoneNumber) {
+        try {
+          const normalizedPhone = normalizePhoneNumber(parsedData.phoneNumber);
+          if (normalizedPhone) {
+            userUpdateData.phoneNumber = normalizedPhone;
+            console.log("Extracted phone number:", normalizedPhone);
+          }
+        } catch (error) {
+          console.error("Error normalizing phone number:", error);
+        }
+      }
+
+      // Update user with city (if provided)
+      if (parsedData.city) {
+        userUpdateData.city = parsedData.city.trim();
+        console.log("Extracted city:", parsedData.city);
+      }
+
+      // Update user with all extracted data
+      if (Object.keys(userUpdateData).length > 0) {
+        console.log("Updating user data:", { userId: stepUserId, fields: Object.keys(userUpdateData) });
+        await updateUser(stepUserId, userUpdateData);
       }
 
       // Create/update education entries
