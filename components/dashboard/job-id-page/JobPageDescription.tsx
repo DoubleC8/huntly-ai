@@ -91,7 +91,7 @@ export default function JobPageDescription({
         )}
       </div>
       {/**tags */}
-      <div className="flex flex-col gap-3">
+      {/* <div className="flex flex-col gap-3">
         <div className="flex items-center gap-2">
           <Tags className="text-[var(--app-blue)]" />
           <h1 className="font-bold text-2xl">Tags</h1>
@@ -112,7 +112,7 @@ export default function JobPageDescription({
             Looks like no tags have been added yet — try checking back later!
           </p>
         )}
-      </div>
+      </div> */}
     </>
   );
 }

@@ -2,8 +2,10 @@ import { inngest } from "../client";
 import { prisma } from "@/lib/prisma";
 import { env } from "@/data/env/server";
 import type { Prisma } from "@/app/generated/prisma/client";
+import { matchJobsWithAgent, type JobForMatching } from "./jobMatchingAgent";
+import { calculateMatchScoreWithAgent } from "./matchScoreAgent";
 
-// Calculate match score between user skills and job requirements
+// Calculate match score between user skills and job requirements (fallback method)
 function calculateMatchScore(
   userSkills: string[],
   jobSkills: string[],
@@ -480,15 +482,22 @@ async function searchJobsWeb(
   }
 }
 
-// Use AI to extract structured job data from web search results
-async function enrichJobWithAI(job: {
-  title: string;
-  company: string;
-  location: string;
-  description: string;
-  url: string;
-  salary?: string;
-}): Promise<{
+// Use AI to extract structured job data from web search results and calculate match score
+async function enrichJobWithAI(
+  job: {
+    title: string;
+    company: string;
+    location: string;
+    description: string;
+    url: string;
+    salary?: string;
+  },
+  userProfile?: {
+    skills: string[];
+    jobPreferences: string[];
+    city?: string | null;
+  }
+): Promise<{
   title: string;
   company: string;
   location: string;
@@ -503,6 +512,8 @@ async function enrichJobWithAI(job: {
   responsibilities: string[];
   qualifications: string[];
   postedAt: Date | null;
+  matchScore?: number;
+  matchReasoning?: string;
 }> {
   const { GoogleGenAI } = await import("@google/genai");
 
@@ -520,13 +531,32 @@ async function enrichJobWithAI(job: {
     ? "\n\nCRITICAL: The company name is currently 'Unknown Company'. Please extract the actual company name from the job listing content above and use it in the response."
     : "";
 
+  // Add match score calculation to prompt if user profile is provided
+  const matchScorePrompt = userProfile 
+    ? `\n\nADDITIONAL TASK - Calculate Match Score:
+User Profile:
+- Skills: ${userProfile.skills.join(", ") || "Not specified"}
+- Job Preferences: ${userProfile.jobPreferences.join(", ") || "Not specified"}
+- Location: ${userProfile.city || "Not specified"}
+
+Calculate a match score (0-100) for how well this job matches the user's profile:
+- 90-100: Perfect match (excellent skills alignment)
+- 70-89: Strong match (good alignment, most skills present)
+- 50-69: Moderate match (some relevant skills)
+- 30-49: Weak match (few relevant skills)
+- 0-29: Poor match (minimal alignment)
+
+Consider: skills overlap (40%), preference alignment (20%), experience fit (15%), location (10%), overall fit (15%).
+Include "matchScore" (0-100) and "matchReasoning" (brief explanation) in your JSON response.`
+    : "";
+
   const prompt = `Extract structured job information from this job listing. Pay special attention to finding responsibilities and qualifications:
 
 Title: ${job.title}
 Company: ${job.company}
 Location: ${job.location}
 Description: ${job.description}
-${fullContent ? `\nFull Job Content:\n${jobContent.substring(0, 8000)}` : ""}${companyExtractionPrompt}
+${fullContent ? `\nFull Job Content:\n${jobContent.substring(0, 8000)}` : ""}${companyExtractionPrompt}${matchScorePrompt}
 
 Extract and return ONLY valid JSON in this format:
 {
@@ -540,7 +570,7 @@ Extract and return ONLY valid JSON in this format:
   "skills": ["skill1", "skill2", ...],
   "responsibilities": ["specific responsibility 1", "specific responsibility 2", ...],
   "qualifications": ["specific qualification 1", "specific qualification 2", ...],
-  "postedAt": "YYYY-MM-DD" or null
+  "postedAt": "YYYY-MM-DD" or null${userProfile ? ',\n  "matchScore": <number 0-100>,\n  "matchReasoning": "<brief explanation>"' : ''}
 }
 
 CRITICAL FOR SALARY:
@@ -621,6 +651,12 @@ If information is not available, use defaults: employment="full-time", remoteTyp
       ? parsed.company 
       : job.company;
 
+    // Extract match score if provided (from combined enrichment)
+    const matchScore = parsed.matchScore !== undefined 
+      ? Math.max(0, Math.min(100, Number(parsed.matchScore))) 
+      : undefined;
+    const matchReasoning = parsed.matchReasoning || undefined;
+
     return {
       title: job.title,
       company: finalCompany,
@@ -636,6 +672,8 @@ If information is not available, use defaults: employment="full-time", remoteTyp
       responsibilities: ensureArray(parsed.responsibilities),
       qualifications: ensureArray(parsed.qualifications),
       postedAt: parsed.postedAt ? new Date(parsed.postedAt) : null,
+      matchScore,
+      matchReasoning,
     };
   } catch (error) {
     console.error("Error enriching job with AI:", error);
@@ -655,6 +693,7 @@ If information is not available, use defaults: employment="full-time", remoteTyp
       responsibilities: [] as string[],
       qualifications: [] as string[],
       postedAt: null,
+      // Match score will be calculated in the calling function as fallback
     };
   }
 }
@@ -732,7 +771,45 @@ export const searchJobsForUser = inngest.createFunction(
       return uniqueJobs;
     });
 
-    // Enrich jobs with AI and calculate match scores
+    // Optionally filter jobs using AI matching before enriching (saves API costs)
+    // This step can be enabled to only enrich jobs that AI thinks are good matches
+    const useAIFiltering = false; // Set to true to enable AI pre-filtering
+    
+    const jobsToEnrich = useAIFiltering && searchResults.length > 20
+      ? await step.run("ai-filter-jobs", async () => {
+          // First do a quick enrichment to get basic data for matching
+          const basicJobs: JobForMatching[] = searchResults.slice(0, 50).map((job) => ({
+            title: job.title,
+            company: job.company,
+            location: job.location,
+            employment: "full-time", // Default
+            remoteType: "onsite", // Default
+            salaryMin: 0,
+            salaryMax: 0,
+            description: job.description,
+            skills: [],
+            responsibilities: [],
+            qualifications: [],
+            url: job.url,
+          }));
+
+          const matched = await matchJobsWithAgent(
+            {
+              skills: user.skills,
+              jobPreferences: user.jobPreferences,
+              city: user.city,
+            },
+            basicJobs,
+            { maxNumberOfJobs: 20 }
+          );
+
+          // Map matched URLs back to original search results
+          const matchedUrls = new Set(matched.map(j => j.url));
+          return searchResults.filter(job => matchedUrls.has(job.url));
+        })
+      : searchResults;
+
+    // Enrich jobs with AI and calculate match scores using AI agent
     const enrichedJobs = await step.run("enrich-and-score-jobs", async () => {
       const jobs: Array<{
         jobData: Prisma.JobUncheckedCreateInput;
@@ -740,22 +817,45 @@ export const searchJobsForUser = inngest.createFunction(
       }> = [];
 
       // Process jobs in batches to avoid overwhelming the API
-      const batchSize = 5;
-      for (let i = 0; i < searchResults.length; i += batchSize) {
-        const batch = searchResults.slice(i, i + batchSize);
+      // Increased batch size since we're combining operations into one AI call
+      const batchSize = 10;
+      for (let i = 0; i < jobsToEnrich.length; i += batchSize) {
+        const batch = jobsToEnrich.slice(i, i + batchSize);
         
         const enriched = await Promise.all(
           batch.map(async (job) => {
             try {
-              const enriched = await enrichJobWithAI(job);
+              // Enrich job AND calculate match score in a single AI call (faster!)
+              const enriched = await enrichJobWithAI(job, {
+                skills: user.skills,
+                jobPreferences: user.jobPreferences,
+                city: user.city,
+              });
               
-              // Calculate match score
-              const matchScore = calculateMatchScore(
-                user.skills,
-                enriched.skills,
-                enriched.qualifications,
-                enriched.responsibilities
-              );
+              // Use AI-generated match score if available, otherwise fallback
+              let matchScore: number;
+              let scoreReasoning: string | undefined;
+              
+              if (enriched.matchScore !== undefined) {
+                // Use score from combined enrichment call
+                matchScore = enriched.matchScore;
+                scoreReasoning = enriched.matchReasoning;
+              } else {
+                // Fallback to simple calculation if AI didn't provide score
+                matchScore = calculateMatchScore(
+                  user.skills,
+                  enriched.skills,
+                  enriched.qualifications,
+                  enriched.responsibilities
+                );
+              }
+
+              // Build tags array with match score and optional reasoning
+              const tags = [`match-${matchScore}`];
+              if (scoreReasoning) {
+                // Store reasoning in a tag (you might want a separate field for this)
+                tags.push(`reasoning-${scoreReasoning.substring(0, 50).replace(/\s+/g, "-")}`);
+              }
 
               return {
                 jobData: {
@@ -775,8 +875,7 @@ export const searchJobsForUser = inngest.createFunction(
                   responsibilities: enriched.responsibilities,
                   qualifications: enriched.qualifications,
                   postedAt: enriched.postedAt,
-                  // Store match score in tags for now (you might want to add a matchScore field to Job model)
-                  tags: [`match-${matchScore}`],
+                  tags,
                 },
                 matchScore,
               };
@@ -792,6 +891,11 @@ export const searchJobsForUser = inngest.createFunction(
 
       // Sort by match score (highest first)
       jobs.sort((a, b) => b.matchScore - a.matchScore);
+
+      console.log(`Enriched and scored ${jobs.length} jobs`);
+      if (jobs.length > 0) {
+        console.log(`Match score range: ${jobs[jobs.length - 1].matchScore} - ${jobs[0].matchScore}`);
+      }
 
       return jobs;
     });

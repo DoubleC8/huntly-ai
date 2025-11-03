@@ -121,8 +121,25 @@ export default function JobColumnJobPost({
         <div className="font-medium text-xs text-muted-foreground">
           <p>
             <span className="font-semibold">Salary:</span> $
-            {formatSalary(job.salaryMin)} - ${formatSalary(job.salaryMax)}{" "}
-            {job.currency}
+            {job.salaryMin > 0 || job.salaryMax > 0 ? (
+              <>
+                {job.salaryMin > 0 && job.salaryMax > 0 ? (
+                  <>
+                    ${formatSalary(job.salaryMin)} - ${formatSalary(job.salaryMax)} {job.currency}
+                  </>
+                ) : job.salaryMin > 0 ? (
+                  <>
+                    ${formatSalary(job.salaryMin)}+ {job.currency}
+                  </>
+                ) : (
+                  <>
+                    Up to ${formatSalary(job.salaryMax)} {job.currency}
+                  </>
+                )}
+              </>
+            ) : (
+              <span className="italic">Salary not disclosed</span>
+            )}
           </p>
           <p>
             <span className="font-semibold">Job Type:</span> {job.employment},{" "}
