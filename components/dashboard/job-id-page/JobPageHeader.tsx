@@ -1,7 +1,16 @@
-import Image from "next/image";
 import { Building, Clock, MapPin } from "lucide-react";
 import { ResumeMatchScore } from "../charts/ResumeMatchScore";
 import { formatDistanceToNow as formatFn } from "date-fns";
+import CompanyLogo from "@/components/ui/CompanyLogo";
+
+// Extract match score from tags array (format: "match-85" -> 85)
+function extractMatchScoreFromTags(tags: string[]): number | undefined {
+  const matchTag = tags?.find((tag) => tag.startsWith("match-"));
+  if (!matchTag) return undefined;
+  
+  const score = parseInt(matchTag.replace("match-", ""), 10);
+  return isNaN(score) ? undefined : score;
+}
 
 export default function JobPageHeader({
   jobTitle,
@@ -12,6 +21,7 @@ export default function JobPageHeader({
   jobLocation,
   jobEmployment,
   jobRemoteType,
+  jobTags,
 }: {
   jobTitle: string;
   jobCompany: string;
@@ -21,7 +31,9 @@ export default function JobPageHeader({
   jobLocation: string;
   jobEmployment: string;
   jobRemoteType: string;
+  jobTags?: string[] | null;
 }) {
+  const matchScore = extractMatchScoreFromTags(jobTags || []);
   return (
     <div
       className="md:min-h-[20vh] md:max-h-fit md:flex-row md:justify-between md:gap-0 items-center
@@ -32,15 +44,13 @@ export default function JobPageHeader({
           flex flex-col gap-3 "
       >
         <div className="flex items-center gap-3">
-          <a target="_blank" href="https://logo.dev" rel="noopener noreferrer">
-            <Image
-              src={`https://img.logo.dev/${jobCompany}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
-              width={75}
-              height={75}
-              alt="Logo API"
-              className="rounded-lg"
-            />
-          </a>
+          <CompanyLogo
+            company={jobCompany}
+            jobTitle={jobTitle}
+            width={75}
+            height={75}
+            className="rounded-lg"
+          />
 
           {jobPostedAt ? (
             <p className="font-semibold">
@@ -97,7 +107,7 @@ export default function JobPageHeader({
           </div>
         </div>
       </div>
-      <ResumeMatchScore />
+      <ResumeMatchScore matchScore={matchScore} />
     </div>
   );
 }

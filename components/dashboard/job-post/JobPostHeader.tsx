@@ -1,5 +1,5 @@
 import { formatJobDate } from "@/lib/date-utils";
-import Image from "next/image";
+import CompanyLogo from "@/components/ui/CompanyLogo";
 import StarButton from "../buttons/StarButton";
 import RejectedButton from "../buttons/RejectedButton";
 import { JobStage } from "@/app/generated/prisma";
@@ -23,15 +23,13 @@ export default function JobPostHeader({
   return (
     <div className="flex items-center justify-between">
       <div className="flex gap-3 items-center justify-center">
-        <a target="_blank" href="https://logo.dev" rel="noopener noreferrer">
-          <Image
-            src={`https://img.logo.dev/${jobCompany}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
-            width={65}
-            height={65}
-            alt="Logo API"
-            className="rounded-lg"
-          />
-        </a>
+        <CompanyLogo
+          company={jobCompany}
+          jobTitle={jobTitle}
+          width={65}
+          height={65}
+          className="rounded-lg"
+        />
         <div>
           <h2 className="text-xl font-bold">{jobTitle}</h2>
           <div className="flex items-center text-sm text-muted-foreground">

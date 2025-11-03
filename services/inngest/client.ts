@@ -18,6 +18,11 @@ type Events = {
         id: string
       }
     }
+    "app/jobPreferences.updated": {
+      user: {
+        id: string
+      }
+    }
 }
 
 // Create a client to send and receive events

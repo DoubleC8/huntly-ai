@@ -6,8 +6,8 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import Image from "next/image";
 import { Job, JobStage } from "@/app/generated/prisma";
+import CompanyLogo from "@/components/ui/CompanyLogo";
 import { Button } from "../ui/button";
 import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, ChevronUp, LoaderCircle } from "lucide-react";
@@ -99,11 +99,11 @@ export default function JobColumnJobPost({
       >
         <div className="flex gap-3">
           <a target="_blank" href={job.sourceUrl} rel="noopener noreferrer">
-            <Image
-              src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
+            <CompanyLogo
+              company={job.company}
+              jobTitle={job.title}
               width={45}
               height={45}
-              alt="Company Logo"
               className="rounded-lg"
             />
           </a>

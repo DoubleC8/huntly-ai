@@ -1,5 +1,4 @@
 import { Job } from "@/app/generated/prisma";
-import Image from "next/image";
 import {
   Table,
   TableBody,
@@ -9,6 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { STAGE_COLORS } from "@/lib/config/jobStage";
+import CompanyLogo from "@/components/ui/CompanyLogo";
 
 export default function JobsTable({ jobs }: { jobs: Job[] }) {
   return (
@@ -41,19 +41,13 @@ export default function JobsTable({ jobs }: { jobs: Job[] }) {
             <TableRow key={job.id} className="font-semibold">
               <TableCell className={isLast ? "rounded-bl-2xl" : ""}>
                 <div className="flex items-center gap-3">
-                  <a
-                    target="_blank"
-                    href="https://logo.dev"
-                    rel="noopener noreferrer"
-                  >
-                    <Image
-                      src={`https://img.logo.dev/${job.company}.com?token=pk_dTXM_rabSbuItZAjQsgTKA`}
-                      width={35}
-                      height={35}
-                      alt="Logo API"
-                      className="rounded-lg"
-                    />
-                  </a>
+                  <CompanyLogo
+                    company={job.company}
+                    jobTitle={job.title}
+                    width={35}
+                    height={35}
+                    className="rounded-lg"
+                  />
                   <div>
                     <p>{job.company}</p>
                     <p className="text-muted-foreground block md:hidden">

@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { updateUserArrayEntry } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { FieldType } from "../delete/deleteUserProfileEntry";
+import { inngest } from "@/services/inngest/client";
 
 
 export async function UpdateUserField(
@@ -24,6 +25,25 @@ export async function UpdateUserField(
       if (!Array.isArray(value))
         throw new Error(`Expected array for ${field}`);
       updatedUser = await updateUserArrayEntry(email, field, value, "update");
+      
+      // Trigger job search when job preferences are updated
+      if (field === "jobPreferences" && updatedUser) {
+        const user = await prisma.user.findUnique({
+          where: { email },
+          select: { id: true },
+        });
+        
+        if (user) {
+          await inngest.send({
+            name: "app/jobPreferences.updated",
+            data: {
+              user: {
+                id: user.id,
+              },
+            },
+          });
+        }
+      }
       break;
 
     default:
