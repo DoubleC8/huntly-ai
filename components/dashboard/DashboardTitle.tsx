@@ -53,7 +53,7 @@ export default function DashboardTitle() {
             href={link.href}
             className={
               pathname === link.href
-                ? "px-3 bg-[var(--app-blue)] rounded-md text-[var(--background)]"
+                ? "px-3 bg-[var(--app-blue)] rounded-md text-white"
                 : "px-3"
             }
           >

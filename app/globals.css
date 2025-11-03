@@ -183,6 +183,27 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Smooth transitions for theme changes */
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Smooth transitions for theme-dependent properties */
+  /* Apply to common elements that change with theme */
+  div, section, article, aside, nav, header, footer, main,
+  button, input, textarea, select, a, span, p, h1, h2, h3, h4, h5, h6,
+  label, form, fieldset, legend, table, tr, td, th, thead, tbody,
+  ul, ol, li, dl, dt, dd,
+  code, pre, blockquote {
+    transition-property: background-color, border-color, color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 0.3s;
+  }
+  
+  /* Ensure SVG fills and strokes transition smoothly for icons */
+  svg {
+    transition-property: fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 0.3s;
   }
 }
 

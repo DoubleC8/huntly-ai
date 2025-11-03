@@ -31,9 +31,11 @@ export function useUpdateJobStage() {
       }
     },
 
-    // on success: refresh cached counts everywhere
+    // on success: refresh cached counts and job search results
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["jobStageCounts"] });
+      // Invalidate job search queries so jobs are removed from DEFAULT view when stage changes
+      queryClient.invalidateQueries({ queryKey: ["jobSearch"] });
     },
 
     // optional global error fallback

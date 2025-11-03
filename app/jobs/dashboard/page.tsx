@@ -3,6 +3,8 @@ import { NoPreferencesCard } from "@/components/dashboard/cards/NoPreferencesCar
 import DashboardClient from "@/components/dashboard/dashboard-client/DashboardClient";
 import DashboardNavbar from "@/components/dashboard/navbars/DashboardNavbar";
 import { getCurrentUserEmail } from "@/lib/auth-helpers";
+import { Suspense } from "react";
+import JobsPostingsSkeleton from "@/components/ui/loaders/JobPostingsSkeleton";
 
 export default async function DashboardPage({
   searchParams,
@@ -46,7 +48,9 @@ export default async function DashboardPage({
   return (
     <div className="pageContainer">
       <DashboardNavbar />
-      <DashboardClient userId={user.id} filters={filters} />
+      <Suspense fallback={<JobsPostingsSkeleton postings={5} />}>
+        <DashboardClient userId={user.id} filters={filters} />
+      </Suspense>
     </div>
   );
 }

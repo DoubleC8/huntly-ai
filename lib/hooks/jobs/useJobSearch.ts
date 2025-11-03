@@ -20,15 +20,17 @@ export function useJobSearch({
 }) {
   return useQuery({
     queryKey: ["jobSearch", userId, searchQuery, locationQuery, employment, remoteType, salaryMin],
-    queryFn: () =>
-      searchJobs({
+    queryFn: async () => {
+      const result = await searchJobs({
         userId,
         searchQuery,
         locationQuery,
         employment,
         remoteType,
         salaryMin,
-      }),
+      });
+      return result;
+    },
     enabled: !!userId,
   });
 }

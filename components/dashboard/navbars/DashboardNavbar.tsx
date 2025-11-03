@@ -344,13 +344,13 @@ export default function DashboardNavbar() {
           ) : (
             <Search
               className="md:block
-          hidden"
+          hidden text-white"
             />
           )}
           {isPending ? (
             <LoaderCircle className="md:hidden animate-spin" />
           ) : (
-            <p className="md:hidden">Search</p>
+            <p className="md:hidden text-white">Search</p>
           )}
         </Button>
       </form>
