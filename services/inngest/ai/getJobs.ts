@@ -926,3 +926,70 @@ export const searchJobsForUser = inngest.createFunction(
   }
 );
 
+// Scheduled function to run daily job searches for all users
+export const dailyJobSearchForAllUsers = inngest.createFunction(
+  {
+    id: "daily-job-search-all-users",
+    name: "Daily Job Search for All Users",
+  },
+  {
+    // Run daily at 9 AM UTC (adjust timezone as needed)
+    cron: "0 9 * * *",
+  },
+  async ({ step }) => {
+    // Get all users with job preferences
+    const users = await step.run("get-users-with-preferences", async () => {
+      const allUsers = await prisma.user.findMany({
+        select: {
+          id: true,
+          jobPreferences: true,
+          skills: true,
+          city: true,
+        },
+      });
+
+      // Filter users who have at least one job preference
+      const usersWithPreferences = allUsers.filter(
+        (user) => user.jobPreferences && user.jobPreferences.length > 0
+      );
+
+      console.log(`Found ${usersWithPreferences.length} users with job preferences`);
+      return usersWithPreferences;
+    });
+
+    if (users.length === 0) {
+      console.log("No users with job preferences found");
+      return;
+    }
+
+    // Trigger job search for each user
+    await step.run("trigger-job-searches", async () => {
+      // Send events in batches to avoid overwhelming the system
+      const batchSize = 10;
+      for (let i = 0; i < users.length; i += batchSize) {
+        const batch = users.slice(i, i + batchSize);
+        
+        await Promise.all(
+          batch.map((user) =>
+            inngest.send({
+              name: "app/jobPreferences.updated",
+              data: {
+                user: {
+                  id: user.id,
+                },
+              },
+            } as Parameters<typeof inngest.send>[0])
+          )
+        );
+        
+        // Small delay between batches to avoid rate limiting
+        if (i + batchSize < users.length) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      }
+
+      console.log(`Triggered job search for ${users.length} users`);
+    });
+  }
+);
+

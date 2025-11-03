@@ -7,6 +7,7 @@ import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import { getUserByEmail } from "@/app/actions/profile/get/getUserInfo";
 import { searchJobs } from "@/app/actions/jobs/getJobs";
 import { NoResultsFound } from "@/components/dashboard/cards/NoResultsFoundCard";
+import { NoPreferencesCard } from "@/components/dashboard/cards/NoPreferencesCard";
 
 interface SearchParams {
   search?: string;
@@ -41,6 +42,21 @@ export default async function DashboardPage({
     return (
       <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
         User not found.
+      </div>
+    );
+  }
+
+  const hasPreferences =
+    Array.isArray(user.jobPreferences) && user.jobPreferences.length > 0;
+  if (!hasPreferences) {
+    return (
+      <div className="pageContainer">
+        <ErrorBoundary>
+          <DashboardNavbar />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <NoPreferencesCard />
+        </ErrorBoundary>
       </div>
     );
   }
