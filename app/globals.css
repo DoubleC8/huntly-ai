@@ -78,7 +78,7 @@
   --sidebar-ring: oklch(0.708 0 0);
   --app-purple: 	#DA70D6;
   --app-dark-purple: #5246BA;
-  --app-blue: #1F51FF;
+  --app-blue: oklch(0.531 0.2605 265.04);
   --app-light-blue: #0096FF;
   --app-green: #32CD32;
   --app-yellow: #FFC000;
@@ -86,9 +86,9 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: oklch(0.205 0 0 );
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card:  oklch(0.325 0 0);
   --card-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);

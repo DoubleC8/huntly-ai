@@ -19,7 +19,7 @@ export default function UserJobPreferences({
         {jobPreferences.length ? (
           jobPreferences.map((job, index) => (
             <div key={index} className="flex flex-col gap-2">
-              <Badge className="flex font-semibold items-center text-[var(--background)] bg-[var(--app-light-blue)] gap-3">
+              <Badge className="flex font-semibold items-center text-white bg-[var(--app-light-blue)] gap-3">
                 {formatEntry(job)}
                 <DeleteUserFieldButton field="jobPreferences" value={job} />
               </Badge>

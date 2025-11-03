@@ -18,22 +18,26 @@ export default function DefaultResume({ resume }: { resume: Resume }) {
     <Table className="mx-auto rounded-t-2xl">
       <TableHeader>
         <TableRow>
-          <TableHead className="font-semibold text-[var(--background)] bg-[var(--app-blue)] rounded-tl-2xl">
-            <p className="py-3">Resume</p>
+          <TableHead
+            className="
+          font-semibold
+          bg-[var(--app-blue)]
+          rounded-tl-2xl 
+          sm:rounded-tr-none
+        "
+          >
+            <p className="py-3 text-white">Resume</p>
           </TableHead>
 
-          <TableHead className="md:table-cell hidden font-semibold text-left text-[var(--background)] bg-[var(--app-blue)]">
+          <TableHead className="md:table-cell hidden font-semibold text-left bg-[var(--app-blue)] text-white">
             Target Job Title
           </TableHead>
 
-          <TableHead
-            className="lg:rounded-none lg:text-end
-          rounded-tr-2xl text-center font-semibold text-[var(--background)] bg-[var(--app-blue)]"
-          >
+          <TableHead className="md:table-cell hidden font-semibold text-left bg-[var(--app-blue)] text-white">
             Link
           </TableHead>
 
-          <TableHead className="lg:table-cell hidden font-semibold text-center text-[var(--background)] bg-[var(--app-blue)] rounded-tr-2xl">
+          <TableHead className="lg:table-cell hidden font-semibold text-center bg-[var(--app-blue)] rounded-tr-2xl">
             Created
           </TableHead>
         </TableRow>
@@ -58,7 +62,7 @@ export default function DefaultResume({ resume }: { resume: Resume }) {
           </TableCell>
 
           {/* Resume Link */}
-          <TableCell className="hover:text-[var(--app-blue)] text-muted-foreground">
+          <TableCell className="md:table-cell hidden text-muted-foreground">
             <a
               target="_blank"
               href={resume.publicUrl}

@@ -38,10 +38,8 @@ export async function updateUserResume({
   // Trigger Inngest event for AI analysis
   await inngest.send({
     name: "app/resume.uploaded",
-    data: {
-      user: {
-        id: user.id,
-      },
+    user: {
+      id: user.id,
     },
   });
 
@@ -107,10 +105,8 @@ export async function makeResumeDefault( resumeId: string ){
   if (!resume.aiSummary) {
     await inngest.send({
       name: "app/resume.uploaded",
-      data: {
-        user: {
-          id: user.id,
-        },
+      user: {
+        id: user.id,
       },
     });
   }

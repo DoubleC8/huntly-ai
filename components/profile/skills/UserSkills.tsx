@@ -17,7 +17,7 @@ export default function UserSkills({ skills }: { skills: string[] }) {
         {skills.length ? (
           skills.map((skill, index) => (
             <div key={index} className="flex flex-col gap-2">
-              <Badge className="flex font-semibold items-center text-[var(--background)] bg-[var(--app-dark-purple)] gap-3">
+              <Badge className="flex font-semibold items-center text-white bg-[var(--app-dark-purple)] gap-3">
                 {formatEntry(skill)}
                 <DeleteUserFieldButton field="skills" value={skill} />
               </Badge>

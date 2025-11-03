@@ -99,7 +99,7 @@ export default function AddResumeButton({
       <DialogTrigger asChild>
         <Button
           variant="default"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 text-white"
           disabled={resumeCount >= RESUME_LIMIT}
         >
           <span className="hidden md:block">Add Resume</span>
@@ -138,7 +138,7 @@ export default function AddResumeButton({
           <Button
             onClick={handleUpload}
             disabled={!file || mutation.isPending}
-            className="md:w-1/2 md:mx-auto w-full"
+            className="md:w-1/2 md:mx-auto w-full text-white"
           >
             {mutation.isPending ? (
               <LoaderCircle className="animate-spin mr-1" />

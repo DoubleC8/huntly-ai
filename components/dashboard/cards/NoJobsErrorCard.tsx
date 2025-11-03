@@ -5,21 +5,21 @@ import {
   CardDescription,
   CardFooter,
 } from "@/components/ui/card";
-import { Frown } from "lucide-react";
 import Link from "next/link";
+import { CircleX, Frown } from "lucide-react";
 
-export async function NoResultsFound() {
+export function NoJobsErrorCard() {
   return (
     <div className="my-auto">
       <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
         <CardContent className="flex flex-col items-center gap-3">
-          <Frown className="text-[var(--app-blue)]" />
-          <p>No Jobs Matched your Search</p>
-          <CardDescription>Try Refining your Seach!</CardDescription>
+          <CircleX className="text-[var(--app-red)]" />
+          <p>An Unexpected Error Occured</p>
+          <CardDescription> Could Not Load Jobs.</CardDescription>
         </CardContent>
         <CardFooter className="mx-auto">
           <Link href="/jobs/dashboard" className="mx-auto">
-            <Button className="w-full text-white">Go Back</Button>
+            <Button className="w-full text-white">Try Again</Button>
           </Link>
         </CardFooter>
       </Card>

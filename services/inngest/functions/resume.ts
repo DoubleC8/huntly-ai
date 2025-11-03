@@ -4,7 +4,8 @@ import { updateUserResume } from "@/features/users/db/userResumes";
 import { updateUser } from "@/features/users/db/users";
 import { env } from "@/data/env/server";
 import { GoogleGenAI } from "@google/genai";
-import { normalizePhoneNumber } from "@/lib/phone-utils";
+import { normalizePhoneNumber } from "@/lib/utils";
+
 
 export const createAiSummaryOfUploadedResume = inngest.createFunction(
   {
@@ -15,7 +16,7 @@ export const createAiSummaryOfUploadedResume = inngest.createFunction(
     event: "app/resume.uploaded",
   },
   async ({ step, event }) => {
-    const userId = event.data?.user?.id;
+    const userId = (event as any).user?.id;
     
     if (!userId) {
       console.error("No user ID in event:", event);
@@ -106,7 +107,7 @@ export const createAiSummaryOfUploadedResume = inngest.createFunction(
 
     await step.run("save-ai-summary-and-extract-data", async () => {
       // Ensure userId is available (Inngest might serialize steps, losing closure variables)
-      const stepUserId = userId || event.data?.user?.id;
+      const stepUserId = userId || (event as any).user?.id;
       
       if (!stepUserId) {
         console.error("No user ID available in step");

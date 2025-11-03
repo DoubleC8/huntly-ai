@@ -16,8 +16,12 @@ export async function insertUserNotificationSettings(
   });
 
   if (!existingSettings) {
+    // Explicitly construct the data object to only include valid fields
     await prisma.userNotificationSettings.create({
-      data: settings,
+      data: {
+        userId: settings.userId,
+        newJobEmailNotifications: settings.newJobEmailNotifications ?? false,
+      },
     });
   }
 
@@ -28,15 +32,35 @@ export async function updateUserNotificationSettings(
   userId: string,
   settings: UserNotificationSettingsUpdateInput
 ) {
-  // Use upsert to insert if doesn't exist, update if exists (equivalent to onConflictDoUpdate)
-  await prisma.userNotificationSettings.upsert({
+  // Explicitly construct the data object to only include valid fields
+  // This ensures we never accidentally include aiPrompt or any other removed fields
+  // We completely bypass Prisma types and use plain object literals
+  const newJobEmailNotifications = settings.newJobEmailNotifications ?? false;
+
+  // Check if record exists first
+  const existing = await prisma.userNotificationSettings.findUnique({
     where: { userId },
-    create: {
-      userId,
-      ...settings,
-    },
-    update: settings,
   });
+
+  if (existing) {
+    // Update existing record - only update if value actually changed
+    if (existing.newJobEmailNotifications !== newJobEmailNotifications) {
+      await prisma.userNotificationSettings.update({
+        where: { userId },
+        data: {
+          newJobEmailNotifications: newJobEmailNotifications,
+        },
+      });
+    }
+  } else {
+    // Create new record
+    await prisma.userNotificationSettings.create({
+      data: {
+        userId,
+        newJobEmailNotifications: newJobEmailNotifications,
+      },
+    });
+  }
 
   revalidateUserNotificationSettingsCache(userId);
 }

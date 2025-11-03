@@ -707,7 +707,7 @@ export const searchJobsForUser = inngest.createFunction(
     event: "app/jobPreferences.updated",
   },
   async ({ step, event }) => {
-    const userId = event.data?.user?.id;
+    const userId = (event as any).user?.id;
     
     if (!userId) {
       console.error("No user ID in event:", event);
@@ -973,12 +973,10 @@ export const dailyJobSearchForAllUsers = inngest.createFunction(
           batch.map((user) =>
             inngest.send({
               name: "app/jobPreferences.updated",
-              data: {
-                user: {
-                  id: user.id,
-                },
+              user: {
+                id: user.id,
               },
-            } as Parameters<typeof inngest.send>[0])
+            })
           )
         );
         

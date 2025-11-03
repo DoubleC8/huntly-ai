@@ -11,7 +11,7 @@ import CompanyLogo from "@/components/ui/CompanyLogo";
 import { Button } from "../ui/button";
 import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, ChevronUp, LoaderCircle } from "lucide-react";
-import { formatJobDate, formatSalary } from "@/lib/date-utils";
+import { formatJobDate, formatSalary } from "@/lib/utils";
 import RejectedButton from "../dashboard/buttons/RejectedButton";
 import { useUpdateJobStage } from "@/lib/hooks/jobs/useUpdateJobStage";
 
@@ -125,7 +125,8 @@ export default function JobColumnJobPost({
               <>
                 {job.salaryMin > 0 && job.salaryMax > 0 ? (
                   <>
-                    ${formatSalary(job.salaryMin)} - ${formatSalary(job.salaryMax)} {job.currency}
+                    ${formatSalary(job.salaryMin)} - $
+                    {formatSalary(job.salaryMax)} {job.currency}
                   </>
                 ) : job.salaryMin > 0 ? (
                   <>

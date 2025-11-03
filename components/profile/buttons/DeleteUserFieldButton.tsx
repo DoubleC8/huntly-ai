@@ -25,7 +25,10 @@ export default function DeleteUserFieldButton({
         value: value,
       });
 
-      profileToasts.deletedField({ field: value, fieldType: field as Exclude<FieldType, "email"> });
+      profileToasts.deletedField({
+        field: value,
+        fieldType: field as Exclude<FieldType, "email">,
+      });
     } catch (error) {
       console.error("Form submission error", error);
       profileToasts.error("Failed to update user profile entries.");
@@ -38,11 +41,15 @@ export default function DeleteUserFieldButton({
       disabled={mutation.isPending}
       className={
         isBlack
-          ? "w-fit h-fit text-muted-foreground !p-0 bg-transparent shadow-none hover:bg-transparent hover:text-[var(--app-red)]"
-          : "w-fit h-fit  !p-0 bg-transparent shadow-none hover:bg-transparent hover:text-[var(--app-red)]"
+          ? "w-fit h-fit !p-0 bg-transparent shadow-none hover:bg-transparent hover:text-[var(--app-red)]"
+          : "w-fit h-fit !p-0 bg-transparent shadow-none hover:bg-transparent hover:text-[var(--app-red)]"
       }
     >
-      {mutation.isPending ? <LoaderCircle className="animate-spin" /> : <X />}
+      {mutation.isPending ? (
+        <LoaderCircle className="animate-spin" />
+      ) : (
+        <X className="text-gray-200" />
+      )}
     </Button>
   );
 }

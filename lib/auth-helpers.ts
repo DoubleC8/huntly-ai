@@ -83,7 +83,7 @@ export async function getCurrentUserEmail(): Promise<string | null> {
     
     // Check if this is an API key configuration error
     if (err?.clerkError && err?.status === undefined) {
-      console.error("⚠️ Possible Clerk API key issue. Please verify:");
+      console.error("Possible Clerk API key issue. Please verify:");
       console.error("   - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is set correctly");
       console.error("   - CLERK_SECRET_KEY is set correctly");
       console.error("   - Keys match your Clerk Dashboard");

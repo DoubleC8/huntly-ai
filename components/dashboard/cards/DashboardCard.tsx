@@ -32,7 +32,9 @@ export default function DashboardCard({
             className="lg:w-1/2 
           w-3/4 mx-auto"
           >
-            <Button className="w-full">Go to Recommended Jobs</Button>
+            <Button className="w-full text-white">
+              Go to Recommended Jobs
+            </Button>
           </Link>
         </CardFooter>
       </Card>

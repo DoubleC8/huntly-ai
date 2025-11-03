@@ -1,9 +1,9 @@
 "use server";
 
 import { getCurrentUserEmail } from "@/lib/auth-helpers";
-import { normalizePhoneNumber } from "@/lib/phone-utils";
+
 import { prisma } from "@/lib/prisma";
-import { updateUserArrayEntry } from "@/lib/utils";
+import { normalizePhoneNumber, updateUserArrayEntry } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { FieldType } from "../delete/deleteUserProfileEntry";
 import { inngest } from "@/services/inngest/client";
@@ -36,10 +36,8 @@ export async function UpdateUserField(
         if (user) {
           await inngest.send({
             name: "app/jobPreferences.updated",
-            data: {
-              user: {
-                id: user.id,
-              },
+            user: {
+              id: user.id,
             },
           });
         }

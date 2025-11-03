@@ -32,7 +32,10 @@ const NavbarBurgerButton = () => {
           <SheetTitle className="font-bold text-[var(--app-blue)]">
             Huntly Ai
           </SheetTitle>
-          <SheetDescription asChild className="font-semibold text-black">
+          <SheetDescription
+            asChild
+            className="font-semibold text-[var(--foreground)]"
+          >
             <div className="w-full h-full flex flex-col justify-between">
               <div className="h-3/4 flex flex-col justify-evenly">
                 <Link

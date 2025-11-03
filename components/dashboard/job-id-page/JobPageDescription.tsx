@@ -1,19 +1,17 @@
 import { Badge } from "@/components/ui/badge";
 import { formatEntry } from "@/lib/utils";
-import { Crosshair, FileText, Lightbulb, ListTodo, Tags } from "lucide-react";
+import { Crosshair, FileText, Lightbulb, ListTodo } from "lucide-react";
 
 export default function JobPageDescription({
   jobDescription,
   jobResponsibilities,
   jobQualifications,
   jobSkills,
-  jobTags,
 }: {
   jobDescription: string;
   jobResponsibilities: string[];
   jobQualifications: string[];
   jobSkills: string[];
-  jobTags: string[];
 }) {
   return (
     <>

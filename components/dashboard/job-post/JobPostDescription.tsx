@@ -1,4 +1,4 @@
-import { formatSalary } from "@/lib/date-utils";
+import { formatSalary } from "@/lib/utils";
 
 export default function JobPostDescription({
   jobSalaryMin,

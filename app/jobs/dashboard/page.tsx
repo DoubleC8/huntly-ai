@@ -1,98 +1,52 @@
-import { getCurrentUserEmail } from "@/lib/auth-helpers";
-import RecommendedJobs from "@/components/dashboard/RecommendedJobs";
-
-import DashboardNavbar from "@/components/dashboard/navbars/DashboardNavbar";
-import ActiveFiltersBar from "@/components/dashboard/ActiveFiltersBar";
-import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import { getUserByEmail } from "@/app/actions/profile/get/getUserInfo";
-import { searchJobs } from "@/app/actions/jobs/getJobs";
-import { NoResultsFound } from "@/components/dashboard/cards/NoResultsFoundCard";
 import { NoPreferencesCard } from "@/components/dashboard/cards/NoPreferencesCard";
-
-interface SearchParams {
-  search?: string;
-  location?: string;
-  employment?: string;
-  remoteType?: string;
-  salaryMin?: string;
-  page?: string;
-}
+import DashboardClient from "@/components/dashboard/dashboard-client/DashboardClient";
+import DashboardNavbar from "@/components/dashboard/navbars/DashboardNavbar";
+import { getCurrentUserEmail } from "@/lib/auth-helpers";
 
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: Promise<Record<string, string>>;
 }) {
   const email = await getCurrentUserEmail();
+  if (!email) return <div className="center">Please Sign In.</div>;
 
-  //extra security, we have middleware but this is just incase it doesnt work for some reason
-  if (!email) {
-    return (
-      <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
-        {" "}
-        Please Sign In.
-      </div>
-    );
-  }
-
-  //await since its a promise
   const user = await getUserByEmail(email);
-
-  if (!user) {
-    return (
-      <div className="flex justify-center items-center h-screen text-gray-700 text-xl">
-        User not found.
-      </div>
-    );
-  }
+  if (!user) return <div className="center">User not found.</div>;
 
   const hasPreferences =
     Array.isArray(user.jobPreferences) && user.jobPreferences.length > 0;
   if (!hasPreferences) {
     return (
       <div className="pageContainer">
-        <ErrorBoundary>
-          <DashboardNavbar />
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <NoPreferencesCard />
-        </ErrorBoundary>
+        <DashboardNavbar />
+        <NoPreferencesCard />
       </div>
     );
   }
 
-  // Await searchParams before using its properties
-  const resolvedSearchParams = await searchParams;
-  const { search, location, employment, remoteType, salaryMin }: SearchParams =
-    resolvedSearchParams;
-
-  const searchQuery = typeof search === "string" ? search.trim() : "";
-  const locationQuery = typeof location === "string" ? location.trim() : "";
-
-  const jobs = await searchJobs({
-    userId: user.id,
-    searchQuery,
-    locationQuery,
-    employment,
-    remoteType,
-    salaryMin: salaryMin ? Number(salaryMin) : undefined,
-  });
+  const resolvedParams = await searchParams;
+  const filters = {
+    searchQuery:
+      typeof resolvedParams.search === "string"
+        ? resolvedParams.search.trim()
+        : "",
+    locationQuery:
+      typeof resolvedParams.location === "string"
+        ? resolvedParams.location.trim()
+        : "",
+    employment: resolvedParams.employment as string,
+    remoteType: resolvedParams.remoteType as string,
+    salaryMin: resolvedParams.salaryMin
+      ? Number(resolvedParams.salaryMin)
+      : undefined,
+  };
 
   return (
     <div className="pageContainer">
-      <ErrorBoundary>
-        <DashboardNavbar />
-      </ErrorBoundary>
-      <ErrorBoundary>
-        <ActiveFiltersBar />
-      </ErrorBoundary>
-      <ErrorBoundary>
-        {jobs.length === 0 ? (
-          <NoResultsFound />
-        ) : (
-          <RecommendedJobs jobs={jobs} />
-        )}
-      </ErrorBoundary>
+      <DashboardNavbar />
+      <DashboardClient userId={user.id} filters={filters} />
     </div>
   );
 }

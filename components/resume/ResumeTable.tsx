@@ -34,19 +34,19 @@ export default function ResumeTable({
       <Table className="mx-auto rounded-t-2xl">
         <TableHeader>
           <TableRow>
-            <TableHead className="font-semibold text-[var(--background)] bg-[var(--app-blue)] rounded-tl-2xl">
+            <TableHead className="font-semibold text-white bg-[var(--app-blue)] rounded-tl-2xl">
               <p className="py-3">Resume</p>
             </TableHead>
 
-            <TableHead className="md:table-cell hidden font-semibold text-left text-[var(--background)] bg-[var(--app-blue)]">
+            <TableHead className="md:table-cell hidden font-semibold text-left text-white bg-[var(--app-blue)]">
               Target Job Title
             </TableHead>
 
-            <TableHead className="text-end font-semibold text-[var(--background)] bg-[var(--app-blue)]">
+            <TableHead className="text-end font-semibold text-white bg-[var(--app-blue)]">
               Link
             </TableHead>
 
-            <TableHead className="lg:table-cell hidden font-semibold text-center text-[var(--background)] bg-[var(--app-blue)]">
+            <TableHead className="lg:table-cell hidden font-semibold text-center text-white bg-[var(--app-blue)]">
               Created
             </TableHead>
 

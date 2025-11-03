@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 
 const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
@@ -23,14 +24,21 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} min-h-screen w-full bg-[var(--background)] text-[var(--foreground)]`}
         >
-          <ReactQueryProvider>
-            {children}
-            <Toaster position="bottom-right" richColors expand={false} />
-          </ReactQueryProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <ReactQueryProvider>
+              {children}
+              <Toaster position="bottom-right" richColors expand={false} />
+            </ReactQueryProvider>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

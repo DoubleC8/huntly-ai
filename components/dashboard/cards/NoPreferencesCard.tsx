@@ -17,13 +17,13 @@ export function NoPreferencesCard() {
           <p>No job preferences set up yet</p>
           <CardDescription>
             {" "}
-            Head over to your profile page to set your preferred roles,
-            locations, and work types.
+            Add your resume, then add job preferences to your profile to start
+            seeing results!
           </CardDescription>
         </CardContent>
         <CardFooter className="mx-auto">
-          <Link href="/jobs/dashboard" className="mx-auto">
-            <Button className="w-full">Go to Profile</Button>
+          <Link href="/jobs/profile" className="mx-auto">
+            <Button className="w-full text-white">Go to Profile</Button>
           </Link>
         </CardFooter>
       </Card>

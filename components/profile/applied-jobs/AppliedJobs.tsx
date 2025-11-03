@@ -7,7 +7,7 @@ import { AppliedJobsPaginationBar } from "./AppliedJobsPaginationBar";
 import { useSearchParams } from "next/navigation";
 
 import { usePaginatedJobs } from "@/lib/hooks/profile/usePaginatedJobs";
-import JobsTableSkeleton from "../ui/JobsTableSkeleton";
+import JobsTableSkeleton from "../../ui/loaders/JobsTableSkeleton";
 
 export default function AppliedJobs({
   initialJobs,
@@ -21,45 +21,40 @@ export default function AppliedJobs({
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
 
-  // Use React Query with initial data for SSR hydration
   const { data, isLoading, isPending } = usePaginatedJobs(currentPage, limit);
 
   // Use React Query data if available, otherwise fall back to initialJobs
   const jobs = data?.jobs ?? initialJobs;
   const finalTotalJobs = data?.totalJobs ?? totalJobs;
 
-  if (jobs.length === 0 && !isLoading && !isPending) {
-    return (
-      <p className="text-muted-foreground">
-        You haven’t applied to any jobs yet. Once you do, they’ll show up here!
-        Try applying to one today! <br /> Go to{" "}
-        <Link
-          href={"/jobs/dashboard"}
-          className="ease-in-out duration-200 hover:cursor-pointer hover:text-[var(--app-blue)]"
-        >
-          Dashboard
-        </Link>
-        .
-      </p>
-    );
-  }
-
   return (
     <div className="flex flex-col gap-3">
       <h2 className="font-bold text-xl">Jobs You have Applied to</h2>
 
       <div className="flex flex-col items-center gap-3">
-        {isLoading || isPending ? (
+        {jobs.length === 0 && !isLoading && !isPending ? (
+          <p className="text-muted-foreground w-full ">
+            You haven’t applied to any jobs yet. Once you do, they’ll show up
+            here! Try applying to one today! <br /> Go to{" "}
+            <Link
+              href={"/jobs/dashboard"}
+              className="ease-in-out duration-200 hover:cursor-pointer hover:text-[var(--app-blue)]"
+            >
+              Dashboard
+            </Link>
+            .
+          </p>
+        ) : isLoading || isPending ? (
           <JobsTableSkeleton />
         ) : (
-          <JobsTable jobs={jobs} />
+          <>
+            <JobsTable jobs={jobs} />
+            <AppliedJobsPaginationBar
+              currentPage={currentPage}
+              totalPages={Math.ceil(finalTotalJobs / limit)}
+            />
+          </>
         )}
-
-        <AppliedJobsPaginationBar
-          currentPage={currentPage}
-          totalPages={Math.ceil(finalTotalJobs / limit)}
-        />
-
         {finalTotalJobs > 0 && (
           <p className="text-muted-foreground text-center">
             You&apos;ve applied to{" "}

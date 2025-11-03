@@ -80,7 +80,7 @@ export default function DashboardTitle() {
                 href={link.href}
                 className={
                   pathname === link.href
-                    ? "bg-[var(--app-blue)] text-[var(--background)] rounded-md flex px-3 gap-3 w-fit"
+                    ? "bg-[var(--app-blue)] text-white rounded-md flex px-3 gap-3 w-fit"
                     : "hover:bg-[var(--app-blue)] hover:text-[var(--background)] ease-in-out duration-200 rounded-md flex px-3 gap-3 w-fit"
                 }
               >

@@ -82,7 +82,6 @@ export default async function Page({ params }: PageProps) {
             jobResponsibilities={job.responsibilities}
             jobQualifications={job.qualifications}
             jobSkills={job.skills}
-            jobTags={job.tags}
           />
         </ErrorBoundary>
 

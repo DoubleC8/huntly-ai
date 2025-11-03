@@ -1,9 +1,9 @@
-import { formatJobDate } from "@/lib/date-utils";
 import CompanyLogo from "@/components/ui/CompanyLogo";
 import StarButton from "../buttons/StarButton";
 import RejectedButton from "../buttons/RejectedButton";
 import { JobStage } from "@/app/generated/prisma";
 import UpdateJobStageButton from "../buttons/UpdateJobStageButton";
+import { formatJobDate } from "@/lib/utils";
 
 export default function JobPostHeader({
   jobCompany,

@@ -9,7 +9,8 @@ export function revalidateUserNotificationSettingsCache(userId: string) {
   revalidatePath("/jobs/profile");
   revalidatePath(`/jobs/profile/${userId}`);
   
-  // Revalidate settings pages if they exist
+  // Revalidate settings pages
+  revalidatePath("/jobs/settings");
   revalidatePath("/jobs/profile/settings");
 }
 

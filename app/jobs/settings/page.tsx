@@ -1,7 +1,6 @@
+import UserNotificationForm from "@/components/settings/forms/UserNotificationForm";
+import DarkModeForm from "@/components/settings/forms/DarkModeForm";
 import { getCurrentUserEmail } from "@/lib/auth-helpers";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ListFilter, Plus } from "lucide-react";
 
 export default async function SettingsPage() {
   const email = await getCurrentUserEmail();
@@ -16,34 +15,26 @@ export default async function SettingsPage() {
     );
   }
   return (
-    <>
-      <div className="page">
-        <div className="pageTitleContainer">
-          <h1 className="pageTitle">Settings</h1>
-        </div>
-
-        <div className="mobileAppPageNav">
-          <div
-            className="
-          w-9/10 flex gap-2"
-          >
-            <Input
-              type="url"
-              placeholder="Add External Job Link"
-              className="bg-[var(--background)] h-9 w-8/10"
-            />
-            <Button>
-              <Plus />
-            </Button>
-          </div>
-          <Button>
-            <ListFilter />
-          </Button>
-        </div>
-
-        {/**This code below will hold the drag and drop feature for resumes jobs */}
-        <div className="pageContainer"></div>
+    <div className="page">
+      <div className="pageTitleContainer">
+        <h1 className="pageTitle">Settings</h1>
       </div>
-    </>
+
+      {/**This code below will hold the drag and drop feature for resumes jobs */}
+      <div className="pageContainer">
+        <div className="h-fit flex flex-col gap-3">
+          <div className="bg-[var(--background)] h-fit rounded-3xl shadow-md p-5 flex flex-col gap-5">
+            <div className="flex items-center justify-between w-full">
+              <h2 className="font-bold text-xl">Notifcation Settings </h2>
+            </div>
+            <UserNotificationForm />
+            <div className="flex items-center justify-between w-full">
+              <h2 className="font-bold text-xl">Appearance</h2>
+            </div>
+            <DarkModeForm />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

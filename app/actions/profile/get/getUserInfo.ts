@@ -1,3 +1,5 @@
+"use server"; 
+
 import { JobStage } from "@/app/generated/prisma";
 import { prisma } from "@/lib/prisma";
 
