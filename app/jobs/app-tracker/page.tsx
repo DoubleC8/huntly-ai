@@ -42,7 +42,7 @@ export default async function ApplicationTrackerPage() {
   return (
     <div className="page h-screen">
       <AppTrackerTitle />
-      <div className="pageContainer !min-h-[94vh] flex-1 flex flex-col">
+      <div className="pageContainer !min-h-fit">
         <AppTrackerColumns groupedJobs={groupedJobs} />
       </div>
     </div>

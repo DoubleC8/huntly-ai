@@ -15,19 +15,19 @@ export default function JobsTable({ jobs }: { jobs: Job[] }) {
     <Table className="mx-auto rounded-t-2xl">
       <TableHeader>
         <TableRow>
-          <TableHead className="font-semibold text-[var(--background)] bg-[var(--app-blue)] rounded-tl-2xl">
+          <TableHead className="font-semibold text-white bg-[var(--app-blue)] rounded-tl-2xl">
             <p className="py-3">Company</p>
           </TableHead>
 
-          <TableHead className="md:table-cell hidden font-semibold text-left text-[var(--background)] bg-[var(--app-blue)]">
+          <TableHead className="md:table-cell hidden font-semibold text-left text-white bg-[var(--app-blue)]">
             Job Title
           </TableHead>
 
-          <TableHead className="md:table-cell hidden text-left font-semibold text-[var(--background)] bg-[var(--app-blue)]">
+          <TableHead className="md:table-cell hidden text-left font-semibold text-white bg-[var(--app-blue)]">
             Location
           </TableHead>
 
-          <TableHead className="text-center font-semibold text-[var(--background)] bg-[var(--app-blue)] rounded-tr-2xl">
+          <TableHead className="text-center font-semibold text-white bg-[var(--app-blue)] rounded-tr-2xl">
             Status{" "}
           </TableHead>
         </TableRow>

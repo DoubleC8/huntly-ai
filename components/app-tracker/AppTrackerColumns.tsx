@@ -39,7 +39,7 @@ export default function AppTrackerColumns({
   }
 
   const gridContent = (
-    <div className="lg:grid-cols-3 grid grid-cols-1 gap-5 h-full min-h-0 flex-1">
+    <div className="lg:grid-cols-3 grid grid-cols-1 gap-5 h-full min-h-[94vh] flex-1">
       {COLUMN_CONFIGS.map((config) => (
         <JobColumn
           key={config.id}
