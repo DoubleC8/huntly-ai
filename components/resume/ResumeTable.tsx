@@ -112,7 +112,9 @@ export default function ResumeTable({
                       className="md:justify-center
                   w-full flex items-end justify-end"
                     >
-                      <DeleteResumeButton resume={resume} />
+                      {resume.isDefault ? null : (
+                        <DeleteResumeButton resume={resume} />
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

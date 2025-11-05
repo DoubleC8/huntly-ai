@@ -34,12 +34,20 @@ export async function UpdateUserField(
         });
         
         if (user) {
-          await inngest.send({
-            name: "app/jobPreferences.updated",
-            user: {
-              id: user.id,
-            },
-          });
+          console.log("📤 Sending jobPreferences.updated event for user:", user.id);
+          try {
+            await inngest.send({
+              name: "app/jobPreferences.updated",
+              data: {
+                user: {
+                  id: user.id,
+                },
+              },
+            });
+            console.log("✅ Event sent successfully");
+          } catch (error) {
+            console.error("❌ Failed to send event:", error);
+          }
         }
       }
       break;

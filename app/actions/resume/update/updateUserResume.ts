@@ -111,6 +111,23 @@ export async function makeResumeDefault( resumeId: string ){
     });
   }
 
+  // Always trigger match score update when default resume changes
+  // This recalculates match scores for existing jobs based on the new default resume
+  console.log("📤 Sending resume.defaultChanged event for user:", user.id);
+  try {
+    await inngest.send({
+      name: "app/resume.defaultChanged",
+      data: {
+        user: {
+          id: user.id,
+        },
+      },
+    });
+    console.log("✅ Event sent successfully");
+  } catch (error) {
+    console.error("❌ Failed to send event:", error);
+  }
+
   revalidatePath("/jobs/resume");
   revalidatePath("/jobs/profile");
   return updatedResume;

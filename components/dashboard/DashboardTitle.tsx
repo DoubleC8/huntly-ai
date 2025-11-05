@@ -54,7 +54,7 @@ export default function DashboardTitle() {
             className={
               pathname === link.href
                 ? "px-3 bg-[var(--app-blue)] rounded-md text-white"
-                : "px-3"
+                : "px-3 text-white"
             }
           >
             {link.name}
@@ -88,7 +88,7 @@ export default function DashboardTitle() {
                 {link.key &&
                   counts?.[link.key] !== undefined &&
                   counts[link.key] > 0 && (
-                    <p className="md:block hidden bg-[var(--app-blue)] px-2 text-[var(--background)] rounded-full">
+                    <p className="md:block hidden bg-[var(--app-blue)] px-2 text-white rounded-full">
                       {counts[link.key]}
                     </p>
                   )}

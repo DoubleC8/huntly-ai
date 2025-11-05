@@ -23,7 +23,7 @@ export function NoPreferencesCard() {
         </CardContent>
         <CardFooter className="mx-auto">
           <Link href="/jobs/profile" className="mx-auto">
-            <Button className="w-full text-white">Go to Profile</Button>
+            <Button className="w-full">Go to Profile</Button>
           </Link>
         </CardFooter>
       </Card>

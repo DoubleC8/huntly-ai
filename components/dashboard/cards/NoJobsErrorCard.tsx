@@ -19,7 +19,7 @@ export function NoJobsErrorCard() {
         </CardContent>
         <CardFooter className="mx-auto">
           <Link href="/jobs/dashboard" className="mx-auto">
-            <Button className="w-full text-white">Try Again</Button>
+            <Button className="w-full">Try Again</Button>
           </Link>
         </CardFooter>
       </Card>

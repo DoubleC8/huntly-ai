@@ -16,8 +16,8 @@ export const env = createEnv({
     // Google Gemini AI
     GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1),
     
-    // Serper API for web search (optional - you can use other search APIs)
-    SERPER_API_KEY: z.string().optional(),
+    // Serper API for job search across popular job sites
+    SERPER_API_KEY: z.string().min(1),
   },
   
   emptyStringAsUndefined: true,

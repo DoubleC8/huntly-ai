@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[var(--app-blue)] text-[var(--background)] hover:bg-[var(--app-blue)]/85 font-bold hover:cursor-pointer",
+          "bg-[var(--app-blue)] text-[var(--background)] text-white hover:bg-[var(--app-blue)]/85 font-bold hover:cursor-pointer",
         noted:
           "bg-[var(--app-dark-purple)] text-white  hover:bg-[var(--app-dark-purple)]/85 font-bold hover:cursor-pointer",
         destructive:

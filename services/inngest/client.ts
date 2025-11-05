@@ -23,6 +23,11 @@ type Events = {
         id: string
       }
     }
+    "app/resume.defaultChanged": {
+      user: {
+        id: string
+      }
+    }
 }
 
 // Create a client to send and receive events

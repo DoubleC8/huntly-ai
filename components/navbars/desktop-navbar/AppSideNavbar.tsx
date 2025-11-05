@@ -33,38 +33,38 @@ export default function AppSidebarNavbar() {
         <div className="h-3/4 flex flex-col gap-8 ">
           <Link href={"/jobs/dashboard"} className="sidebarNavbarLink">
             <Briefcase size={20} />
-            <p>Jobs</p>
+            Jobs
           </Link>
           <Link href={"/jobs/app-tracker"} className="sidebarNavbarLink">
             <LayoutDashboardIcon size={20} />
-            <p>App Tracker</p>
+            App Tracker
           </Link>
           <Link href={"/jobs/resume"} className="sidebarNavbarLink">
             <FileText size={20} />
-            <p>Resume</p>
+            Resume
           </Link>
           <Link href={"/jobs/profile"} className="sidebarNavbarLink">
             <UserRoundPen size={20} />
-            <p>Profile</p>
+            Profile
           </Link>
         </div>
         <div className="h-1/4 flex flex-col justify-evenly border-t border-gray-100">
           <Link href={"/jobs/settings"} className="sidebarNavbarLink">
             <Settings size={20} />
-            <p>Settings</p>
+            Settings
           </Link>
           <Link
             href="mailto:christophercortes@ucsb.edu?subject=Huntly%20Ai%20Feedback"
             className="sidebarNavbarLink"
           >
             <Send size={20} />
-            <p>Contact Us</p>
+            Contact Us
           </Link>
 
           <SignOutButton>
             <button className="sidebarNavbarLink w-full text-left">
               <LogOut size={20} />
-              <p>Sign Out</p>
+              Sign Out
             </button>
           </SignOutButton>
         </div>

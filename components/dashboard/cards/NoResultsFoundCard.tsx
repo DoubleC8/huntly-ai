@@ -8,7 +8,7 @@ import {
 import { Frown } from "lucide-react";
 import Link from "next/link";
 
-export async function NoResultsFound() {
+export function NoResultsFound() {
   return (
     <div className="my-auto">
       <Card className="lg:w-6/10 bg-[var(--background)] w-[95%] mx-auto">
