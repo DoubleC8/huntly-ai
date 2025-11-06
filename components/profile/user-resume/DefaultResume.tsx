@@ -37,7 +37,7 @@ export default function DefaultResume({ resume }: { resume: Resume }) {
             Link
           </TableHead>
 
-          <TableHead className="lg:table-cell hidden font-semibold text-center bg-[var(--app-blue)] rounded-tr-2xl">
+          <TableHead className="lg:table-cell hidden font-semibold text-center bg-[var(--app-blue)] rounded-tr-2xl text-white">
             Created
           </TableHead>
         </TableRow>

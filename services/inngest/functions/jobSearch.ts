@@ -83,8 +83,8 @@ const saveJobTool = createTool({
         responsibilities: responsibilities || [],
         qualifications: qualifications || [],
         postedAt: postedAt ? new Date(postedAt) : null,
-        // Store match score in note field for now (or we could add a matchScore field to schema)
-        note: `Match Score: ${params.matchScore}/100`,
+        // Note field is left empty for user to fill in
+        note: null,
       },
     });
 
