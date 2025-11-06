@@ -34,7 +34,6 @@ export async function UpdateUserField(
         });
         
         if (user) {
-          console.log("📤 Sending jobPreferences.updated event for user:", user.id);
           try {
             await inngest.send({
               name: "app/jobPreferences.updated",
@@ -44,9 +43,10 @@ export async function UpdateUserField(
                 },
               },
             });
-            console.log("✅ Event sent successfully");
+            console.log("✅ Job preferences update event sent successfully");
           } catch (error) {
-            console.error("❌ Failed to send event:", error);
+            console.error("❌ Failed to send job preferences update event:", error);
+            // Don't throw - allow the update to complete even if event fails
           }
         }
       }

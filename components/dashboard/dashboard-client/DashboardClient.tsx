@@ -3,7 +3,6 @@
 import { useJobSearch } from "@/lib/hooks/jobs/useJobSearch";
 
 import { NoResultsFound } from "@/components/dashboard/cards/NoResultsFoundCard";
-import { LoaderCircle } from "lucide-react";
 import ActiveFiltersBar from "../ActiveFiltersBar";
 import RecommendedJobs from "../RecommendedJobs";
 import JobsPostingsSkeleton from "@/components/ui/loaders/JobPostingsSkeleton";

@@ -43,7 +43,7 @@ export default function JobPageDescription({
           </ul>
         ) : (
           <p className="text-muted-foreground">
-            Oops! The responsibility list seems to be on a coffee break.
+            Huntly-AI was unable to extract job Responsibilites.
           </p>
         )}
       </div>
@@ -61,7 +61,7 @@ export default function JobPageDescription({
           </ul>
         ) : (
           <p className="text-muted-foreground">
-            Qualifications are currently out of office — stay tuned!
+            Huntly-AI was unable to extract job Qualifications.
           </p>
         )}
       </div>
@@ -84,33 +84,10 @@ export default function JobPageDescription({
           </div>
         ) : (
           <p className="text-muted-foreground">
-            Our skill scanner might’ve blinked — give it a sec to catch up!
+            Huntly-AI was unable to extract required job Skills.
           </p>
         )}
       </div>
-      {/**tags */}
-      {/* <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <Tags className="text-[var(--app-blue)]" />
-          <h1 className="font-bold text-2xl">Tags</h1>
-        </div>
-        {jobTags.length ? (
-          <div className="flex gap-2">
-            {jobTags.map((tag, index) => (
-              <Badge
-                key={index}
-                className="bg-[var(--app-light-blue)] text-[var(--background)]"
-              >
-                {formatEntry(tag)}
-              </Badge>
-            ))}
-          </div>
-        ) : (
-          <p className="text-muted-foreground">
-            Looks like no tags have been added yet — try checking back later!
-          </p>
-        )}
-      </div> */}
     </>
   );
 }

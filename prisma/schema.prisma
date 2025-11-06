@@ -113,7 +113,6 @@ model Job {
   resumeUrl String?
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserJobs")
   note      String?
-  tags      String[] @default([])
 
   @@unique([userId, title, company, sourceUrl])
 }
@@ -163,10 +162,10 @@ model Education {
 }
 
 model UserNotificationSettings {
-  userId                 String   @id
-  newJobEmailNotifications Boolean  @default(false)
+  userId                   String  @id
+  newJobEmailNotifications Boolean @default(false)
 
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

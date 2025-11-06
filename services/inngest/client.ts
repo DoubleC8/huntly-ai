@@ -31,6 +31,9 @@ type Events = {
 }
 
 // Create a client to send and receive events
-export const inngest = new Inngest({ id: "huntly-ai", 
-    schemas: new EventSchemas().fromRecord<Events>()
+export const inngest = new Inngest({ 
+  id: "huntly-ai", 
+  schemas: new EventSchemas().fromRecord<Events>(),
+  // For local development, use eventKey if provided, otherwise rely on Inngest dev server
+  eventKey: process.env.INNGEST_EVENT_KEY,
 });

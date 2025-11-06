@@ -6,7 +6,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { CircleX, Frown } from "lucide-react";
+import { CircleX } from "lucide-react";
 
 export function NoJobsErrorCard() {
   return (

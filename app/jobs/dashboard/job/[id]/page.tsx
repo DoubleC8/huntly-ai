@@ -72,7 +72,6 @@ export default async function Page({ params }: PageProps) {
             jobLocation={job.location}
             jobEmployment={job.employment}
             jobRemoteType={job.remoteType}
-            jobTags={job.tags}
           />
         </ErrorBoundary>
         <ErrorBoundary>

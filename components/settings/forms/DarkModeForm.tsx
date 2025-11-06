@@ -20,7 +20,7 @@ const formSchema = z.object({
 });
 
 export default function DarkModeForm() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   // Avoid hydration mismatch by waiting for client-side mount
@@ -71,7 +71,7 @@ export default function DarkModeForm() {
           <FormField
             control={form.control}
             name="darkMode"
-            render={({ field }) => (
+            render={() => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
                   <FormLabel>Dark Mode</FormLabel>
@@ -117,4 +117,3 @@ export default function DarkModeForm() {
     </Form>
   );
 }
-

@@ -1,8 +1,7 @@
 import { inngest } from "@/services/inngest/client";
 import { clerkCreateUser, clerkUpdateUser, clerkDeleteUser } from "@/services/inngest/functions/clerk";
-import { dailyJobMatchFetcher } from "@/services/inngest/functions/email";
-import { searchJobsOnPreferencesUpdate, updateMatchScoresOnResumeChange } from "@/services/inngest/functions/jobMatching";
 import { createAiSummaryOfUploadedResume } from "@/services/inngest/functions/resume";
+import { searchJobsForUser } from "@/services/inngest/functions/jobSearch";
 import { serve } from "inngest/next";
 
 
@@ -14,8 +13,6 @@ export const { GET, POST, PUT } = serve({
     clerkUpdateUser,
     clerkDeleteUser,
     createAiSummaryOfUploadedResume,
-    dailyJobMatchFetcher,
-    searchJobsOnPreferencesUpdate,
-    updateMatchScoresOnResumeChange,
+    searchJobsForUser,
   ],
 });

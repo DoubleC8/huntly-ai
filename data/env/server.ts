@@ -18,6 +18,9 @@ export const env = createEnv({
     
     // Serper API for job search across popular job sites
     SERPER_API_KEY: z.string().min(1),
+    
+    // Inngest Event Key (optional - only needed for sending events from server actions)
+    INNGEST_EVENT_KEY: z.string().optional(),
   },
   
   emptyStringAsUndefined: true,
