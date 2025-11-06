@@ -417,6 +417,9 @@ export const searchJobsForUser = inngest.createFunction(
                 };
               }
               
+              // Add delay before extraction to respect rate limits
+              await new Promise(resolve => setTimeout(resolve, 2500));
+              
               const ai = new GoogleGenAI({
                 apiKey: env.GOOGLE_GENERATIVE_AI_API_KEY,
               });
@@ -431,7 +434,7 @@ export const searchJobsForUser = inngest.createFunction(
   "salaryMin": 0,
   "salaryMax": 0,
   "currency": "USD",
-  "description": "Full job description",
+  "description": "A concise, user-friendly 2-3 sentence description of the role's key responsibilities and what the candidate will be doing. Keep it brief and focused on the day-to-day work.",
   "companyDescription": "Brief description of the company and what they do",
   "roleSummary": "A 2-3 sentence summary of the role and what the candidate will do, similar to: '[Company] is seeking a [Title] to join their [Team/Department], where you will [key responsibilities]. In this position, you will [specific tasks] to [business goal].'",
   "skills": ["skill1", "skill2"],
@@ -443,15 +446,34 @@ export const searchJobsForUser = inngest.createFunction(
 Job posting content:
 ${jobContent.textContent.substring(0, 8000)}`;
 
-                    const response = await ai.models.generateContent({
-                      model: "gemini-2.0-flash-lite",
-                      contents: [
-                        {
-                          role: "user",
-                          parts: [{ text: prompt }],
-                        },
-                      ],
-                    });
+                    let response;
+                    let retries = 3;
+                    let delay = 5000; // Start with 5 second delay
+                    
+                    while (retries > 0) {
+                      try {
+                        response = await ai.models.generateContent({
+                          model: "gemini-2.0-flash-lite",
+                          contents: [
+                            {
+                              role: "user",
+                              parts: [{ text: prompt }],
+                            },
+                          ],
+                        });
+                        break; // Success, exit retry loop
+                      } catch (error: any) {
+                        retries--;
+                        if (error.status === 429 && retries > 0) {
+                          // Rate limited - wait longer and retry
+                          console.warn(`Rate limited (429), waiting ${delay}ms before retry (${retries} retries left)`);
+                          await new Promise(resolve => setTimeout(resolve, delay));
+                          delay *= 2; // Exponential backoff
+                        } else {
+                          throw error; // Re-throw if not 429 or no retries left
+                        }
+                      }
+                    }
 
                     const text = response.text;
                     if (!text) {
@@ -556,10 +578,10 @@ Return ONLY valid JSON: {"matchScore": 85, "reasoning": "Brief explanation"}`;
                       aiSummary = `${jobData.company || "Company"} is seeking a ${jobData.title || "professional"}${jobData.location ? ` in ${jobData.location}` : ""}.`;
                     }
                     
-                    // Add match score info to description or note, not summary
-                    const descriptionWithScore = jobData.description 
-                      ? `${jobData.description}\n\nMatch Score: ${matchScore}/100${reasoning ? `. ${reasoning}` : ""}`
-                      : `Match Score: ${matchScore}/100${reasoning ? `. ${reasoning}` : ""}`;
+                    // Keep description clean and user-friendly (no match score)
+                    // Match score is calculated but not displayed in description
+                    const cleanDescription = jobData.description || 
+                      `Join ${jobData.company || "a company"} as a ${jobData.title || "professional"}. ${jobData.roleSummary ? jobData.roleSummary.split('.')[0] + '.' : ''}`;
                     
                     // Save the job
                     const saveResult = await saveJobTool.handler({
@@ -573,7 +595,7 @@ Return ONLY valid JSON: {"matchScore": 85, "reasoning": "Brief explanation"}`;
                       salaryMin: jobData.salaryMin || 0,
                       salaryMax: jobData.salaryMax || 0,
                       currency: jobData.currency || "USD",
-                      description: descriptionWithScore,
+                      description: cleanDescription,
                       aiSummary: aiSummary,
                       skills: jobData.skills || [],
                       responsibilities: jobData.responsibilities || [],
