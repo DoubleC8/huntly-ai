@@ -73,7 +73,7 @@ export async function searchJobs({
       ...(remoteType && { remoteType }),
       ...(salaryMin && { salaryMin: { gte: salaryMin } }),
     },
-    orderBy: { postedAt: "desc" },
+    orderBy: { createdAt: "desc" },
   });
 }
 
