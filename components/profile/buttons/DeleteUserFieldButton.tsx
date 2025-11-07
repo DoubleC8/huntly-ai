@@ -48,7 +48,7 @@ export default function DeleteUserFieldButton({
       {mutation.isPending ? (
         <LoaderCircle className="animate-spin" />
       ) : (
-        <X className="text-gray-200" />
+        <X className="text-gray-400" />
       )}
     </Button>
   );

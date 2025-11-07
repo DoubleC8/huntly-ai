@@ -24,7 +24,7 @@ export default function AppSidebarNavbar() {
         <Image src={"/logo.png"} alt="logo" width={55} height={55} />
         <span
           className="lg:text-xl lg:font-extrabold tracking-wide
-         font-bold text-[var(--foreground)]"
+         font-bold text-[var(--app-blue)]"
         >
           Huntly Ai
         </span>
