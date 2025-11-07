@@ -43,7 +43,10 @@ export default async function ProfilePage({
     );
   }
 
+  const hasSkills =
+    Array.isArray(user.skills) && user.skills.length > 0;
   const defaultResume = (await getDefaultResume(user.id)) ?? user.resumes[0];
+  const hasResume = Boolean(defaultResume);
 
   return (
     <div className="page">
@@ -73,7 +76,12 @@ export default async function ProfilePage({
 
           <ErrorBoundary>
             <Suspense fallback={<UserProfileSkeleton />}>
-              <UserJobPreferences jobPreferences={user.jobPreferences} />
+              <UserJobPreferences
+                jobPreferences={user.jobPreferences}
+                userId={user.id}
+                hasResume={hasResume}
+                hasSkills={hasSkills}
+              />
             </Suspense>
           </ErrorBoundary>
 

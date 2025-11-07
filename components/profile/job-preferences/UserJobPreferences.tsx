@@ -3,16 +3,29 @@ import UserJobPreferencesSidebar from "./UserJobPreferencesSidebar";
 import { formatEntry } from "@/lib/utils";
 import DeleteUserFieldButton from "../buttons/DeleteUserFieldButton";
 
+type UserJobPreferencesProps = {
+  jobPreferences: string[];
+  userId: string;
+  hasResume: boolean;
+  hasSkills: boolean;
+};
+
 export default function UserJobPreferences({
   jobPreferences,
-}: {
-  jobPreferences: string[];
-}) {
+  userId,
+  hasResume,
+  hasSkills,
+}: UserJobPreferencesProps) {
   return (
     <div className="h-fit flex flex-col gap-3">
       <div className="flex items-center justify-between w-full">
         <h2 className="font-bold text-xl">Job Preferences</h2>
-        <UserJobPreferencesSidebar />
+        <UserJobPreferencesSidebar
+          existingJobPreferences={jobPreferences}
+          userId={userId}
+          hasResume={hasResume}
+          hasSkills={hasSkills}
+        />
       </div>
 
       <div className="w-3/4 flex gap-2 flex-wrap">

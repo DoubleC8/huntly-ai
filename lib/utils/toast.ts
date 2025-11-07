@@ -115,6 +115,39 @@ export const profileToasts = {
     toast.success(`Updated ${ctx.formattedKeys}!`, {
       description: `${formatTimestamp()}`
     }),
+
+  missingPrerequisites: (ctx: { missingResume: boolean; missingSkills: boolean }) => {
+    const missingItems: string[] = [];
+    if (ctx.missingResume) missingItems.push("a resume");
+    if (ctx.missingSkills) missingItems.push("skills");
+
+    const requirement =
+      missingItems.length === 1
+        ? missingItems[0]
+        : `${missingItems[0]} and ${missingItems[1]}`;
+
+    toast.warning("Add required profile info first", {
+      description: `Please add ${requirement} before searching for jobs.`,
+    });
+  },
+
+  jobPreferenceLimitReached: () =>
+    toast.info("Job preference limit reached", {
+      description: "You can save up to 5 job preferences.",
+    }),
+
+  jobPreferenceRateLimited: (seconds: number) =>
+    toast.info("Slow down just a bit", {
+      description: `Please wait ${seconds} seconds before adding another job preference.`,
+    }),
+
+  jobSearchCompleted: (ctx: { jobsFound?: number }) =>
+    toast.success("Job search complete", {
+      description:
+        ctx.jobsFound && ctx.jobsFound > 0
+          ? `Found ${ctx.jobsFound} new job${ctx.jobsFound === 1 ? "" : "s"} for you.`
+          : "No new jobs matched this time, but we'll keep looking.",
+    }),
   
   addedFields: (ctx: ProfileCtx) => {
     const fieldLabel = getFieldLabelPlural(ctx.fieldType);

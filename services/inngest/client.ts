@@ -28,6 +28,16 @@ type Events = {
         id: string
       }
     }
+    "app/email.daily-job-notifications": {
+      data: {
+        userId: string
+        userEmail: string
+        userName: string
+        jobPreferences: string[]
+        skills: string[]
+        resumeSummary: string | null
+      }
+    }
 }
 
 // Create a client to send and receive events

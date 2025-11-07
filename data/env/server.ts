@@ -21,6 +21,8 @@ export const env = createEnv({
     
     // Inngest Event Key (optional - only needed for sending events from server actions)
     INNGEST_EVENT_KEY: z.string().optional(),
+
+    RESEND_API_KEY: z.string().min(1)
   },
   
   emptyStringAsUndefined: true,
