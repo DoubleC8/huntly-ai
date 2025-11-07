@@ -117,6 +117,9 @@ export async function makeResumeDefault( resumeId: string ){
   try {
     await inngest.send({
       name: "app/resume.defaultChanged",
+      user: {
+        id: user.id,
+      },
       data: {
         user: {
           id: user.id,

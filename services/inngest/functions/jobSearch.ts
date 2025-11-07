@@ -6,90 +6,98 @@ import { z } from "zod";
 import { GoogleGenAI } from "@google/genai";
 
 // Tool to save job to database
-const saveJobTool = createTool({
-  name: "save-job",
-  description: "Saves a job listing to the database with match score",
-  parameters: z.object({
-    userId: z.string(),
-    sourceUrl: z.string(),
-    title: z.string(),
-    company: z.string(),
-    location: z.string(),
-    employment: z.string(),
-    remoteType: z.string(),
-    salaryMin: z.number().int().optional(),
-    salaryMax: z.number().int().optional(),
-    currency: z.string().optional(),
-    description: z.string(),
-    aiSummary: z.string().optional(),
-    skills: z.array(z.string()).optional(),
-    responsibilities: z.array(z.string()).optional(),
-    qualifications: z.array(z.string()).optional(),
-    postedAt: z.string().optional(),
-    matchScore: z.number().int().min(0).max(100),
-  }),
-  handler: async (params) => {
-    const {
+const saveJobToolSchema = z.object({
+  userId: z.string(),
+  sourceUrl: z.string(),
+  title: z.string(),
+  company: z.string(),
+  location: z.string(),
+  employment: z.string(),
+  remoteType: z.string(),
+  salaryMin: z.number().int().optional(),
+  salaryMax: z.number().int().optional(),
+  currency: z.string().optional(),
+  description: z.string(),
+  aiSummary: z.string().optional(),
+  skills: z.array(z.string()).optional(),
+  responsibilities: z.array(z.string()).optional(),
+  qualifications: z.array(z.string()).optional(),
+  postedAt: z.string().optional(),
+  matchScore: z.number().int().min(0).max(100),
+});
+
+type SaveJobParams = z.infer<typeof saveJobToolSchema>;
+
+const saveJob = async ({
+  userId,
+  sourceUrl,
+  title,
+  company,
+  location,
+  employment,
+  remoteType,
+  salaryMin,
+  salaryMax,
+  currency,
+  description,
+  aiSummary,
+  skills,
+  responsibilities,
+      qualifications,
+      postedAt,
+}: SaveJobParams) => {
+  // Check if job already exists
+  const existingJob = await prisma.job.findUnique({
+    where: {
+      userId_title_company_sourceUrl: {
+        userId,
+        title,
+        company,
+        sourceUrl,
+      },
+    },
+  });
+
+  if (existingJob) {
+    return {
+      success: false,
+      message: "Job already exists",
+      jobId: existingJob.id,
+    };
+  }
+
+  // Create the job
+  const job = await prisma.job.create({
+    data: {
       userId,
       sourceUrl,
       title,
       company,
       location,
-      employment,
-      remoteType,
-      salaryMin,
-      salaryMax,
-      currency,
+      employment: employment || "Full-time",
+      remoteType: remoteType || "On-site",
+      salaryMin: salaryMin || 0,
+      salaryMax: salaryMax || 0,
+      currency: currency || "USD",
       description,
       aiSummary,
-      skills,
-      responsibilities,
-      qualifications,
-      postedAt,
-    } = params;
+      skills: skills || [],
+      responsibilities: responsibilities || [],
+      qualifications: qualifications || [],
+      postedAt: postedAt ? new Date(postedAt) : null,
+      // Note field is left empty for user to fill in
+      note: null,
+    },
+  });
 
-    // Check if job already exists
-    const existingJob = await prisma.job.findUnique({
-      where: {
-        userId_title_company_sourceUrl: {
-          userId,
-          title,
-          company,
-          sourceUrl,
-        },
-      },
-    });
+  return { success: true, jobId: job.id, message: "Job saved successfully" };
+};
 
-    if (existingJob) {
-      return { success: false, message: "Job already exists", jobId: existingJob.id };
-    }
-
-    // Create the job
-    const job = await prisma.job.create({
-      data: {
-        userId,
-        sourceUrl,
-        title,
-        company,
-        location,
-        employment: employment || "Full-time",
-        remoteType: remoteType || "On-site",
-        salaryMin: salaryMin || 0,
-        salaryMax: salaryMax || 0,
-        currency: currency || "USD",
-        description,
-        aiSummary,
-        skills: skills || [],
-        responsibilities: responsibilities || [],
-        qualifications: qualifications || [],
-        postedAt: postedAt ? new Date(postedAt) : null,
-        // Note field is left empty for user to fill in
-        note: null,
-      },
-    });
-
-    return { success: true, jobId: job.id, message: "Job saved successfully" };
-  },
+export const saveJobTool = createTool({
+  name: "save-job",
+  description: "Saves a job listing to the database with match score",
+  parameters: saveJobToolSchema,
+  handler: async (params) => saveJob(params),
 });
 
 
@@ -148,7 +156,12 @@ export const searchJobsForUser = inngest.createFunction(
 
     // Search for jobs for each preference
     const results = [];
-    const allJobUrls: Array<{ url: string; jobTitle: string }> = [];
+    const allJobUrls: Array<{
+      url: string;
+      jobTitle: string;
+      snippet?: string | null;
+      title?: string | null;
+    }> = [];
     
     // Step 1: Search for job URLs (no nested steps here)
     for (const jobTitle of user.jobPreferences) {
@@ -283,7 +296,18 @@ export const searchJobsForUser = inngest.createFunction(
       results.push({
         jobTitle: searchResult.jobTitle,
         jobUrlsFound: searchResult.jobUrls?.length || 0,
-        message: searchResult.message || searchResult.error,
+        message:
+          typeof searchResult === "object" &&
+          searchResult !== null &&
+          "message" in searchResult
+            ? searchResult.message
+            : undefined,
+        error:
+          typeof searchResult === "object" &&
+          searchResult !== null &&
+          "error" in searchResult
+            ? searchResult.error
+            : undefined,
       });
     }
 
@@ -446,7 +470,11 @@ export const searchJobsForUser = inngest.createFunction(
 Job posting content:
 ${jobContent.textContent.substring(0, 8000)}`;
 
-                    let response;
+                    let response:
+                      | Awaited<
+                          ReturnType<typeof ai.models.generateContent>
+                        >
+                      | undefined;
                     let retries = 3;
                     let delay = 5000; // Start with 5 second delay
                     
@@ -473,6 +501,10 @@ ${jobContent.textContent.substring(0, 8000)}`;
                           throw error; // Re-throw if not 429 or no retries left
                         }
                       }
+                    }
+
+                    if (!response) {
+                      throw new Error("Failed to generate content from Gemini");
                     }
 
                     const text = response.text;
@@ -584,7 +616,7 @@ Return ONLY valid JSON: {"matchScore": 85, "reasoning": "Brief explanation"}`;
                       `Join ${jobData.company || "a company"} as a ${jobData.title || "professional"}. ${jobData.roleSummary ? jobData.roleSummary.split('.')[0] + '.' : ''}`;
                     
                     // Save the job
-                    const saveResult = await saveJobTool.handler({
+                    const saveResult = await saveJob({
                       userId: user.id,
                       sourceUrl: jobUrl,
                       title: jobData.title || "Unknown",
@@ -600,12 +632,17 @@ Return ONLY valid JSON: {"matchScore": 85, "reasoning": "Brief explanation"}`;
                       skills: jobData.skills || [],
                       responsibilities: jobData.responsibilities || [],
                       qualifications: jobData.qualifications || [],
-                      postedAt: jobData.postedAt || null,
+                      postedAt: jobData.postedAt ?? undefined,
                       matchScore,
                     });
 
                     console.log(`✅ Saved job: ${jobData.title} at ${jobData.company} (Score: ${matchScore})`);
-                    return { success: true, jobTitle: jobData.title, company: jobData.company, matchScore };
+                    return {
+                      ...saveResult,
+                      jobTitle: jobData.title,
+                      company: jobData.company,
+                      matchScore,
+                    };
                 }
               );
               

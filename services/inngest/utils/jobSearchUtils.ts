@@ -104,7 +104,9 @@ export async function searchJobUrls(
   ];
 
   // Filter to get actual job posting URLs
-  let jobUrls = jobUrlCandidates.filter((result: any) => {
+  let jobUrls: Array<{ url: string; snippet: string; title: string }> =
+    jobUrlCandidates.filter(
+      (result: { url: string; snippet: string; title: string }) => {
     const url = (result.url || "").toLowerCase();
     if (!url) return false;
 
@@ -201,7 +203,8 @@ export async function getJobContent(
         "Cache-Control": "max-age=0",
       },
       redirect: "follow",
-    });
+      }
+    );
 
     if (!response.ok) {
       if (response.status === 403 || response.status === 401) {

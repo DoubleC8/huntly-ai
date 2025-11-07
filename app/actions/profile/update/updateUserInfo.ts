@@ -37,6 +37,9 @@ export async function UpdateUserField(
           try {
             await inngest.send({
               name: "app/jobPreferences.updated",
+              user: {
+                id: user.id,
+              },
               data: {
                 user: {
                   id: user.id,
