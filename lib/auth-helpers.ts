@@ -19,41 +19,30 @@ async function ensureUserInDatabase(clerkUser: ClerkUser | null | undefined) {
     return null;
   }
 
-  // Check if user already exists
-  let user = await prisma.user.findUnique({
-    where: { email },
-  });
+  const name =
+    clerkUser.firstName && clerkUser.lastName
+      ? `${clerkUser.firstName} ${clerkUser.lastName}`
+      : clerkUser.firstName || clerkUser.lastName || clerkUser.username || null;
 
-  // If user doesn't exist, create them
-  if (!user) {
-    user = await prisma.user.create({
-      data: {
-        email,
-        name: clerkUser.firstName && clerkUser.lastName
-          ? `${clerkUser.firstName} ${clerkUser.lastName}`
-          : clerkUser.firstName || clerkUser.lastName || clerkUser.username || null,
-        image: clerkUser.imageUrl || null,
-        emailVerified: clerkUser.emailAddresses[0]?.verification?.status === "verified"
-          ? new Date()
-          : null,
-      },
-    });
-    console.log(`✅ Created new user in database: ${email}`);
-  } else {
-    // Update existing user with latest Clerk data (in case name/image changed)
-    user = await prisma.user.update({
-      where: { email },
-      data: {
-        name: clerkUser.firstName && clerkUser.lastName
-          ? `${clerkUser.firstName} ${clerkUser.lastName}`
-          : clerkUser.firstName || clerkUser.lastName || clerkUser.username || user.name,
-        image: clerkUser.imageUrl || user.image,
-        emailVerified: clerkUser.emailAddresses[0]?.verification?.status === "verified"
-          ? new Date()
-          : user.emailVerified,
-      },
-    });
-  }
+  const image = clerkUser.imageUrl || null;
+
+  const isVerified =
+    clerkUser.emailAddresses[0]?.verification?.status === "verified";
+
+  const user = await prisma.user.upsert({
+    where: { email },
+    create: {
+      email,
+      name,
+      image,
+      emailVerified: isVerified ? new Date() : null,
+    },
+    update: {
+      name: name ?? undefined,
+      image: image ?? undefined,
+      emailVerified: isVerified ? new Date() : undefined,
+    },
+  });
 
   return user;
 }
