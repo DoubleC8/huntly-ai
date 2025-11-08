@@ -32,7 +32,7 @@ export default function ShareJobButton({
     }
   };
   return (
-    <Button onClick={handleCopy} variant="outline" className="w-40">
+    <Button onClick={handleCopy} variant="outline" className="w-[180px]">
       Share <ExternalLink />
     </Button>
   );

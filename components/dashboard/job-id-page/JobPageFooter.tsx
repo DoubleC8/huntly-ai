@@ -16,23 +16,13 @@ export default function JobPageFooter({
 
   return (
     <div className="w-full flex flex-col justify-center gap-3">
-      <div className="w-full flex gap-3 mx-auto justify-center ">
-        <a
-          href={jobSourceUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="md:w-1/6
-            w-1/2"
-        >
+      <div className="w-full grid grid-cols-2 gap-3">
+        <a href={jobSourceUrl} target="_blank" rel="noopener noreferrer">
           <Button className="w-full">
             {applied ? "View Job" : "Apply Now"}
           </Button>
         </a>
-        <Link
-          href="/jobs/dashboard"
-          className="md:w-1/6 
-          w-1/2"
-        >
+        <Link href="/jobs/dashboard">
           <Button variant="outline" className="w-full">
             Back to Dashboard
           </Button>

@@ -51,23 +51,24 @@ export default function JobPageNavbar({
       </p>
 
       {/**job stage buttons */}
-      <div className="flex items-center gap-3">
-        <StarButton
-          jobTitle={jobTitle}
-          jobCompany={jobCompany}
-          jobId={jobId}
-          jobStage={jobStage}
-        />
-        <UpdateJobStageDropdown
-          jobTitle={jobTitle}
-          jobCompany={jobCompany}
-          jobId={jobId}
-          jobStage={jobStage}
-        />
-        <ShareJobButton jobSourceUrl={jobSourceUrl} />
-        <a target="_blank" href={`${jobSourceUrl}`} rel="noopener noreferrer">
-          <Button className="w-40">{applied ? "View Job" : "Apply Now"}</Button>
-        </a>
+      <div className="w-full flex gap-3 flex-col">
+        <div className="flex items-center w-full justify-between">
+          <StarButton
+            jobTitle={jobTitle}
+            jobCompany={jobCompany}
+            jobId={jobId}
+            jobStage={jobStage}
+          />
+          <UpdateJobStageDropdown
+            jobTitle={jobTitle}
+            jobCompany={jobCompany}
+            jobId={jobId}
+            jobStage={jobStage}
+          />
+        </div>{" "}
+        <div className="w-full flex justify-end">
+          <ShareJobButton jobSourceUrl={jobSourceUrl} />
+        </div>
       </div>
     </div>
   );

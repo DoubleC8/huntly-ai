@@ -70,7 +70,7 @@ export default function NoteEditorBase({
   }
 
   return !editMode ? (
-    <div className="flex flex-col gap-3">
+    <div className="grid grid-cols-1 gap-3">
       <p>{form.watch("jobNote") || "No note yet"}</p>
       <Button
         onClick={() => setEditMode(true)}
@@ -85,10 +85,7 @@ export default function NoteEditorBase({
     </div>
   ) : (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-3"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
         <FormField
           control={form.control}
           name="jobNote"
@@ -119,16 +116,8 @@ export default function NoteEditorBase({
             </FormItem>
           )}
         />
-        <div
-          className="md:flex-row
-        flex flex-col items-center justify-center gap-3"
-        >
-          <Button
-            type="submit"
-            disabled={uploading || mutation.isPending}
-            className="md:w-1/3
-            w-1/2"
-          >
+        <div className="w-full grid grid-cols-2 gap-3">
+          <Button type="submit" disabled={uploading || mutation.isPending}>
             {uploading || mutation.isPending ? (
               <LoaderCircle className="animate-spin mr-1" />
             ) : (
@@ -137,15 +126,13 @@ export default function NoteEditorBase({
             {uploading || mutation.isPending
               ? "Saving..."
               : note
-              ? "Update Note"
-              : "Add Note"}
+                ? "Update Note"
+                : "Add Note"}
           </Button>
           <Button
             type="button"
             variant="outline"
             onClick={() => setEditMode(false)}
-            className="md:w-1/3
-            w-1/2"
           >
             Cancel
           </Button>
