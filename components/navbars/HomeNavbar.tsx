@@ -6,7 +6,7 @@ import LoginButton from "./LoginButton";
 
 export default function HomeNavbar() {
   return (
-    <nav className="sticky bg-[var(--background)] flex justify-between top-0 z-50 h-14 w-full items-center px-4 border-b border-gray-200 shadow-md">
+    <nav className="sticky bg-[var(--background)] flex justify-between top-0 z-50 h-14 w-full items-center px-4 border-b shadow-md">
       {""}
 
       <Link href={"/"} className="flex items-center">
