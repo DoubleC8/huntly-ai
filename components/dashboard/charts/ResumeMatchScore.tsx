@@ -9,22 +9,34 @@ import {
 } from "@/components/ui/chart";
 
 type ResumeMatchScoreProps = {
-  matchScore?: number;
+  matchScore?: number | null;
 };
 
 export function ResumeMatchScore({ matchScore }: ResumeMatchScoreProps) {
-  const score = typeof matchScore === "number" ? matchScore : 85; // Fallback for now
+  const hasScore = typeof matchScore === "number" && !Number.isNaN(matchScore);
+  const clampedScore = hasScore
+    ? Math.min(100, Math.max(0, Math.round(matchScore!)))
+    : null;
+  const score = clampedScore ?? 0;
   const remaining = 100 - score;
 
   const fillColor =
-    score >= 80
+    clampedScore === null
+      ? "var(--muted-foreground)"
+      : score >= 80
       ? "var(--app-green)"
       : score >= 50
       ? "var(--app-yellow)"
       : "var(--app-red)";
 
   const matchMessage =
-    score >= 80 ? "Great Match" : score >= 50 ? "Decent Match" : "Needs Work";
+    clampedScore !== null
+      ? score >= 80
+        ? "Great Match"
+        : score >= 50
+        ? "Decent Match"
+        : "Needs Work"
+      : "Score Pending";
 
   const chartData = [
     {
@@ -76,7 +88,7 @@ export function ResumeMatchScore({ matchScore }: ResumeMatchScoreProps) {
                       y={viewBox.cy}
                       className="fill-foreground text-2xl font-bold"
                     >
-                      {score}%
+                      {clampedScore !== null ? `${score}%` : "--"}
                     </tspan>
                     <tspan
                       x={viewBox.cx}

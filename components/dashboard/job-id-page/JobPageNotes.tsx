@@ -14,6 +14,7 @@ export default function JobPageNotes({
         <NotebookPen className="text-[var(--app-blue)]" />
         <h1 className="font-bold text-2xl">Your Notes</h1>
       </div>
+
       <NoteEditorBase jobId={jobId} note={initialNote ?? ""} />
     </div>
   );

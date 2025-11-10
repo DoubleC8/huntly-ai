@@ -15,8 +15,11 @@ export default function JobPageFooter({
     STAGE_ORDER.indexOf(jobStage) >= STAGE_ORDER.indexOf("APPLIED");
 
   return (
-    <div className="w-full flex flex-col justify-center gap-3">
-      <div className="w-full grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-1 gap-3">
+      <div
+        className="md:w-1/2 md:mx-auto
+        w-full grid grid-cols-2 gap-3"
+      >
         <a href={jobSourceUrl} target="_blank" rel="noopener noreferrer">
           <Button className="w-full">
             {applied ? "View Job" : "Apply Now"}

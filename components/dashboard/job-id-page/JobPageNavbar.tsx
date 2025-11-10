@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import RejectedButton from "../buttons/RejectedButton";
 import ShareJobButton from "../buttons/ShareJob";
 import StarButton from "../buttons/StarButton";
@@ -20,39 +19,17 @@ export default function JobPageNavbar({
   jobStage: JobStage;
   jobSourceUrl: string;
 }) {
-  const applied =
-    jobStage === null ||
-    STAGE_ORDER.indexOf(jobStage) >= STAGE_ORDER.indexOf("APPLIED");
   return (
-    <div
-      className="md:justify-between
-      flex w-full gap-3 items-center justify-center"
-    >
-      <div>
-        <RejectedButton
-          jobTitle={jobTitle}
-          jobCompany={jobCompany}
-          jobId={jobId}
-          jobStage={jobStage}
-        />
-      </div>
-
-      <p
-        className="md:block 
-      text-muted-foreground hidden"
-      >
-        <span
-          className={
-            jobStage === JobStage.REJECTED ? "text-[var(--app-red)]" : ""
-          }
-        >
-          {STAGE_MESSAGES[jobStage]}
-        </span>
-      </p>
-
+    <div>
       {/**job stage buttons */}
       <div className="w-full flex gap-3 flex-col">
-        <div className="flex items-center w-full justify-between">
+        <div className="flex w-full items-center justify-between">
+          <RejectedButton
+            jobTitle={jobTitle}
+            jobCompany={jobCompany}
+            jobId={jobId}
+            jobStage={jobStage}
+          />
           <StarButton
             jobTitle={jobTitle}
             jobCompany={jobCompany}
@@ -65,8 +42,8 @@ export default function JobPageNavbar({
             jobId={jobId}
             jobStage={jobStage}
           />
-        </div>{" "}
-        <div className="w-full flex justify-end">
+        </div>
+        <div className="w-full flex items-center justify-end">
           <ShareJobButton jobSourceUrl={jobSourceUrl} />
         </div>
       </div>

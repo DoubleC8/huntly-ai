@@ -72,6 +72,7 @@ export default async function Page({ params }: PageProps) {
             jobLocation={job.location}
             jobEmployment={job.employment}
             jobRemoteType={job.remoteType}
+            jobMatchScore={job.matchScore}
           />
         </ErrorBoundary>
         <ErrorBoundary>

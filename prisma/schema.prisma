@@ -105,6 +105,7 @@ model Job {
   skills           String[]  @default([])
   responsibilities String[]  @default([])
   qualifications   String[]  @default([])
+  matchScore       Int?
   createdAt        DateTime  @default(now())
   postedAt         DateTime?
 

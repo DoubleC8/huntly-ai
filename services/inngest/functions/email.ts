@@ -47,6 +47,7 @@ async function saveJobsToDatabase(userId: string, jobs: JobSearchResult[]) {
           responsibilities: job.responsibilities || [],
           qualifications: job.qualifications || [],
           postedAt: job.postedAt ? new Date(job.postedAt) : null,
+          matchScore: job.matchScore,
         },
         create: {
           userId,
@@ -65,6 +66,7 @@ async function saveJobsToDatabase(userId: string, jobs: JobSearchResult[]) {
           responsibilities: job.responsibilities || [],
           qualifications: job.qualifications || [],
           postedAt: job.postedAt ? new Date(job.postedAt) : null,
+          matchScore: job.matchScore,
         },
       });
       saved += 1;

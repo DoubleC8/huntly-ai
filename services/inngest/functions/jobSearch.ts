@@ -45,6 +45,7 @@ const saveJob = async ({
   responsibilities,
       qualifications,
       postedAt,
+  matchScore,
 }: SaveJobParams) => {
   // Check if job already exists
   const existingJob = await prisma.job.findUnique({
@@ -85,6 +86,7 @@ const saveJob = async ({
       responsibilities: responsibilities || [],
       qualifications: qualifications || [],
       postedAt: postedAt ? new Date(postedAt) : null,
+      matchScore,
       // Note field is left empty for user to fill in
       note: null,
     },
