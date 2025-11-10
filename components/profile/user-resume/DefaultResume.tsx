@@ -19,11 +19,10 @@ export default function DefaultResume({ resume }: { resume: Resume }) {
       <TableHeader>
         <TableRow>
           <TableHead
-            className="
+            className="md:rounded-tl-2xl md:rounded-tr-none
           font-semibold
           bg-[var(--app-blue)]
-          rounded-tl-2xl 
-          sm:rounded-tr-none
+          rounded-t-2xl
         "
           >
             <p className="py-3 text-white">Resume</p>
@@ -33,7 +32,11 @@ export default function DefaultResume({ resume }: { resume: Resume }) {
             Target Job Title
           </TableHead>
 
-          <TableHead className="md:table-cell hidden font-semibold text-left bg-[var(--app-blue)] text-white">
+          <TableHead
+            className="md:table-cell lg:rounded-tr-none
+          rounded-tr-2xl
+          hidden font-semibold text-left bg-[var(--app-blue)] text-white"
+          >
             Link
           </TableHead>
 
