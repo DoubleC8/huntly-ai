@@ -20,12 +20,21 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { SignOutButton } from "@clerk/nextjs";
+import { useState } from "react";
 
 const NavbarBurgerButton = () => {
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () =>
+    setTimeout(() => {
+      (setOpen(false), 1000);
+    });
   return (
-    <Sheet>
-      <SheetTrigger>
-        <Menu />
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <button aria-label="Open Menu">
+          <Menu />
+        </button>
       </SheetTrigger>
       <SheetContent side="left">
         <SheetHeader className="h-full">
@@ -38,31 +47,30 @@ const NavbarBurgerButton = () => {
           >
             <div className="w-full h-full flex flex-col justify-between">
               <div className="h-3/4 flex flex-col justify-evenly">
-                <Link
-                  href={"/jobs/dashboard"}
-                  className="flex gap-1 items-center"
-                >
-                  <Briefcase size={16} />
-                  Jobs
-                </Link>
-                <Link
-                  href={"/jobs/app-tracker"}
-                  className="flex gap-1 items-center"
-                >
-                  <LayoutDashboardIcon size={16} />
-                  App Tracker
-                </Link>
-                <Link href={"/jobs/resume"} className="flex gap-1 items-center">
-                  <FileText size={16} />
-                  Resume
-                </Link>
-                <Link
-                  href={"/jobs/profile"}
-                  className="flex gap-1 items-center"
-                >
-                  <UserRoundPen size={16} />
-                  Profile
-                </Link>
+                {[
+                  { href: "/jobs/dashboard", label: "Jobs", icon: Briefcase },
+                  {
+                    href: "/jobs/app-tracker",
+                    label: "App Tracker",
+                    icon: LayoutDashboardIcon,
+                  },
+                  { href: "/jobs/resume", label: "Resume", icon: FileText },
+                  {
+                    href: "/jobs/profile",
+                    label: "Profile",
+                    icon: UserRoundPen,
+                  },
+                ].map(({ href, label, icon: Icon }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    onClick={handleClose}
+                    className="flex gap-1 items-center"
+                  >
+                    <Icon size={16} />
+                    {label}
+                  </Link>
+                ))}
               </div>
               <div className="h-1/4 flex flex-col justify-evenly border-t border-gray-200">
                 <Link
