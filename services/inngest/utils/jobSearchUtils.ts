@@ -1,6 +1,65 @@
 import { env } from "@/data/env/server";
 import { GoogleGenAI } from "@google/genai";
 
+async function generateWithRetry<T>(
+  call: (model: string) => Promise<T>,
+  {
+    models = ["gemini-2.0-flash-lite"],
+    retriesPerModel = 3,
+    initialDelayMs = 5000,
+  }: {
+    models?: string[];
+    retriesPerModel?: number;
+    initialDelayMs?: number;
+  } = {}
+): Promise<T> {
+  let lastError: unknown;
+
+  for (const model of models) {
+    let remaining = retriesPerModel;
+    let delay = initialDelayMs;
+
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      try {
+        return await call(model);
+      } catch (error: any) {
+        lastError = error;
+        const status =
+          error?.status ||
+          error?.code ||
+          error?.response?.status ||
+          error?.error?.code ||
+          error?.error?.status;
+        const is429 =
+          status === 429 ||
+          status === "429" ||
+          status === "RESOURCE_EXHAUSTED";
+
+        remaining -= 1;
+        if (!is429 || remaining <= 0) {
+          console.warn(
+            `Gemini request failed for model ${model} with status ${status}. ${is429 ? "Switching models or rethrowing." : "Rethrowing error."}`
+          );
+          break;
+        }
+
+        console.warn(
+          `Gemini rate limit hit (status: ${status}) on model ${model}. Retrying after ${delay}ms... (${remaining} retries left)`
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        delay = Math.min(delay * 2, 30000);
+      }
+    }
+  }
+
+  if (lastError) {
+    throw lastError;
+  }
+
+  throw new Error("Gemini request failed without specific error");
+}
+
 export type JobSearchResult = {
   title: string;
   company: string;
@@ -374,19 +433,38 @@ Return ONLY valid JSON: {"matchScore": 85, "reasoning": "Brief explanation"}`;
     apiKey: env.GOOGLE_GENERATIVE_AI_API_KEY,
   });
 
-  const scoreResponse = await ai.models.generateContent({
-    model: "gemini-2.0-flash-lite",
-    contents: [
-      {
-        role: "user",
-        parts: [{ text: scorePrompt }],
-      },
-    ],
-  });
-
   let matchScore = 50;
+  let scoreResponse:
+    | Awaited<ReturnType<typeof ai.models.generateContent>>
+    | null = null;
   try {
-    const scoreText = scoreResponse.text || "";
+    scoreResponse = await generateWithRetry(
+      (model) =>
+        ai.models.generateContent({
+          model,
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: scorePrompt }],
+            },
+          ],
+        }),
+      {
+        models: [
+          "gemini-2.0-flash-lite",
+          "gemini-2.5-flash-lite",
+          "gemini-2.0-flash",
+        ],
+        retriesPerModel: 3,
+        initialDelayMs: 6000,
+      }
+    );
+  } catch (error) {
+    console.error("AI match score error:", error);
+  }
+
+  try {
+    const scoreText = scoreResponse?.text || "";
     const scoreMatch = scoreText.match(/\{[\s\S]*\}/);
     if (scoreMatch) {
       const scoreData = JSON.parse(scoreMatch[0]);
@@ -491,7 +569,7 @@ export async function searchJobsForEmail(
       for (const { url, snippet, title: resultTitle } of jobUrls.slice(0, 5)) {
         // Add delay between jobs to respect rate limits
         if (allJobs.length > 0) {
-          await new Promise((resolve) => setTimeout(resolve, 2000));
+          await new Promise((resolve) => setTimeout(resolve, 4000));
         }
 
         const job = await processJobUrl(url, snippet, resultTitle, userProfile, jobTitle);
@@ -499,6 +577,8 @@ export async function searchJobsForEmail(
         if (job) {
           allJobs.push(job);
           console.log(`Successfully processed job: ${job.title} at ${job.company} (Score: ${job.matchScore})`);
+        } else {
+          console.log(`Job processing returned null for URL ${url}`);
         }
 
         // Stop if we have enough jobs

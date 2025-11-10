@@ -7,11 +7,41 @@ import {
   type UserProfile,
   type JobSearchResult,
 } from "../utils/jobSearchUtils";
+import { startOfDay } from "date-fns";
+import { JOB_PREFERENCE_LIMIT } from "@/lib/constants/profile";
 
-async function saveJobsToDatabase(userId: string, jobs: JobSearchResult[]) {
-  if (jobs.length === 0) return;
+const DAILY_JOB_LIMIT = 5;
 
-  let saved = 0;
+type SaveJobsResult = {
+  created: number;
+  updated: number;
+  skippedDueToLimit: number;
+};
+
+async function saveJobsToDatabase(
+  userId: string,
+  jobs: JobSearchResult[],
+  maxNewJobsPerDay: number = DAILY_JOB_LIMIT
+): Promise<SaveJobsResult> {
+  if (jobs.length === 0) {
+    return { created: 0, updated: 0, skippedDueToLimit: 0 };
+  }
+
+  const todayStart = startOfDay(new Date());
+
+  let createdToday = await prisma.job.count({
+    where: {
+      userId,
+      createdAt: {
+        gte: todayStart,
+      },
+    },
+  });
+
+  let created = 0;
+  let updated = 0;
+  let skippedDueToLimit = 0;
+
   for (const job of jobs) {
     try {
       const salaryMin = Number.isFinite(job.salaryMin)
@@ -25,7 +55,7 @@ async function saveJobsToDatabase(userId: string, jobs: JobSearchResult[]) {
         job.aiSummary ||
         "Job description not available.";
 
-      await prisma.job.upsert({
+      const existingJob = await prisma.job.findUnique({
         where: {
           userId_title_company_sourceUrl: {
             userId,
@@ -34,42 +64,50 @@ async function saveJobsToDatabase(userId: string, jobs: JobSearchResult[]) {
             sourceUrl: job.sourceUrl,
           },
         },
-        update: {
-          location: job.location || "Unknown",
-          employment: job.employment || "Full-time",
-          remoteType: job.remoteType || "On-site",
-          salaryMin,
-          salaryMax,
-          currency: job.currency || "USD",
-          description,
-          aiSummary: job.aiSummary,
-          skills: job.skills || [],
-          responsibilities: job.responsibilities || [],
-          qualifications: job.qualifications || [],
-          postedAt: job.postedAt ? new Date(job.postedAt) : null,
-          matchScore: job.matchScore,
-        },
-        create: {
+      });
+
+      const data = {
+        location: job.location || "Unknown",
+        employment: job.employment || "Full-time",
+        remoteType: job.remoteType || "On-site",
+        salaryMin,
+        salaryMax,
+        currency: job.currency || "USD",
+        description,
+        aiSummary: job.aiSummary,
+        skills: job.skills || [],
+        responsibilities: job.responsibilities || [],
+        qualifications: job.qualifications || [],
+        postedAt: job.postedAt ? new Date(job.postedAt) : null,
+        matchScore: job.matchScore,
+      };
+
+      if (existingJob) {
+        await prisma.job.update({
+          where: { id: existingJob.id },
+          data,
+        });
+        updated += 1;
+        continue;
+      }
+
+      if (createdToday >= maxNewJobsPerDay) {
+        skippedDueToLimit += 1;
+        continue;
+      }
+
+      await prisma.job.create({
+        data: {
           userId,
           sourceUrl: job.sourceUrl,
           title: job.title || "Unknown",
           company: job.company || "Unknown",
-          location: job.location || "Unknown",
-          employment: job.employment || "Full-time",
-          remoteType: job.remoteType || "On-site",
-          salaryMin,
-          salaryMax,
-          currency: job.currency || "USD",
-          description,
-          aiSummary: job.aiSummary,
-          skills: job.skills || [],
-          responsibilities: job.responsibilities || [],
-          qualifications: job.qualifications || [],
-          postedAt: job.postedAt ? new Date(job.postedAt) : null,
-          matchScore: job.matchScore,
+          ...data,
         },
       });
-      saved += 1;
+
+      created += 1;
+      createdToday += 1;
     } catch (error) {
       console.error(
         `Failed to save job ${job.title} at ${job.company} for user ${userId}:`,
@@ -78,7 +116,11 @@ async function saveJobsToDatabase(userId: string, jobs: JobSearchResult[]) {
     }
   }
 
-  console.log(`Saved or updated ${saved} jobs to database for user ${userId}`);
+  console.log(
+    `Daily job save summary for ${userId}: created=${created}, updated=${updated}, skippedDueToLimit=${skippedDueToLimit}`
+  );
+
+  return { created, updated, skippedDueToLimit };
 }
 
 // Main function to prepare daily job notifications
@@ -92,64 +134,177 @@ export const prepareDailyJobNotifications = inngest.createFunction(
     cron: "TZ=America/Los_Angeles 0 6 * * *", // 6am PST
   },
   async ({ step, event }) => {
-    // Get all users with notifications enabled - query UserNotificationSettings first
-    const notificationSettings = await step.run("get-users-with-notifications", async () => {
-      return await prisma.userNotificationSettings.findMany({
-        where: {
-          newJobEmailNotifications: true,
-        },
-        include: {
-          user: {
-            select: {
-              id: true,
-              email: true,
-              name: true,
-              jobPreferences: true,
-              skills: true,
-              resumes: {
-                where: { isDefault: true },
-                select: {
-                  aiSummary: true,
-                },
-                take: 1,
+    const usersWithPreferences = await step.run(
+      "get-users-with-job-preferences",
+      async () => {
+        return await prisma.user.findMany({
+          where: {
+            jobPreferences: {
+              isEmpty: false,
+            },
+          },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            jobPreferences: true,
+            skills: true,
+            resumes: {
+              where: { isDefault: true },
+              select: {
+                aiSummary: true,
+              },
+              take: 1,
+            },
+            notificationSettings: {
+              select: {
+                newJobEmailNotifications: true,
               },
             },
           },
-        },
-      });
-    });
+        });
+      }
+    );
 
-    if (notificationSettings.length === 0) {
-      console.log("No users with notifications enabled");
-      return { message: "No users with notifications enabled" };
+    if (usersWithPreferences.length === 0) {
+      console.log("No users with job preferences configured");
+      return { message: "No users with job preferences configured" };
     }
 
-    console.log(`Found ${notificationSettings.length} users with notifications enabled`);
+    console.log(
+      `Found ${usersWithPreferences.length} users with job preferences`
+    );
 
-    // Create events for each user
-    const events = notificationSettings.map((settings) => {
-      const userData = {
-        userId: settings.user.id,
-        userEmail: settings.user.email,
-        userName: settings.user.name || "User",
-        jobPreferences: settings.user.jobPreferences || [],
-        skills: settings.user.skills || [],
-        resumeSummary: settings.user.resumes[0]?.aiSummary || null,
-      };
+    const events = usersWithPreferences
+      .filter((user) => (user.jobPreferences || []).length > 0)
+      .map((user) => {
+        const limitedPreferences = (user.jobPreferences || []).slice(
+          0,
+          JOB_PREFERENCE_LIMIT
+        );
+        const userData = {
+          userId: user.id,
+          userEmail: user.email,
+          userName: user.name || "User",
+          jobPreferences: limitedPreferences,
+          skills: user.skills || [],
+          resumeSummary: user.resumes[0]?.aiSummary || null,
+          newJobEmailNotifications:
+            user.notificationSettings?.newJobEmailNotifications ?? false,
+        };
 
-      console.log(`Creating event for user: ${userData.userId} with preferences: ${userData.jobPreferences.join(", ")}`);
+        console.log(
+          `Creating job processing event for user: ${userData.userId} (preferences: ${limitedPreferences.join(", ")})`
+        );
 
-      return {
-        name: "app/email.daily-job-notifications" as const,
-        data: userData,
-      };
-    });
+        return {
+          name: "app/jobs.daily-processing" as const,
+          data: userData,
+        };
+      });
 
-    await step.sendEvent("send-notification-events", events);
+    await step.sendEvent("send-daily-job-processing-events", events);
 
     return {
-      message: `Prepared notifications for ${notificationSettings.length} users`,
-      userIds: notificationSettings.map((s) => s.user.id),
+      message: `Prepared daily job processing for ${usersWithPreferences.length} users`,
+      userIds: usersWithPreferences.map((user) => user.id),
+    };
+  }
+);
+
+export const processDailyJobNotifications = inngest.createFunction(
+  {
+    id: "process-daily-job-notifications",
+    name: "Process Daily Job Notifications",
+    throttle: {
+      limit: 3,
+      period: "1m",
+    },
+  },
+  { event: "app/jobs.daily-processing" },
+  async ({ event, step }) => {
+    const eventData = (event as any).data || event;
+    const {
+      userId,
+      userEmail,
+      userName,
+      jobPreferences = [],
+      skills = [],
+      resumeSummary,
+      newJobEmailNotifications = false,
+    } = eventData;
+
+    if (!userId) {
+      console.error("Missing userId in daily processing event:", eventData);
+      return { message: "Missing userId", eventData };
+    }
+
+    const limitedPreferences = jobPreferences.slice(0, JOB_PREFERENCE_LIMIT);
+
+    if (!limitedPreferences.length) {
+      console.log(`User ${userId} has no job preferences, skipping processing`);
+      return { message: "User has no job preferences", userId };
+    }
+
+    const userProfile: UserProfile = {
+      id: userId,
+      jobPreferences: limitedPreferences,
+      skills,
+      resumeSummary: resumeSummary || null,
+    };
+
+    const jobs = await step.run("search-and-match-jobs", async () => {
+      console.log(
+        `Starting daily job search for user ${userId} with preferences: ${limitedPreferences.join(", ")}`
+      );
+      return await searchJobsForEmail(userProfile, DAILY_JOB_LIMIT);
+    });
+
+    if (jobs.length === 0) {
+      console.log(`No jobs found for user ${userId}, skipping email dispatch`);
+      return {
+        message: "No jobs found for user",
+        userId,
+        jobPreferences: limitedPreferences,
+      };
+    }
+
+    const saveResult = await step.run("save-jobs-to-database", async () => {
+      return await saveJobsToDatabase(userId, jobs, DAILY_JOB_LIMIT);
+    });
+
+    if (newJobEmailNotifications) {
+      await step.sendEvent("queue-email-notification", {
+        name: "app/email.daily-job-notifications" as const,
+        data: {
+          userId,
+          userEmail,
+          userName: userName || "User",
+          jobPreferences: limitedPreferences,
+          skills,
+          resumeSummary: resumeSummary || null,
+          jobs,
+          jobsAlreadyPersisted: true,
+        },
+      });
+
+      console.log(
+        `Queued daily job email for user ${userId} with ${jobs.length} jobs`
+      );
+    } else {
+      console.log(
+        `User ${userId} has email notifications disabled; jobs saved without email`
+      );
+    }
+
+    return {
+      message: "Processed daily job search for user",
+      userId,
+      jobsFound: jobs.length,
+      jobsCreated: saveResult.created,
+      jobsUpdated: saveResult.updated,
+      jobsSkippedDueToLimit: saveResult.skippedDueToLimit,
+      emailQueued: newJobEmailNotifications && jobs.length > 0,
     };
   }
 );
@@ -168,11 +323,22 @@ export const sendDailyJobNotificationEmail = inngest.createFunction(
   async ({ event, step }) => {
     // Access event data - handle both direct data and nested data structures
     const eventData = (event as any).data || event;
-    const { userId, userEmail, userName, jobPreferences, skills, resumeSummary } = eventData;
+    const {
+      userId,
+      userEmail,
+      userName,
+      jobPreferences,
+      skills,
+      resumeSummary,
+      jobs: precomputedJobs,
+      jobsAlreadyPersisted = false,
+    } = eventData;
 
     console.log(`Processing job notifications for user: ${userId} (${userEmail})`);
     console.log(`Event data:`, JSON.stringify(eventData, null, 2));
-    console.log(`User job preferences: ${JSON.stringify(jobPreferences)}`);
+    console.log(
+      `User job preferences: ${JSON.stringify(limitedPreferences)}`
+    );
     console.log(`User skills: ${JSON.stringify(skills)}`);
 
     // Validate required data
@@ -181,26 +347,43 @@ export const sendDailyJobNotificationEmail = inngest.createFunction(
       return { message: "Missing required user data", eventData };
     }
 
-    if (!jobPreferences || jobPreferences.length === 0) {
+    const limitedPreferences = (jobPreferences || []).slice(
+      0,
+      JOB_PREFERENCE_LIMIT
+    );
+
+    if (!limitedPreferences.length) {
       console.log(`User ${userId} has no job preferences, skipping email`);
       return { message: "User has no job preferences", userId };
     }
 
-    // Create user profile for job search
-    const userProfile: UserProfile = {
-      id: userId,
-      jobPreferences: jobPreferences || [],
-      skills: skills || [],
-      resumeSummary: resumeSummary || null,
-    };
+    let jobs: JobSearchResult[] = Array.isArray(precomputedJobs)
+      ? precomputedJobs
+      : [];
 
-    // Search and match jobs for this user
-    const jobs = await step.run("search-and-match-jobs", async () => {
-      console.log(`Starting job search for user ${userId} with preferences: ${userProfile.jobPreferences.join(", ")}`);
-      const result = await searchJobsForEmail(userProfile, 5);
-      console.log(`searchJobsForEmail returned ${result.length} jobs`);
-      return result;
-    });
+    if (jobs.length === 0) {
+      // Create user profile for job search
+      const userProfile: UserProfile = {
+        id: userId,
+        jobPreferences: limitedPreferences,
+        skills: skills || [],
+        resumeSummary: resumeSummary || null,
+      };
+
+      // Search and match jobs for this user if not provided
+      jobs = await step.run("search-and-match-jobs", async () => {
+        console.log(
+          `Starting job search for user ${userId} with preferences: ${userProfile.jobPreferences.join(", ")}`
+        );
+        const result = await searchJobsForEmail(userProfile, DAILY_JOB_LIMIT);
+        console.log(`searchJobsForEmail returned ${result.length} jobs`);
+        return result;
+      });
+    } else {
+      console.log(
+        `Using ${jobs.length} precomputed jobs for user ${userId} (already persisted: ${jobsAlreadyPersisted})`
+      );
+    }
 
     console.log(`Found ${jobs.length} jobs for user ${userId}`);
 
@@ -209,9 +392,15 @@ export const sendDailyJobNotificationEmail = inngest.createFunction(
       return { message: "No jobs found for user", userId, jobPreferences };
     }
 
-    await step.run("save-jobs-to-database", async () => {
-      await saveJobsToDatabase(userId, jobs);
-    });
+    if (!jobsAlreadyPersisted) {
+      await step.run("save-jobs-to-database", async () => {
+        await saveJobsToDatabase(userId, jobs, DAILY_JOB_LIMIT);
+      });
+    } else {
+      console.log(
+        `Skipping database persistence for user ${userId} because jobs are already saved`
+      );
+    }
 
     // Send email
     await step.run("send-email", async () => {

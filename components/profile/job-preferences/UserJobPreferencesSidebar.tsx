@@ -28,8 +28,8 @@ import { useProfileMutations } from "@/lib/hooks/profile/useProfileMutations";
 import { profileToasts } from "@/lib/utils/toast";
 import { normalizeEntry } from "@/lib/utils";
 import { useJobSearch } from "@/lib/hooks/jobs/useJobSearch";
+import { JOB_PREFERENCE_LIMIT } from "@/lib/constants/profile";
 
-const MAX_JOB_PREFERENCES = 5;
 const RATE_LIMIT_DURATION_MS = 10_000;
 const RATE_LIMIT_SECONDS = Math.ceil(RATE_LIMIT_DURATION_MS / 1000);
 const JOB_SEARCH_POLL_INTERVAL_MS = 4_000;
@@ -110,7 +110,7 @@ export default function UserJobPreferencesSidebar({
   );
 
   const remainingSlots = useMemo(
-    () => Math.max(0, MAX_JOB_PREFERENCES - normalizedPreferences.size),
+    () => Math.max(0, JOB_PREFERENCE_LIMIT - normalizedPreferences.size),
     [normalizedPreferences]
   );
 
@@ -297,7 +297,7 @@ export default function UserJobPreferencesSidebar({
                       </FormControl>
                       <FormDescription>
                         Add job preferences to improve your Huntly Ai
-                        experience. You can save up to {MAX_JOB_PREFERENCES}{" "}
+                        experience. You can save up to {JOB_PREFERENCE_LIMIT}{" "}
                         preferences.
                         {remainingSlots === 0
                           ? " You've reached the limit."

@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { prisma } from "@/lib/prisma";
+import { JOB_PREFERENCE_LIMIT } from "./constants/profile";
 import parsePhoneNumberFromString from "libphonenumber-js";
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
@@ -49,6 +50,9 @@ export async function updateUserArrayEntry(
       const normalized = inputValues.map(normalizeEntry);
 
       updatedValues = Array.from(new Set([...currentValues, ...normalized]));
+      if (field === "jobPreferences") {
+        updatedValues = updatedValues.slice(0, JOB_PREFERENCE_LIMIT);
+      }
       break;
     }
     case "remove": {

@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import { JobStage } from "@/app/generated/prisma";
 import { STAGE_LABELS } from "@/lib/config/jobStage";
 import { formatEntry, formatResumeTitle, formatTimestamp } from "../utils";
+import { JOB_PREFERENCE_LIMIT } from "../constants/profile";
 
 type JobCtx = { title: string, company: string };
 
@@ -133,7 +134,7 @@ export const profileToasts = {
 
   jobPreferenceLimitReached: () =>
     toast.info("Job preference limit reached", {
-      description: "You can save up to 5 job preferences.",
+      description: `You can save up to ${JOB_PREFERENCE_LIMIT} job preferences.`,
     }),
 
   jobPreferenceRateLimited: (seconds: number) =>

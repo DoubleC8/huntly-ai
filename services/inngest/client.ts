@@ -1,5 +1,6 @@
 import { DeletedObjectJSON, UserJSON } from "@clerk/nextjs/server";
 import { EventSchemas, Inngest } from "inngest";
+import type { JobSearchResult } from "./utils/jobSearchUtils";
 
 type ClerkWebhookData<T> = {
   data: {
@@ -36,6 +37,19 @@ type Events = {
         jobPreferences: string[]
         skills: string[]
         resumeSummary: string | null
+        jobs?: JobSearchResult[]
+        jobsAlreadyPersisted?: boolean
+      }
+    }
+    "app/jobs.daily-processing": {
+      data: {
+        userId: string
+        userEmail: string
+        userName: string
+        jobPreferences: string[]
+        skills: string[]
+        resumeSummary: string | null
+        newJobEmailNotifications: boolean
       }
     }
 }

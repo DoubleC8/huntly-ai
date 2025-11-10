@@ -4,6 +4,67 @@ import { env } from "@/data/env/server";
 import { createTool } from "@inngest/agent-kit";
 import { z } from "zod";
 import { GoogleGenAI } from "@google/genai";
+import { searchJobUrls } from "../utils/jobSearchUtils";
+import { JOB_PREFERENCE_LIMIT } from "@/lib/constants/profile";
+
+async function generateWithRetry<T>(
+  call: (model: string) => Promise<T>,
+  {
+    models = ["gemini-2.0-flash-lite"],
+    retriesPerModel = 3,
+    initialDelayMs = 5000,
+  }: {
+    models?: string[];
+    retriesPerModel?: number;
+    initialDelayMs?: number;
+  } = {}
+): Promise<T> {
+  let lastError: unknown;
+
+  for (const model of models) {
+    let remaining = retriesPerModel;
+    let delay = initialDelayMs;
+
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      try {
+        return await call(model);
+      } catch (error: any) {
+        lastError = error;
+        const status =
+          error?.status ||
+          error?.code ||
+          error?.response?.status ||
+          error?.error?.code ||
+          error?.error?.status;
+        const is429 =
+          status === 429 ||
+          status === "429" ||
+          status === "RESOURCE_EXHAUSTED";
+
+        remaining -= 1;
+        if (!is429 || remaining <= 0) {
+          console.warn(
+            `Gemini request failed for model ${model} with status ${status}. ${is429 ? "Switching models or rethrowing." : "Rethrowing error."}`
+          );
+          break;
+        }
+
+        console.warn(
+          `Gemini rate limit hit (status: ${status}) on model ${model}. Retrying after ${delay}ms... (${remaining} retries left)`
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        delay = Math.min(delay * 2, 30000);
+      }
+    }
+  }
+
+  if (lastError) {
+    throw lastError;
+  }
+
+  throw new Error("Gemini request failed without specific error");
+}
 
 // Tool to save job to database
 const saveJobToolSchema = z.object({
@@ -108,6 +169,11 @@ export const searchJobsForUser = inngest.createFunction(
   {
     id: "search-jobs-for-user",
     name: "Search Jobs for User",
+    throttle: {
+      limit: 2,
+      period: "1m",
+    },
+    concurrency: 1,
   },
   {
     event: "app/jobPreferences.updated",
@@ -166,131 +232,52 @@ export const searchJobsForUser = inngest.createFunction(
     }> = [];
     
     // Step 1: Search for job URLs (no nested steps here)
-    for (const jobTitle of user.jobPreferences) {
-      const searchResult = await step.run(`search-jobs-${jobTitle}`, async () => {
-        try {
-          // Use Serper API to search for jobs on US-based sites
-          // Search for individual job postings, not job board pages
-          const searchQuery = `"${jobTitle}" job site:linkedin.com/jobs/view OR site:indeed.com/viewjob OR site:glassdoor.com/Job OR site:monster.com/jobs`;
-          
-          console.log(`Searching for jobs with query: ${searchQuery}`);
-          
-          const searchResponse = await fetch("https://google.serper.dev/search", {
-            method: "POST",
-            headers: {
-              "X-API-KEY": env.SERPER_API_KEY,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              q: searchQuery,
-              num: 10, // Get more results to filter from
-              gl: "us", // US-based results
-            }),
-          });
+    for (const jobTitle of user.jobPreferences.slice(0, JOB_PREFERENCE_LIMIT)) {
+      const searchResult = await step.run(
+        `search-jobs-${jobTitle}`,
+        async () => {
+          try {
+            const jobUrls = await searchJobUrls(jobTitle, 10);
 
-          if (!searchResponse.ok) {
-            const errorText = await searchResponse.text();
-            throw new Error(`Serper API error: ${searchResponse.statusText} - ${errorText}`);
+            if (jobUrls.length === 0) {
+              console.log(
+                `No valid job URLs found for "${jobTitle}" after searchJobUrls`
+              );
+              return {
+                jobTitle,
+                jobUrls: [],
+                message: "No valid job URLs found",
+              };
+            }
+
+            return {
+              jobTitle,
+              jobUrls: jobUrls.slice(0, 5),
+            };
+          } catch (error) {
+            console.error(
+              `Error searching for jobs with title "${jobTitle}":`,
+              error
+            );
+            return { jobTitle, jobUrls: [], error: String(error) };
           }
-
-          const searchData = await searchResponse.json();
-          const organicResults = searchData.organic || [];
-          
-          console.log(`Found ${organicResults.length} search results for "${jobTitle}"`);
-          console.log(`Sample result:`, JSON.stringify(organicResults[0], null, 2));
-
-          // Filter to get actual job posting URLs (not job board pages)
-          // Look for specific patterns that indicate individual job postings
-          // Also extract available data from snippets
-          const jobUrls = organicResults
-            .map((result: any) => ({
-              ...result,
-              url: result.link,
-              snippet: result.snippet || "",
-              title: result.title || "",
-            }))
-            .filter((result: any) => {
-              const url = result.link?.toLowerCase() || "";
-              
-              // Must be US-based sites (exclude .ca, .uk, etc. TLDs and country subdomains)
-              // Exclude country-specific subdomains like ca.indeed.com, uk.linkedin.com, etc.
-              if (
-                url.includes(".ca/") || 
-                url.includes(".uk/") || 
-                url.includes(".au/") ||
-                url.includes("ca.indeed.com") ||
-                url.includes("uk.indeed.com") ||
-                url.includes("au.indeed.com") ||
-                url.includes("ca.linkedin.com") ||
-                url.includes("uk.linkedin.com") ||
-                url.includes("au.linkedin.com") ||
-                (!url.includes(".com") && !url.includes("linkedin.com") && !url.includes("indeed.com") && !url.includes("glassdoor.com") && !url.includes("monster.com"))
-              ) {
-                return false;
-              }
-              
-              // LinkedIn: Must have /jobs/view/ pattern (individual job posting)
-              if (url.includes("linkedin.com")) {
-                return url.includes("/jobs/view/") && !url.includes("/search") && !url.includes("/browse");
-              }
-              
-              // Indeed: Must have /viewjob pattern (individual job posting)
-              if (url.includes("indeed.com")) {
-                return url.includes("/viewjob") && !url.includes("/q-") && !url.includes("/jobs.html");
-              }
-              
-              // Glassdoor: Must have /Job/ pattern (individual job posting)
-              if (url.includes("glassdoor.com")) {
-                return url.includes("/Job/") && !url.includes("/BrowseJobs") && !url.includes("/Jobs/");
-              }
-              
-              // Monster: Must have /jobs/ pattern (individual job posting)
-              if (url.includes("monster.com")) {
-                return url.includes("/jobs/") && !url.includes("/search") && !url.includes("/browse");
-              }
-              
-              // Exclude common job board patterns
-              const excludedPatterns = [
-                "/q-",
-                "/jobs.html",
-                "/search",
-                "/browse",
-                "/jobs/jobs",
-                "?q=",
-                "&q=",
-                "/jobs?",
-              ];
-              
-              if (excludedPatterns.some(pattern => url.includes(pattern))) {
-                return false;
-              }
-              
-              return false; // Default: exclude if doesn't match known patterns
-            })
-            .slice(0, 3); // Process up to 3 jobs per preference
-
-          console.log(`Filtered to ${jobUrls.length} job posting URLs for "${jobTitle}"`);
-
-          if (jobUrls.length === 0) {
-            console.log(`No valid job URLs found for "${jobTitle}". Original results:`, organicResults.map((r: any) => r.link));
-            return { jobTitle, jobUrls: [], message: "No valid job URLs found" };
-          }
-
-          return { jobTitle, jobUrls };
-        } catch (error) {
-          console.error(`Error searching for jobs with title "${jobTitle}":`, error);
-          return { jobTitle, jobUrls: [], error: String(error) };
         }
-      });
+      );
       
       // Collect all job URLs to process with their snippet data
       if (searchResult?.jobUrls) {
         searchResult.jobUrls.forEach((jobData: any) => {
-          allJobUrls.push({ 
-            url: typeof jobData === 'string' ? jobData : jobData.url || jobData.link,
+          allJobUrls.push({
+            url: typeof jobData === "string" ? jobData : jobData.url,
             jobTitle: searchResult.jobTitle,
-            snippet: typeof jobData === 'string' ? null : (jobData.snippet || ""),
-            title: typeof jobData === 'string' ? null : (jobData.title || ""),
+            snippet:
+              typeof jobData === "string"
+                ? null
+                : (jobData.snippet || ""),
+            title:
+              typeof jobData === "string"
+                ? null
+                : (jobData.title || ""),
           });
         });
       }
@@ -444,8 +431,8 @@ export const searchJobsForUser = inngest.createFunction(
               }
               
               // Add delay before extraction to respect rate limits
-              await new Promise(resolve => setTimeout(resolve, 2500));
-              
+              await new Promise((resolve) => setTimeout(resolve, 4000));
+
               const ai = new GoogleGenAI({
                 apiKey: env.GOOGLE_GENERATIVE_AI_API_KEY,
               });
@@ -472,55 +459,40 @@ export const searchJobsForUser = inngest.createFunction(
 Job posting content:
 ${jobContent.textContent.substring(0, 8000)}`;
 
-                    let response:
-                      | Awaited<
-                          ReturnType<typeof ai.models.generateContent>
-                        >
-                      | undefined;
-                    let retries = 3;
-                    let delay = 5000; // Start with 5 second delay
-                    
-                    while (retries > 0) {
-                      try {
-                        response = await ai.models.generateContent({
-                          model: "gemini-2.0-flash-lite",
-                          contents: [
-                            {
-                              role: "user",
-                              parts: [{ text: prompt }],
-                            },
-                          ],
-                        });
-                        break; // Success, exit retry loop
-                      } catch (error: any) {
-                        retries--;
-                        if (error.status === 429 && retries > 0) {
-                          // Rate limited - wait longer and retry
-                          console.warn(`Rate limited (429), waiting ${delay}ms before retry (${retries} retries left)`);
-                          await new Promise(resolve => setTimeout(resolve, delay));
-                          delay *= 2; // Exponential backoff
-                        } else {
-                          throw error; // Re-throw if not 429 or no retries left
-                        }
-                      }
-                    }
-
-                    if (!response) {
-                      throw new Error("Failed to generate content from Gemini");
-                    }
-
-                    const text = response.text;
-                    if (!text) {
-                      throw new Error("No text content in Gemini response");
-                    }
-
-                    return { text };
-                  } catch (error) {
-                    console.error("AI extraction error:", error);
-                    throw error;
-                  }
+              const response = await generateWithRetry(
+                (model) =>
+                  ai.models.generateContent({
+                    model,
+                    contents: [
+                      {
+                        role: "user",
+                        parts: [{ text: prompt }],
+                      },
+                    ],
+                  }),
+                {
+                  models: [
+                    "gemini-2.0-flash-lite",
+                    "gemini-2.5-flash-lite",
+                    "gemini-2.0-flash",
+                  ],
+                  retriesPerModel: 3,
+                  initialDelayMs: 6000,
                 }
               );
+
+              const text = response?.text;
+              if (!text) {
+                throw new Error("No text content in Gemini response");
+              }
+
+              return { text };
+            } catch (error) {
+              console.error("AI extraction error:", error);
+              throw error;
+            }
+          }
+        );
 
         // Parse the extracted job data
         let jobData: any;
@@ -540,7 +512,7 @@ ${jobContent.textContent.substring(0, 8000)}`;
         // Step 3: Calculate match score and save job (top-level step, not nested)
         // Add a small delay to respect rate limits (30 RPM for flash-lite = 1 request every 2 seconds)
         if (jobsProcessed > 1) {
-          await new Promise(resolve => setTimeout(resolve, 2500)); // 2.5 second delay between requests
+          await new Promise(resolve => setTimeout(resolve, 4000)); // 4 second delay between requests
         }
         
         const jobResult = await step.run(
@@ -576,29 +548,51 @@ Return ONLY valid JSON: {"matchScore": 85, "reasoning": "Brief explanation"}`;
                       apiKey: env.GOOGLE_GENERATIVE_AI_API_KEY,
                     });
                     
-                    const scoreResponse = await ai.models.generateContent({
-                      model: "gemini-2.0-flash-lite",
-                      contents: [
-                        {
-                          role: "user",
-                          parts: [{ text: scorePrompt }],
-                        },
-                      ],
-                    });
-                    
                     let matchScore = 50;
                     let reasoning = "";
+            let scoreResponse: Awaited<
+              ReturnType<typeof ai.models.generateContent>
+            > | null = null;
+
+            try {
+              scoreResponse = await generateWithRetry(
+                (model) =>
+                  ai.models.generateContent({
+                    model,
+                    contents: [
+                      {
+                        role: "user",
+                        parts: [{ text: scorePrompt }],
+                      },
+                    ],
+                  }),
+                {
+                  models: [
+                    "gemini-2.0-flash-lite",
+                    "gemini-2.5-flash-lite",
+                    "gemini-2.0-flash",
+                  ],
+                  retriesPerModel: 3,
+                  initialDelayMs: 6000,
+                }
+              );
+            } catch (error) {
+              console.error("AI match score error:", error);
+              reasoning =
+                "Match score defaulted due to AI rate limiting or unavailable response.";
+            }
                     try {
-                      const scoreText = scoreResponse.text || "";
-                      const scoreMatch = scoreText.match(/\{[\s\S]*\}/);
-                      if (scoreMatch) {
-                        const scoreData = JSON.parse(scoreMatch[0]);
-                        matchScore = scoreData.matchScore || 50;
-                        reasoning = scoreData.reasoning || "";
-                      }
-                    } catch (error) {
-                      console.error("Failed to parse match score:", error);
-                    }
+              const scoreText = scoreResponse?.text || "";
+              const scoreMatch = scoreText.match(/\{[\s\S]*\}/);
+              if (scoreMatch) {
+                const scoreData = JSON.parse(scoreMatch[0]);
+                matchScore = scoreData.matchScore || matchScore;
+                reasoning = scoreData.reasoning || reasoning;
+              }
+            } catch (error) {
+              console.error("Failed to parse match score:", error);
+              reasoning = reasoning || "Failed to parse match score.";
+            }
                     
                     // Create AI summary in the format requested
                     let aiSummary = "";
@@ -644,6 +638,7 @@ Return ONLY valid JSON: {"matchScore": 85, "reasoning": "Brief explanation"}`;
                       jobTitle: jobData.title,
                       company: jobData.company,
                       matchScore,
+                      matchReasoning: reasoning,
                     };
                 }
               );
