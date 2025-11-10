@@ -334,6 +334,11 @@ export const sendDailyJobNotificationEmail = inngest.createFunction(
       jobsAlreadyPersisted = false,
     } = eventData;
 
+    const limitedPreferences = (jobPreferences || []).slice(
+      0,
+      JOB_PREFERENCE_LIMIT
+    );
+
     console.log(`Processing job notifications for user: ${userId} (${userEmail})`);
     console.log(`Event data:`, JSON.stringify(eventData, null, 2));
     console.log(
@@ -346,11 +351,6 @@ export const sendDailyJobNotificationEmail = inngest.createFunction(
       console.error("Missing required user data in event:", eventData);
       return { message: "Missing required user data", eventData };
     }
-
-    const limitedPreferences = (jobPreferences || []).slice(
-      0,
-      JOB_PREFERENCE_LIMIT
-    );
 
     if (!limitedPreferences.length) {
       console.log(`User ${userId} has no job preferences, skipping email`);

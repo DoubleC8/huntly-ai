@@ -4,8 +4,6 @@ import StarButton from "../buttons/StarButton";
 import { JobStage } from "@/app/generated/prisma";
 
 import UpdateJobStageDropdown from "../buttons/UpdateJobStageDropdown";
-import { STAGE_MESSAGES, STAGE_ORDER } from "@/lib/config/jobStage";
-
 export default function JobPageNavbar({
   jobTitle,
   jobCompany,

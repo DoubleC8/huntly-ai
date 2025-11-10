@@ -25,10 +25,7 @@ import { useState } from "react";
 const NavbarBurgerButton = () => {
   const [open, setOpen] = useState(false);
 
-  const handleClose = () =>
-    setTimeout(() => {
-      (setOpen(false), 1000);
-    });
+  const handleClose = () => setTimeout(() => setOpen(false), 1000);
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
