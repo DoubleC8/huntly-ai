@@ -11,10 +11,45 @@ function verifyWebhook({
   raw,
   headers,
 }: {
-  raw: string
-  headers: Record<string, string>
+  raw?: string
+  headers?: Record<string, string | string[] | undefined>
 }) {
-  return new Webhook(env.CLERK_WEBHOOK_SECRET).verify(raw, headers)
+  if (!raw || !headers) {
+    throw new NonRetriableError("Missing webhook payload")
+  }
+
+  const normalizedHeaders = Object.entries(headers).reduce<Record<string, string>>(
+    (acc, [key, value]) => {
+      if (value == null) {
+        return acc
+      }
+
+      acc[key.toLowerCase()] = Array.isArray(value) ? value.join(",") : value
+      return acc
+    },
+    {}
+  )
+
+  const decodedRaw = decodeRawBody(raw)
+
+  return new Webhook(env.CLERK_WEBHOOK_SECRET).verify(decodedRaw, normalizedHeaders)
+}
+
+function decodeRawBody(raw: string) {
+  try {
+    const decoded = Buffer.from(raw, "base64").toString("utf8")
+    if (decoded.trim().length > 0 && isProbablyJson(decoded)) {
+      return decoded
+    }
+  } catch {
+    // fall through to return raw
+  }
+  return raw
+}
+
+function isProbablyJson(value: string) {
+  const firstChar = value.trim().at(0)
+  return firstChar === "{" || firstChar === "["
 }
 
 export const clerkCreateUser = inngest.createFunction({ id: 'clerk/create-db-user', 
