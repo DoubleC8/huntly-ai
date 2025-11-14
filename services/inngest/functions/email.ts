@@ -142,6 +142,20 @@ export const prepareDailyJobNotifications = inngest.createFunction(
             jobPreferences: {
               isEmpty: false,
             },
+            OR: [
+              {
+                skills: {
+                  isEmpty: false,
+                },
+              },
+              {
+                resumes: {
+                  some: {
+                    isDefault: true,
+                  },
+                },
+              },
+            ],
           },
           select: {
             id: true,

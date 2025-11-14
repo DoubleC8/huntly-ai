@@ -1,6 +1,200 @@
 import { env } from "@/data/env/server";
 import { GoogleGenAI } from "@google/genai";
 
+const US_STATE_ABBREVIATIONS = new Set([
+  "AL",
+  "AK",
+  "AZ",
+  "AR",
+  "CA",
+  "CO",
+  "CT",
+  "DE",
+  "FL",
+  "GA",
+  "HI",
+  "ID",
+  "IL",
+  "IN",
+  "IA",
+  "KS",
+  "KY",
+  "LA",
+  "ME",
+  "MD",
+  "MA",
+  "MI",
+  "MN",
+  "MS",
+  "MO",
+  "MT",
+  "NE",
+  "NV",
+  "NH",
+  "NJ",
+  "NM",
+  "NY",
+  "NC",
+  "ND",
+  "OH",
+  "OK",
+  "OR",
+  "PA",
+  "RI",
+  "SC",
+  "SD",
+  "TN",
+  "TX",
+  "UT",
+  "VT",
+  "VA",
+  "WA",
+  "WV",
+  "WI",
+  "WY",
+  "DC",
+]);
+
+const US_STATE_NAMES = [
+  "alabama",
+  "alaska",
+  "arizona",
+  "arkansas",
+  "california",
+  "colorado",
+  "connecticut",
+  "delaware",
+  "florida",
+  "georgia",
+  "hawaii",
+  "idaho",
+  "illinois",
+  "indiana",
+  "iowa",
+  "kansas",
+  "kentucky",
+  "louisiana",
+  "maine",
+  "maryland",
+  "massachusetts",
+  "michigan",
+  "minnesota",
+  "mississippi",
+  "missouri",
+  "montana",
+  "nebraska",
+  "nevada",
+  "new hampshire",
+  "new jersey",
+  "new mexico",
+  "new york",
+  "north carolina",
+  "north dakota",
+  "ohio",
+  "oklahoma",
+  "oregon",
+  "pennsylvania",
+  "rhode island",
+  "south carolina",
+  "south dakota",
+  "tennessee",
+  "texas",
+  "utah",
+  "vermont",
+  "virginia",
+  "washington",
+  "west virginia",
+  "wisconsin",
+  "wyoming",
+  "district of columbia",
+];
+
+const NON_US_KEYWORDS = [
+  "canada",
+  "canadian",
+  "ontario",
+  "british columbia",
+  "manitoba",
+  "saskatchewan",
+  "alberta",
+  "quebec",
+  "toronto",
+  "vancouver",
+  "montreal",
+  "ottawa",
+  "calgary",
+  "edmonton",
+  "winnipeg",
+  "hamilton",
+  "mississauga",
+  "brampton",
+  "surrey",
+  "kelowna",
+  "victoria bc",
+  "uk",
+  "united kingdom",
+  "england",
+  "london",
+  "australia",
+  "sydney",
+  "melbourne",
+  "india",
+  "europe",
+];
+
+export function isUSLocation(location?: string | null): boolean {
+  if (!location) {
+    // When the source does not provide a location we assume it's safe to include
+    // so that remote postings without explicit countries still surface.
+    return true;
+  }
+
+  const normalized = location.toLowerCase().trim();
+  if (!normalized) {
+    return true;
+  }
+
+  if (NON_US_KEYWORDS.some((keyword) => normalized.includes(keyword))) {
+    return false;
+  }
+
+  if (
+    normalized.includes("united states") ||
+    normalized.includes("u.s.") ||
+    normalized.includes("u.s.a") ||
+    normalized.includes("usa") ||
+    normalized.includes("us ") ||
+    normalized.endsWith(" us")
+  ) {
+    return true;
+  }
+
+  if (normalized.includes("remote")) {
+    // Allow remote jobs unless they explicitly mention a non-US country
+    return !NON_US_KEYWORDS.some((keyword) =>
+      normalized.includes(keyword)
+    );
+  }
+
+  const tokens = normalized
+    .split(/[,/|-]/)
+    .map((token) => token.trim())
+    .filter(Boolean);
+
+  for (const token of tokens) {
+    if (US_STATE_NAMES.includes(token)) {
+      return true;
+    }
+
+    const upperToken = token.toUpperCase();
+    if (US_STATE_ABBREVIATIONS.has(upperToken)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 async function generateWithRetry<T>(
   call: (model: string) => Promise<T>,
   {
@@ -493,6 +687,13 @@ export async function processJobUrl(
 
     // Extract job data
     const jobData = await extractJobData(jobContent, jobTitle || resultTitle);
+
+    if (!isUSLocation(jobData.location)) {
+      console.log(
+        `Skipping non-US job ${jobData.title || "Unknown"} at ${jobData.company || "Unknown"} (${jobData.location})`
+      );
+      return null;
+    }
 
     // Calculate match score
     const matchScore = await calculateMatchScore(jobData, userProfile);

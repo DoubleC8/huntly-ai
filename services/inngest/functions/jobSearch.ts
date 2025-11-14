@@ -4,7 +4,7 @@ import { env } from "@/data/env/server";
 import { createTool } from "@inngest/agent-kit";
 import { z } from "zod";
 import { GoogleGenAI } from "@google/genai";
-import { searchJobUrls } from "../utils/jobSearchUtils";
+import { isUSLocation, searchJobUrls } from "../utils/jobSearchUtils";
 import { JOB_PREFERENCE_LIMIT } from "@/lib/constants/profile";
 
 async function generateWithRetry<T>(
@@ -507,6 +507,13 @@ ${jobContent.textContent.substring(0, 8000)}`;
           console.error(`Failed to parse job data from ${jobUrl}:`, error);
           errors.push(`Failed to parse job data from ${jobUrl}`);
           continue; // Skip to next job
+        }
+
+        if (!isUSLocation(jobData.location)) {
+          console.log(
+            `Skipping non-US job ${jobData.title || "Unknown"} at ${jobData.company || "Unknown"} (${jobData.location})`
+          );
+          continue;
         }
 
         // Step 3: Calculate match score and save job (top-level step, not nested)
