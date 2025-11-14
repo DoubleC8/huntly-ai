@@ -142,6 +142,83 @@ const NON_US_KEYWORDS = [
   "europe",
 ];
 
+const JOB_BOARD_EXCLUSION_PATTERNS = [
+  /\/jobs\/?$/i,
+  /\/careers\/?$/i,
+  /\/openings\/?$/i,
+  /\/opportunities\/?$/i,
+  /\/join-?us\/?$/i,
+  /\/job-?listings?\/?$/i,
+  /\/jobboard\/?$/i,
+  /\/job-board\/?$/i,
+  /\/career-portal\/?$/i,
+  /\/all-jobs\/?$/i,
+  /\/search\/jobs?/i,
+  /\/jobs\/search/i,
+  /\/talent\/?$/i,
+  /\/teams\/?$/i,
+  /\/departments\/?$/i,
+  /\/role\/?$/i,
+  /\/positions\/?$/i,
+  /\/vacancies\/?$/i,
+];
+
+const JOB_POSTING_PATTERNS: Array<{ domain: RegExp; path: RegExp }> = [
+  { domain: /linkedin\.com/, path: /\/jobs\/view\/\d+/ },
+  { domain: /indeed\.com/, path: /\/viewjob/ },
+  { domain: /glassdoor\.com/, path: /\/job\/.*-jk[=|-]\w+/ },
+  { domain: /monster\.com/, path: /\/jobs\/[^\/]+\/\d+/ },
+  { domain: /jobs\.lever\.co/, path: /jobs\.lever\.co\/[^\/]+\/[^\/?#]+/ },
+  { domain: /boards\.greenhouse\.io/, path: /\/jobs\/\d+/ },
+  { domain: /greenhouse\.io/, path: /\/jobs\/\d+/ },
+  { domain: /ashbyhq\.(com|net)/, path: /\/job\/[^\/]+\/[^\/?#]+/ },
+  { domain: /smartrecruiters\.com/, path: /\/[^\/]+\/job\/[^\/?#]+/ },
+  { domain: /myworkdayjobs\.com|workdayjobs\.com/, path: /\/job\/[^\/]+\/[^\/]+\/[^\/?#]+/ },
+  { domain: /ziprecruiter\.com/, path: /\/jobs\/-\/[^\/?#]+/ },
+  { domain: /careerbuilder\.com/, path: /\/jobdetail\/[^\/?#]+/ },
+  { domain: /dice\.com/, path: /\/detail\/[^\/?#]+\/[^\/?#]+/ },
+  { domain: /simplyhired\.com/, path: /\/job\/[A-Za-z0-9]+/ },
+  { domain: /jobvite\.com/, path: /\/job\/[^\/?#]+/ },
+  { domain: /icims\.com/, path: /jobs\/\d+/ },
+];
+
+function isLikelyJobPostingUrl(url: string): boolean {
+  if (!url) return false;
+
+  let normalized: string;
+  try {
+    const parsed = new URL(url);
+    normalized = parsed.href.toLowerCase();
+  } catch {
+    normalized = url.toLowerCase();
+  }
+
+  if (JOB_BOARD_EXCLUSION_PATTERNS.some((pattern) => pattern.test(normalized))) {
+    return false;
+  }
+
+  if (
+    JOB_POSTING_PATTERNS.some(
+      ({ domain, path }) => domain.test(normalized) && path.test(normalized)
+    )
+  ) {
+    return true;
+  }
+
+  const hasJobKeyword =
+    /\/jobs?\//.test(normalized) ||
+    normalized.includes("jobid=") ||
+    normalized.includes("gh_jid") ||
+    normalized.includes("postingid") ||
+    normalized.includes("/apply/");
+
+  const likelyIdentifier =
+    /\d{4,}/.test(normalized) ||
+    /[A-Za-z0-9]{10,}/.test(normalized.split("/").pop() || "");
+
+  return hasJobKeyword && likelyIdentifier;
+}
+
 export function isUSLocation(location?: string | null): boolean {
   if (!location) {
     // When the source does not provide a location we assume it's safe to include
@@ -360,33 +437,76 @@ export async function searchJobUrls(
   let jobUrls: Array<{ url: string; snippet: string; title: string }> =
     jobUrlCandidates.filter(
       (result: { url: string; snippet: string; title: string }) => {
-    const url = (result.url || "").toLowerCase();
-    if (!url) return false;
+        const normalizedUrl = (result.url || "").toLowerCase();
+        if (!normalizedUrl) return false;
 
-    // Exclude common international TLDs
-    if (
-      url.includes(".ca/") ||
-      url.includes(".uk/") ||
-      url.includes(".au/") ||
-      url.includes("ca.indeed.com") ||
-      url.includes("uk.indeed.com") ||
-      url.includes("ca.linkedin.com") ||
-      url.includes("uk.linkedin.com")
-    ) {
-      return false;
+        // Exclude common international TLDs
+        if (
+          normalizedUrl.includes(".ca/") ||
+          normalizedUrl.includes(".uk/") ||
+          normalizedUrl.includes(".au/") ||
+          normalizedUrl.includes("ca.indeed.com") ||
+          normalizedUrl.includes("uk.indeed.com") ||
+          normalizedUrl.includes("ca.linkedin.com") ||
+          normalizedUrl.includes("uk.linkedin.com")
+        ) {
+          return false;
+        }
+
+        const domainMatch = knownDomains.some((domain) =>
+          normalizedUrl.includes(domain)
+        );
+        const pathMatch = jobPathKeywords.some((keyword) =>
+          normalizedUrl.includes(keyword)
+        );
+
+        // For LinkedIn et al keep stricter checks to avoid search pages
+        const isLinkedIn =
+          normalizedUrl.includes("linkedin.com") &&
+          normalizedUrl.includes("/jobs/view/") &&
+          !normalizedUrl.includes("/search");
+        const isIndeed =
+          normalizedUrl.includes("indeed.com") &&
+          normalizedUrl.includes("/viewjob") &&
+          !normalizedUrl.includes("/q-");
+        const isGlassdoor =
+          normalizedUrl.includes("glassdoor.com") &&
+          normalizedUrl.includes("/job/") &&
+          !normalizedUrl.includes("/browsejobs");
+        const isMonster =
+          normalizedUrl.includes("monster.com") &&
+          normalizedUrl.includes("/jobs/") &&
+          !normalizedUrl.includes("/search");
+
+        if (
+          !(
+            isLinkedIn ||
+            isIndeed ||
+            isGlassdoor ||
+            isMonster ||
+            domainMatch ||
+            pathMatch
+          )
+        ) {
+          return false;
+        }
+
+        return isLikelyJobPostingUrl(result.url);
+      }
+    );
+
+  if (jobUrls.length === 0) {
+    const fallbackJobUrls = jobUrlCandidates.filter(
+      (result: { url: string; snippet: string; title: string }) =>
+      isLikelyJobPostingUrl(result.url)
+    );
+    if (fallbackJobUrls.length > 0) {
+      console.log(
+        `Primary filtering yielded no job-specific URLs for "${jobTitle}". Using fallback heuristics.`
+      );
+      jobUrls = fallbackJobUrls.slice(0, 5);
     }
-
-    const domainMatch = knownDomains.some((domain) => url.includes(domain));
-    const pathMatch = jobPathKeywords.some((keyword) => url.includes(keyword));
-
-    // For LinkedIn et al keep stricter checks to avoid search pages
-    const isLinkedIn = url.includes("linkedin.com") && url.includes("/jobs/view/") && !url.includes("/search");
-    const isIndeed = url.includes("indeed.com") && url.includes("/viewjob") && !url.includes("/q-");
-    const isGlassdoor = url.includes("glassdoor.com") && url.includes("/job/") && !url.includes("/browsejobs");
-    const isMonster = url.includes("monster.com") && url.includes("/jobs/") && !url.includes("/search");
-
-    return isLinkedIn || isIndeed || isGlassdoor || isMonster || domainMatch || pathMatch;
-  });
+  }
 
   // Remove duplicate URLs
   const seen = new Set<string>();
