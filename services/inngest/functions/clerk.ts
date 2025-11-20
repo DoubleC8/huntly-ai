@@ -94,7 +94,10 @@ export const clerkCreateUser = inngest.createFunction({ id: 'clerk/create-db-use
     })
 
     await step.run("create-user-notification-settings", async () => {
-      await insertUserNotificationSettings({ userId })
+      await insertUserNotificationSettings({ 
+        userId,
+        newJobEmailNotifications: false 
+      })
     })
 })
 

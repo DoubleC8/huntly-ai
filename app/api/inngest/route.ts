@@ -2,7 +2,7 @@ import { inngest } from "@/services/inngest/client";
 import { clerkCreateUser, clerkUpdateUser, clerkDeleteUser } from "@/services/inngest/functions/clerk";
 import { createAiSummaryOfUploadedResume } from "@/services/inngest/functions/resume";
 import { searchJobsForUser } from "@/services/inngest/functions/jobSearch";
-import { prepareDailyJobNotifications, sendDailyJobNotificationEmail } from "@/services/inngest/functions/email";
+import { prepareDailyJobNotifications, processDailyJobNotifications, sendDailyJobNotificationEmail } from "@/services/inngest/functions/email";
 import { serve } from "inngest/next";
 
 
@@ -16,6 +16,7 @@ export const { GET, POST, PUT } = serve({
     createAiSummaryOfUploadedResume,
     searchJobsForUser,
     prepareDailyJobNotifications,
+    processDailyJobNotifications,
     sendDailyJobNotificationEmail,
   ],
 });
